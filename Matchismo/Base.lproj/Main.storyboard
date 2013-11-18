@@ -193,6 +193,7 @@
                         <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="0.25098040699958801" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
+                        <outlet property="numberOfCardsToMatchButton" destination="dQN-Qn-ImZ" id="aYj-Jt-hw3"/>
                         <outlet property="scoreLabel" destination="TOq-Hq-oha" id="9xy-Uh-9UT"/>
                         <outletCollection property="cardButtons" destination="AuA-iO-qdl" id="CBT-9B-efV"/>
                         <outletCollection property="cardButtons" destination="AuA-iO-qdl" id="bdv-GD-nKc"/>
@@ -214,6 +215,17 @@
         </scene>
     </scenes>
     <resources>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
         <image name="cardback" width="64" height="96"/>
         <image name="cardfront" width="64" height="96"/>
     </resources>

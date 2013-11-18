@@ -55,6 +55,7 @@
     
 }
 
+@synthesize numberOfCardsToMatch = _numberOfCardsToMatch;
 - (void)setNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
 {
     if ([@[@2, @3] containsObject:@(numberOfCardsToMatch)]) {
@@ -62,6 +63,11 @@
     } else {
         _numberOfCardsToMatch = 2;
     }
+}
+
+- (NSUInteger)numberOfCardsToMatch {
+    if (!_numberOfCardsToMatch) _numberOfCardsToMatch = 2;
+    return _numberOfCardsToMatch;
 }
 
 
