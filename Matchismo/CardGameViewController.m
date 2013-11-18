@@ -22,7 +22,8 @@
 
 
 - (CardMatchingGame *)game {
-    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count] usingDeck:[self createDeck]];
+    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count]
+                                                          usingDeck:[self createDeck]];
     return _game;
 }
 
@@ -30,10 +31,22 @@
 {
     return [[PlayingCardDeck alloc] init];
 }
+- (IBAction)selectNumberOfCards:(UISegmentedControl *)sender {
+    int numCards = [sender selectedSegmentIndex] ? 3 : 2;
+    
+    self.game = [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count]
+                                                  usingDeck:[self createDeck]
+                                   withNumberOfCardsToMatch:numCards];
+    [self updateUI];
+}
 
 - (IBAction)touchCardButton:(UIButton *)sender {
     int cardIndex = [self.cardButtons indexOfObject:sender];
     [self.game chooseCardAtIndex:cardIndex];
+    [self updateUI];
+}
+- (IBAction)touchRedealButton:(UIButton *)sender {
+    self.game = nil;
     [self updateUI];
 }
 
