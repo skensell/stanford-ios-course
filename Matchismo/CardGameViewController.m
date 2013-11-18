@@ -17,8 +17,11 @@
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons; // order is not known
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *numberOfCardsToMatchButton;
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (nonatomic) NSUInteger numberOfCardsToMatch;
 @property (nonatomic) NSUInteger flipCount;
+@property (nonatomic) NSInteger scoreDelta;
+@property (nonatomic) NSMutableArray *currentlyPickedCards;
 @end
 
 @implementation CardGameViewController
@@ -35,6 +38,13 @@
     return [[PlayingCardDeck alloc] init];
 }
 
+- (NSMutableArray *)currentlyPickedCards {
+    if (!_currentlyPickedCards) {
+        _currentlyPickedCards = [[NSMutableArray alloc] init];
+    }
+    return _currentlyPickedCards;
+}
+
 - (NSUInteger)numberOfCardsToMatch {
     if (!_numberOfCardsToMatch) _numberOfCardsToMatch = 2;
     return _numberOfCardsToMatch;
@@ -48,7 +58,9 @@
 
 - (IBAction)touchCardButton:(UIButton *)sender {
     int cardIndex = [self.cardButtons indexOfObject:sender];
+    
     [self.game chooseCardAtIndex:cardIndex];
+    
     self.flipCount++;
     [self updateUI];
 }
@@ -62,24 +74,67 @@
     [self updateUI];
 }
 
+- (void)updateStatusLabel:(NSArray *)currentlyPickedCards withScoreDelta:(NSInteger)scoreDelta{
+    NSString *cardContents = @"";
+    for (Card *card in currentlyPickedCards) {
+        cardContents = [cardContents stringByAppendingString:card.contents];
+    }
+
+    NSLog(@"There are %d currently picked cards.", [currentlyPickedCards count]);
+    if ([currentlyPickedCards count] == self.numberOfCardsToMatch){
+        
+        if (self.scoreDelta > 0) {
+            self.statusLabel.text = [NSString stringWithFormat:@"%@ MATCH: %d points!",
+                                     cardContents, scoreDelta];
+        } else {
+            self.statusLabel.text = [NSString stringWithFormat:@"%@ mismatch: %d!", cardContents, scoreDelta];
+        }
+        
+    } else {
+        self.statusLabel.text = [NSString stringWithFormat:@"%@", cardContents];
+    }
+    
+    
+}
+
 - (void)updateUI {
     if (self.flipCount) {
-        //disable the 2-card/3-card button
         [self.numberOfCardsToMatchButton setEnabled:NO];
     } else {
         [self.numberOfCardsToMatchButton setEnabled:YES];
+        self.statusLabel.text = @"";
     }
+
     
     for (UIButton *cardButton in self.cardButtons) {
+        
         int cardIndex = [self.cardButtons indexOfObject:cardButton];
         Card *card = [self.game cardAtIndex:cardIndex];
         [cardButton setTitle:[self titleForCard:card]
                     forState:UIControlStateNormal];
         [cardButton setBackgroundImage:[self backgroundImageForCard:card]
                               forState:UIControlStateNormal];
+        
+        if (cardButton.enabled && card.isChosen
+            && ![self.currentlyPickedCards containsObject:card] ) {
+            
+            [self.currentlyPickedCards addObject:card];
+            
+        }
+        
         cardButton.enabled = !card.isMatched;
     }
+    
+    self.scoreDelta = self.game.score - self.scoreDelta;
+    
+    [self updateStatusLabel:self.currentlyPickedCards withScoreDelta:self.scoreDelta];
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
+    
+    if ([self.currentlyPickedCards count] == self.numberOfCardsToMatch) {
+        [self.currentlyPickedCards removeAllObjects];
+    }
+    
+    self.scoreDelta = self.game.score;
 }
 
 - (NSString *)titleForCard:(Card *)card {

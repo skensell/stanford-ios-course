@@ -161,14 +161,14 @@
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Score: 0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TOq-Hq-oha">
-                                <rect key="frame" x="20" y="527" width="103" height="21"/>
+                                <rect key="frame" x="20" y="419" width="103" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="giL-aa-vPc">
-                                <rect key="frame" x="20" y="481" width="88" height="30"/>
+                                <rect key="frame" x="20" y="520" width="88" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Redeal" backgroundImage="cardfront">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -178,7 +178,7 @@
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dQN-Qn-ImZ">
-                                <rect key="frame" x="20" y="438" width="109" height="29"/>
+                                <rect key="frame" x="191" y="520" width="109" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <segments>
@@ -189,13 +189,20 @@
                                     <action selector="selectNumberOfCards:" destination="vXZ-lx-hvc" eventType="valueChanged" id="vp7-bK-2Th"/>
                                 </connections>
                             </segmentedControl>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.84999999999999987" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gaL-gu-Fgy">
+                                <rect key="frame" x="20" y="360" width="280" height="41"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="0.25098040699958801" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
                         <outlet property="numberOfCardsToMatchButton" destination="dQN-Qn-ImZ" id="aYj-Jt-hw3"/>
                         <outlet property="scoreLabel" destination="TOq-Hq-oha" id="9xy-Uh-9UT"/>
-                        <outletCollection property="cardButtons" destination="AuA-iO-qdl" id="CBT-9B-efV"/>
+                        <outlet property="statusLabel" destination="gaL-gu-Fgy" id="QXx-r5-CGJ"/>
                         <outletCollection property="cardButtons" destination="AuA-iO-qdl" id="bdv-GD-nKc"/>
                         <outletCollection property="cardButtons" destination="QDt-bu-MTz" id="7ZJ-kD-d8k"/>
                         <outletCollection property="cardButtons" destination="tNx-bp-ZGr" id="CeA-aQ-wtS"/>

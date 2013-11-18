@@ -21,4 +21,6 @@
 
 @property (nonatomic, readonly) NSInteger score; // don't want there to be any public setter, but privately this will be read-write
 
+//@property (nonatomic, strong) NSMutableArray *lastMatchedCards; // empty if no match
+
 @end
