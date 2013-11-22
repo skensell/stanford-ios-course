@@ -7,8 +7,6 @@
 //
 
 #import "CardGameViewController.h"
-#import "PlayingCardDeck.h"
-#import "PlayingCard.h"
 #import "CardMatchingGame.h"
 
 @interface CardGameViewController ()
@@ -33,9 +31,9 @@
     return _game;
 }
 
-- (Deck *)createDeck
+- (Deck *)createDeck // abstract method
 {
-    return [[PlayingCardDeck alloc] init];
+    return nil;
 }
 
 - (NSMutableArray *)currentlyPickedCards {
@@ -80,7 +78,6 @@
         cardContents = [cardContents stringByAppendingString:card.contents];
     }
 
-    NSLog(@"There are %d currently picked cards.", [currentlyPickedCards count]);
     if ([currentlyPickedCards count] == self.numberOfCardsToMatch){
         
         if (self.scoreDelta > 0) {

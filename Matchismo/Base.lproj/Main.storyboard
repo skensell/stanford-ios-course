@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
     <scenes>
-        <!--Card Game View Controller-->
+        <!--Playing Card Game View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="CardGameViewController" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="PlayingCardGameViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jgT-Mw-VEm"/>
                         <viewControllerLayoutGuide type="bottom" id="kXN-xJ-GQC"/>
@@ -456,6 +456,35 @@
         </scene>
     </scenes>
     <resources>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
+        <image name="cardback" width="64" height="96"/>
         <image name="cardback" width="64" height="96"/>
         <image name="cardfront" width="64" height="96"/>
     </resources>
