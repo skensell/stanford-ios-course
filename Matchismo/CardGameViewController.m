@@ -8,6 +8,7 @@
 
 #import "CardGameViewController.h"
 #import "CardMatchingGame.h"
+#import "HistoryViewController.h"
 
 @interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
@@ -22,7 +23,7 @@
 @implementation CardGameViewController
 
 
-#pragma mark Game Actions
+#pragma mark Lazy instantiation
 
 
 - (CardMatchingGame *)game {
@@ -43,6 +44,13 @@ static const NSUInteger defaultNumberOfCardsToMatch = 2;
     if (!_numberOfCardsToMatch) _numberOfCardsToMatch = defaultNumberOfCardsToMatch;
     return _numberOfCardsToMatch;
 }
+
+- (NSMutableArray *)history {
+    if (!_history) _history = [[NSMutableArray alloc] init];
+    return _history;
+}
+
+#pragma mark Game Actions
 
 - (IBAction)touchCardButton:(UIButton *)sender {
     NSUInteger cardIndex = [self.cardButtons indexOfObject:sender];
@@ -70,6 +78,7 @@ static const NSUInteger defaultNumberOfCardsToMatch = 2;
     self.scoreDelta = 0;
     self.game = nil;
     [self.currentlyPickedCards removeAllObjects];
+    [self.history removeAllObjects];
     [self updateUI];
 }
 
@@ -157,7 +166,7 @@ static const NSUInteger defaultNumberOfCardsToMatch = 2;
     
     [status appendAttributedString:newline];
     [status appendAttributedString:[self coloredScoreDelta:scoreDelta]];
-    
+
     self.StatusTextView.attributedText = status;
     self.StatusTextView.textAlignment = NSTextAlignmentCenter;
     
@@ -218,6 +227,18 @@ static const NSUInteger defaultNumberOfCardsToMatch = 2;
     self.StatusTextView.backgroundColor = [UIColor whiteColor];
     
     [self updateUI];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier hasSuffix:@"HistorySegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[HistoryViewController class]]) {
+            HistoryViewController *HVC = (HistoryViewController *)segue.destinationViewController;
+            
+            HVC.history = self.history;
+            
+        }
+    }
+    
 }
 
 @end

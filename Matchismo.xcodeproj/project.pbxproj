@@ -15,7 +15,6 @@
 		7601967F1834EB9500FD66F0 /* CardGameAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7601967E1834EB9500FD66F0 /* CardGameAppDelegate.m */; };
 		760196821834EB9500FD66F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 760196801834EB9500FD66F0 /* Main.storyboard */; };
 		760196851834EB9500FD66F0 /* CardGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 760196841834EB9500FD66F0 /* CardGameViewController.m */; };
-		760196871834EB9500FD66F0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 760196861834EB9500FD66F0 /* Images.xcassets */; };
 		7601968E1834EB9500FD66F0 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7601968D1834EB9500FD66F0 /* XCTest.framework */; };
 		7601968F1834EB9500FD66F0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7601966E1834EB9500FD66F0 /* Foundation.framework */; };
 		760196901834EB9500FD66F0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 760196721834EB9500FD66F0 /* UIKit.framework */; };
@@ -31,6 +30,8 @@
 		76273A88183F6FB700E693DE /* SetCardDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A87183F6FB700E693DE /* SetCardDeck.m */; };
 		76273A8B183F6FDE00E693DE /* SetCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A8A183F6FDE00E693DE /* SetCard.m */; };
 		765A44521844F22A005CBC14 /* UIColor+FromHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 765A44511844F22A005CBC14 /* UIColor+FromHex.m */; };
+		765A44551847330A005CBC14 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765A44541847330A005CBC14 /* HistoryViewController.m */; };
+		765A44571847750E005CBC14 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 765A44561847750E005CBC14 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +58,6 @@
 		760196811834EB9500FD66F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		760196831834EB9500FD66F0 /* CardGameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardGameViewController.h; sourceTree = "<group>"; };
 		760196841834EB9500FD66F0 /* CardGameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardGameViewController.m; sourceTree = "<group>"; };
-		760196861834EB9500FD66F0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7601968C1834EB9500FD66F0 /* MatchismoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MatchismoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7601968D1834EB9500FD66F0 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		760196951834EB9500FD66F0 /* MatchismoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MatchismoTests-Info.plist"; sourceTree = "<group>"; };
@@ -83,6 +83,9 @@
 		76273A8A183F6FDE00E693DE /* SetCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetCard.m; path = Model/SetCard.m; sourceTree = "<group>"; };
 		765A44501844F22A005CBC14 /* UIColor+FromHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+FromHex.h"; sourceTree = "<group>"; };
 		765A44511844F22A005CBC14 /* UIColor+FromHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+FromHex.m"; sourceTree = "<group>"; };
+		765A44531847330A005CBC14 /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
+		765A44541847330A005CBC14 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
+		765A44561847750E005CBC14 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,12 +148,13 @@
 				760196801834EB9500FD66F0 /* Main.storyboard */,
 				760196831834EB9500FD66F0 /* CardGameViewController.h */,
 				76273A7D183C9D4A00E693DE /* PlayingCardGameViewController.h */,
+				765A44531847330A005CBC14 /* HistoryViewController.h */,
+				765A44541847330A005CBC14 /* HistoryViewController.m */,
 				76273A7E183C9D4A00E693DE /* PlayingCardGameViewController.m */,
 				760196841834EB9500FD66F0 /* CardGameViewController.m */,
 				76273A83183F6F0C00E693DE /* SetCardGameViewController.h */,
 				76273A84183F6F0C00E693DE /* SetCardGameViewController.m */,
 				760196A618350AAA00FD66F0 /* Model */,
-				760196861834EB9500FD66F0 /* Images.xcassets */,
 				760196751834EB9500FD66F0 /* Supporting Files */,
 			);
 			path = Matchismo;
@@ -159,6 +163,7 @@
 		760196751834EB9500FD66F0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				765A44561847750E005CBC14 /* Images.xcassets */,
 				7601967D1834EB9500FD66F0 /* CardGameAppDelegate.h */,
 				7601967E1834EB9500FD66F0 /* CardGameAppDelegate.m */,
 				765A44501844F22A005CBC14 /* UIColor+FromHex.h */,
@@ -287,7 +292,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				760196871834EB9500FD66F0 /* Images.xcassets in Resources */,
+				765A44571847750E005CBC14 /* Images.xcassets in Resources */,
 				760196791834EB9500FD66F0 /* InfoPlist.strings in Resources */,
 				760196821834EB9500FD66F0 /* Main.storyboard in Resources */,
 			);
@@ -313,6 +318,7 @@
 				76273A8B183F6FDE00E693DE /* SetCard.m in Sources */,
 				7601967B1834EB9500FD66F0 /* main.m in Sources */,
 				76273A88183F6FB700E693DE /* SetCardDeck.m in Sources */,
+				765A44551847330A005CBC14 /* HistoryViewController.m in Sources */,
 				760196A91837CAF500FD66F0 /* PlayingCard.m in Sources */,
 				760196B218392C5400FD66F0 /* CardMatchingGame.m in Sources */,
 				765A44521844F22A005CBC14 /* UIColor+FromHex.m in Sources */,

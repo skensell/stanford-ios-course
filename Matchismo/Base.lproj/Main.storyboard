@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
     <scenes>
-        <!--Playing Card Game View Controller - Matchismo-->
+        <!--Playing Card Game View Controller - Memory-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController title="Matchismo" id="vXZ-lx-hvc" customClass="PlayingCardGameViewController" sceneMemberID="viewController">
+                <viewController title="Memory" id="vXZ-lx-hvc" customClass="PlayingCardGameViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jgT-Mw-VEm"/>
                         <viewControllerLayoutGuide type="bottom" id="kXN-xJ-GQC"/>
@@ -331,8 +331,16 @@
                             </textView>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="0.25098040699958801" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Matchismo" id="inn-IV-7Fh"/>
+                    <navigationItem key="navigationItem" title="Memory" id="yJR-gt-SmT">
+                        <barButtonItem key="rightBarButtonItem" title="History" id="7F2-c2-WZT">
+                            <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <segue destination="vHl-6f-o3H" kind="push" identifier="matchismoHistorySegue" id="Y1w-SZ-DR2"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="StatusTextView" destination="56F-Fs-mXY" id="M8D-BX-RG7"/>
                         <outlet property="scoreLabel" destination="TOq-Hq-oha" id="9xy-Uh-9UT"/>
@@ -364,12 +372,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1173" y="479"/>
+            <point key="canvasLocation" x="1699" y="479"/>
         </scene>
-        <!--Set Card Game View Controller-->
+        <!--Set Card Game View Controller - Set-->
         <scene sceneID="arZ-Tc-WNc">
             <objects>
-                <viewController id="Aen-tU-KGD" customClass="SetCardGameViewController" sceneMemberID="viewController">
+                <viewController title="Set" id="Aen-tU-KGD" customClass="SetCardGameViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="XHp-fz-jnM"/>
                         <viewControllerLayoutGuide type="bottom" id="B4Q-dE-rOC"/>
@@ -560,9 +568,15 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.25098040700000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <navigationItem key="navigationItem" id="ncI-cx-dM1">
-                        <barButtonItem key="rightBarButtonItem" title="History" id="evO-EL-bmy"/>
+                    <navigationItem key="navigationItem" title="Set" id="ncI-cx-dM1">
+                        <barButtonItem key="rightBarButtonItem" title="History" id="evO-EL-bmy">
+                            <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <segue destination="vHl-6f-o3H" kind="push" identifier="setHistorySegue" id="rqj-21-KAA"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="StatusTextView" destination="14s-hQ-yIP" id="RR6-GW-ddi"/>
@@ -585,6 +599,37 @@
             </objects>
             <point key="canvasLocation" x="1699" y="-187"/>
         </scene>
+        <!--History View Controller - History-->
+        <scene sceneID="VpW-DH-aGZ">
+            <objects>
+                <viewController title="History" id="vHl-6f-o3H" customClass="HistoryViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="NUd-yB-af5"/>
+                        <viewControllerLayoutGuide type="bottom" id="Qqg-9l-AEi"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="w2B-kx-E6l">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rON-vg-PRX">
+                                <rect key="frame" x="20" y="79" width="280" height="420"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.25098040700000002" alpha="1" colorSpace="calibratedRGB"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="A0H-ih-xrh"/>
+                    <connections>
+                        <outlet property="HistoryTextView" destination="rON-vg-PRX" id="Kd9-eZ-kH8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="F3T-6A-IO6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2401" y="77"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="g7l-BH-ziX">
             <objects>
@@ -596,7 +641,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="vXZ-lx-hvc" kind="relationship" relationship="viewControllers" id="xvR-Ng-RKH"/>
+                        <segue destination="q1e-2g-mLS" kind="relationship" relationship="viewControllers" id="xvR-Ng-RKH"/>
                         <segue destination="9Vk-Mi-GX7" kind="relationship" relationship="viewControllers" id="XXf-D4-RPg"/>
                     </connections>
                 </tabBarController>
@@ -608,7 +653,7 @@
         <scene sceneID="Tu1-Xx-3pL">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9Vk-Mi-GX7" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Set" id="Agf-Au-lJF"/>
+                    <tabBarItem key="tabBarItem" title="Set" image="set-icon" id="Agf-Au-lJF"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="FTW-bJ-fOY">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -622,6 +667,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pj0-cx-mLB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1173" y="-187"/>
+        </scene>
+        <!--Navigation Controller - Memory-->
+        <scene sceneID="lPx-fl-rLC">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="q1e-2g-mLS" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Memory" image="spade" id="inn-IV-7Fh"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ad0-nx-dmc">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="vXZ-lx-hvc" kind="relationship" relationship="rootViewController" id="9EQ-89-VWi"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FPM-qB-pqU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1173" y="479"/>
         </scene>
     </scenes>
     <resources>
@@ -651,10 +715,16 @@
         <image name="cardback" width="64" height="96"/>
         <image name="cardfront" width="64" height="96"/>
         <image name="cardfront" width="64" height="96"/>
+        <image name="set-icon" width="36" height="30"/>
+        <image name="spade" width="46" height="41"/>
     </resources>
+    <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="Y1w-SZ-DR2"/>
+    </inferredMetricsTieBreakers>
 </document>

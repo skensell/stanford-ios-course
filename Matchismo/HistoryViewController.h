@@ -1,0 +1,15 @@
+//
+//  HistoryViewController.h
+//  Matchismo
+//
+//  Created by Scott Kensell on 11/28/13.
+//  Copyright (c) 2013 Scott Kensell. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface HistoryViewController : UIViewController
+
+@property (nonatomic, strong) NSArray *history; // of NSAttributedString statuses
+
+@end
