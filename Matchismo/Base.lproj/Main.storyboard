@@ -321,11 +321,10 @@
                                     <action selector="touchCardButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Y4b-Gg-i1n"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="56F-Fs-mXY">
-                                <rect key="frame" x="20" y="369" width="280" height="80"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.79999999999999982" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="56F-Fs-mXY">
+                                <rect key="frame" x="68" y="369" width="184" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -416,8 +415,8 @@
                                     <action selector="touchRedealButton:" destination="Aen-tU-KGD" eventType="touchUpInside" id="cDW-th-vlV"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="14s-hQ-yIP">
-                                <rect key="frame" x="20" y="367" width="280" height="80"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.79999999999999982" contentMode="scaleToFill" fixedFrame="YES" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="14s-hQ-yIP">
+                                <rect key="frame" x="68" y="369" width="184" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -611,7 +610,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rON-vg-PRX">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.79999999999999982" contentMode="scaleToFill" fixedFrame="YES" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rON-vg-PRX">
                                 <rect key="frame" x="20" y="79" width="280" height="420"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -690,30 +689,6 @@
     </scenes>
     <resources>
         <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardback" width="64" height="96"/>
-        <image name="cardfront" width="64" height="96"/>
         <image name="cardfront" width="64" height="96"/>
         <image name="set-icon" width="36" height="30"/>
         <image name="spade" width="46" height="41"/>
@@ -725,6 +700,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Y1w-SZ-DR2"/>
+        <segue reference="rqj-21-KAA"/>
     </inferredMetricsTieBreakers>
 </document>

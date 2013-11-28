@@ -20,7 +20,6 @@
 }
 
 - (void)updateUI {
-    NSLog(@"updating UI of History View");
     NSMutableAttributedString *history = [[NSMutableAttributedString alloc] init];
     
     NSAttributedString *separator = [[NSAttributedString alloc] initWithString:@"\n--------\n"];
@@ -32,12 +31,5 @@
     self.HistoryTextView.attributedText = history;
     self.HistoryTextView.textAlignment = NSTextAlignmentCenter;
 }
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-}
-
 
 @end
