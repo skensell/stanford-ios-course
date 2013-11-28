@@ -13,6 +13,14 @@
 
 
 // protected for subclasses
+@property (nonatomic) NSUInteger numberOfCardsToMatch;
+@property (nonatomic) NSInteger scoreDelta;
+@property (nonatomic) NSMutableArray *currentlyPickedCards;
+
 - (Deck *)createDeck; // abstract method
+- (NSAttributedString *)forStatusDepictCard:(Card *)aCard; // abstract method
+- (void)updateStatusWithScoreDelta:(NSInteger)scoreDelta; // abstract method
+- (void)updateButton:(UIButton *)cardButton
+             forCard:(Card *)card;
 
 @end

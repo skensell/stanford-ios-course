@@ -59,8 +59,10 @@
 - (void)setNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
 {
     if ([@[@2, @3] containsObject:@(numberOfCardsToMatch)]) {
+        NSLog(@"Matching %@ cards", @(numberOfCardsToMatch));
         _numberOfCardsToMatch = numberOfCardsToMatch;
     } else {
+        NSLog(@"Matching 2 cards");
         _numberOfCardsToMatch = 2;
     }
 }
@@ -77,19 +79,19 @@ static const int COST_TO_CHOOSE = 1;
 
 - (void)chooseCardAtIndex:(NSUInteger)index {
     
-    Card *card = [self cardAtIndex:index];
+    Card *theCard = [self cardAtIndex:index];
     
-    if (!card.isMatched) {
-        if (card.isChosen){
-            card.chosen = NO;
+    if (!theCard.isMatched) {
+        if (theCard.isChosen){
+            theCard.chosen = NO;
         } else {
             // match against other cards if we have enough chosen
-            card.chosen = YES;
+            theCard.chosen = YES;
             NSMutableArray *matchableCards = [[NSMutableArray alloc] init];
             
-            for (Card *otherCard in self.cards) {
-                if (otherCard.isChosen && !otherCard.isMatched) {
-                    [matchableCards addObject:otherCard];
+            for (Card *card in self.cards) {
+                if (card.isChosen && !card.isMatched) {
+                    [matchableCards addObject:card];
                 }
             }
             
@@ -99,14 +101,15 @@ static const int COST_TO_CHOOSE = 1;
                 
                 if (matchScore) {
                     self.score += matchScore * MATCH_BONUS;
-                    for (Card *otherCard in matchableCards){
-                        otherCard.matched = YES;
+                    
+                    for (Card *card in matchableCards){
+                        card.matched = YES;
                     }
                     
                 } else {
-                    for (Card *otherCard in matchableCards){
-                        if (otherCard != card) {
-                            otherCard.chosen = NO;
+                    for (Card *card in matchableCards){
+                        if (card != theCard) {
+                            card.chosen = NO;
                         }
                     }
                     self.score -= MISMATCH_PENALTY;

@@ -27,6 +27,10 @@
 		760196AF1838B7F100FD66F0 /* PlayingCardDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = 760196AE1838B7F100FD66F0 /* PlayingCardDeck.m */; };
 		760196B218392C5400FD66F0 /* CardMatchingGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 760196B118392C5400FD66F0 /* CardMatchingGame.m */; };
 		76273A7F183C9D4A00E693DE /* PlayingCardGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A7E183C9D4A00E693DE /* PlayingCardGameViewController.m */; };
+		76273A85183F6F0C00E693DE /* SetCardGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A84183F6F0C00E693DE /* SetCardGameViewController.m */; };
+		76273A88183F6FB700E693DE /* SetCardDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A87183F6FB700E693DE /* SetCardDeck.m */; };
+		76273A8B183F6FDE00E693DE /* SetCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A8A183F6FDE00E693DE /* SetCard.m */; };
+		765A44521844F22A005CBC14 /* UIColor+FromHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 765A44511844F22A005CBC14 /* UIColor+FromHex.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +75,14 @@
 		760196B118392C5400FD66F0 /* CardMatchingGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardMatchingGame.m; sourceTree = "<group>"; };
 		76273A7D183C9D4A00E693DE /* PlayingCardGameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardGameViewController.h; sourceTree = "<group>"; };
 		76273A7E183C9D4A00E693DE /* PlayingCardGameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardGameViewController.m; sourceTree = "<group>"; };
+		76273A83183F6F0C00E693DE /* SetCardGameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetCardGameViewController.h; sourceTree = "<group>"; };
+		76273A84183F6F0C00E693DE /* SetCardGameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetCardGameViewController.m; sourceTree = "<group>"; };
+		76273A86183F6FB700E693DE /* SetCardDeck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetCardDeck.h; path = Model/SetCardDeck.h; sourceTree = "<group>"; };
+		76273A87183F6FB700E693DE /* SetCardDeck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetCardDeck.m; path = Model/SetCardDeck.m; sourceTree = "<group>"; };
+		76273A89183F6FDE00E693DE /* SetCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetCard.h; path = Model/SetCard.h; sourceTree = "<group>"; };
+		76273A8A183F6FDE00E693DE /* SetCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetCard.m; path = Model/SetCard.m; sourceTree = "<group>"; };
+		765A44501844F22A005CBC14 /* UIColor+FromHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+FromHex.h"; sourceTree = "<group>"; };
+		765A44511844F22A005CBC14 /* UIColor+FromHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+FromHex.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +147,8 @@
 				76273A7D183C9D4A00E693DE /* PlayingCardGameViewController.h */,
 				76273A7E183C9D4A00E693DE /* PlayingCardGameViewController.m */,
 				760196841834EB9500FD66F0 /* CardGameViewController.m */,
+				76273A83183F6F0C00E693DE /* SetCardGameViewController.h */,
+				76273A84183F6F0C00E693DE /* SetCardGameViewController.m */,
 				760196A618350AAA00FD66F0 /* Model */,
 				760196861834EB9500FD66F0 /* Images.xcassets */,
 				760196751834EB9500FD66F0 /* Supporting Files */,
@@ -147,6 +161,8 @@
 			children = (
 				7601967D1834EB9500FD66F0 /* CardGameAppDelegate.h */,
 				7601967E1834EB9500FD66F0 /* CardGameAppDelegate.m */,
+				765A44501844F22A005CBC14 /* UIColor+FromHex.h */,
+				765A44511844F22A005CBC14 /* UIColor+FromHex.m */,
 				760196761834EB9500FD66F0 /* Matchismo-Info.plist */,
 				760196771834EB9500FD66F0 /* InfoPlist.strings */,
 				7601967A1834EB9500FD66F0 /* main.m */,
@@ -176,12 +192,16 @@
 		760196A618350AAA00FD66F0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				76273A89183F6FDE00E693DE /* SetCard.h */,
+				76273A8A183F6FDE00E693DE /* SetCard.m */,
+				76273A86183F6FB700E693DE /* SetCardDeck.h */,
+				76273A87183F6FB700E693DE /* SetCardDeck.m */,
 				760196B018392C5400FD66F0 /* CardMatchingGame.h */,
 				760196B118392C5400FD66F0 /* CardMatchingGame.m */,
 				760196A71837CAF500FD66F0 /* PlayingCard.h */,
+				760196A81837CAF500FD66F0 /* PlayingCard.m */,
 				760196AD1838B7F100FD66F0 /* PlayingCardDeck.h */,
 				760196AE1838B7F100FD66F0 /* PlayingCardDeck.m */,
-				760196A81837CAF500FD66F0 /* PlayingCard.m */,
 				760196AA1837D50800FD66F0 /* Deck.h */,
 				760196AB1837D50800FD66F0 /* Deck.m */,
 				760196A318350AA300FD66F0 /* Card.h */,
@@ -290,13 +310,17 @@
 			files = (
 				7601967F1834EB9500FD66F0 /* CardGameAppDelegate.m in Sources */,
 				760196851834EB9500FD66F0 /* CardGameViewController.m in Sources */,
+				76273A8B183F6FDE00E693DE /* SetCard.m in Sources */,
 				7601967B1834EB9500FD66F0 /* main.m in Sources */,
+				76273A88183F6FB700E693DE /* SetCardDeck.m in Sources */,
 				760196A91837CAF500FD66F0 /* PlayingCard.m in Sources */,
 				760196B218392C5400FD66F0 /* CardMatchingGame.m in Sources */,
+				765A44521844F22A005CBC14 /* UIColor+FromHex.m in Sources */,
 				760196AF1838B7F100FD66F0 /* PlayingCardDeck.m in Sources */,
 				760196AC1837D50800FD66F0 /* Deck.m in Sources */,
 				760196A518350AA300FD66F0 /* Card.m in Sources */,
 				76273A7F183C9D4A00E693DE /* PlayingCardGameViewController.m in Sources */,
+				76273A85183F6F0C00E693DE /* SetCardGameViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

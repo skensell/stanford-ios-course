@@ -10,4 +10,6 @@
 
 @interface PlayingCardGameViewController : CardGameViewController
 
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
+
 @end

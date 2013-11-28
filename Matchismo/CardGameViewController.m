@@ -10,19 +10,20 @@
 #import "CardMatchingGame.h"
 
 @interface CardGameViewController ()
-@property (nonatomic) Deck *deck;
 @property (nonatomic, strong) CardMatchingGame *game;
+@property (weak, nonatomic) IBOutlet UITextView *StatusTextView;
+@property (nonatomic, strong) NSMutableArray *history; // of attributed strings
+
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons; // order is not known
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *numberOfCardsToMatchButton;
-@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
-@property (nonatomic) NSUInteger numberOfCardsToMatch;
 @property (nonatomic) NSUInteger flipCount;
-@property (nonatomic) NSInteger scoreDelta;
-@property (nonatomic) NSMutableArray *currentlyPickedCards;
 @end
 
 @implementation CardGameViewController
+
+
+#pragma mark Game Actions
+
 
 - (CardMatchingGame *)game {
     if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count]
@@ -36,102 +37,71 @@
     return nil;
 }
 
-- (NSMutableArray *)currentlyPickedCards {
-    if (!_currentlyPickedCards) {
-        _currentlyPickedCards = [[NSMutableArray alloc] init];
-    }
-    return _currentlyPickedCards;
-}
+static const NSUInteger defaultNumberOfCardsToMatch = 2;
 
 - (NSUInteger)numberOfCardsToMatch {
-    if (!_numberOfCardsToMatch) _numberOfCardsToMatch = 2;
+    if (!_numberOfCardsToMatch) _numberOfCardsToMatch = defaultNumberOfCardsToMatch;
     return _numberOfCardsToMatch;
 }
 
-- (IBAction)selectNumberOfCards:(UISegmentedControl *)sender {
-    self.numberOfCardsToMatch = [sender selectedSegmentIndex] + 2;
-    
-    [self restart];
-}
-
 - (IBAction)touchCardButton:(UIButton *)sender {
-    int cardIndex = [self.cardButtons indexOfObject:sender];
+    NSUInteger cardIndex = [self.cardButtons indexOfObject:sender];
+    
+    Card *card = [self.game cardAtIndex:cardIndex];
+
+    if (card.isChosen) {
+        [self.currentlyPickedCards removeObject:card];
+    } else {
+        [self.currentlyPickedCards addObject:card];
+    }
     
     [self.game chooseCardAtIndex:cardIndex];
     
     self.flipCount++;
     [self updateUI];
 }
+
 - (IBAction)touchRedealButton:(UIButton *)sender {
     [self restart];
 }
 
 - (void)restart {
     self.flipCount = 0;
+    self.scoreDelta = 0;
     self.game = nil;
+    [self.currentlyPickedCards removeAllObjects];
     [self updateUI];
 }
 
-- (void)updateStatusLabel:(NSArray *)currentlyPickedCards withScoreDelta:(NSInteger)scoreDelta{
-    NSString *cardContents = @"";
-    for (Card *card in currentlyPickedCards) {
-        cardContents = [cardContents stringByAppendingString:card.contents];
-    }
 
-    if ([currentlyPickedCards count] == self.numberOfCardsToMatch){
-        
-        if (self.scoreDelta > 0) {
-            self.statusLabel.text = [NSString stringWithFormat:@"%@ MATCH: %d points!",
-                                     cardContents, scoreDelta];
-        } else {
-            self.statusLabel.text = [NSString stringWithFormat:@"%@ mismatch: %d!", cardContents, scoreDelta];
-        }
-        
-    } else {
-        self.statusLabel.text = [NSString stringWithFormat:@"%@", cardContents];
-    }
-    
-    
-}
+#pragma mark Update All UI
+
 
 - (void)updateUI {
-    if (self.flipCount) {
-        [self.numberOfCardsToMatchButton setEnabled:NO];
-    } else {
-        [self.numberOfCardsToMatchButton setEnabled:YES];
-        self.statusLabel.text = @"";
-    }
-
     
     for (UIButton *cardButton in self.cardButtons) {
-        
-        int cardIndex = [self.cardButtons indexOfObject:cardButton];
+        NSUInteger cardIndex = [self.cardButtons indexOfObject:cardButton];
         Card *card = [self.game cardAtIndex:cardIndex];
-        [cardButton setTitle:[self titleForCard:card]
-                    forState:UIControlStateNormal];
-        [cardButton setBackgroundImage:[self backgroundImageForCard:card]
-                              forState:UIControlStateNormal];
         
-        if (cardButton.enabled && card.isChosen
-            && ![self.currentlyPickedCards containsObject:card] ) {
-            
-            [self.currentlyPickedCards addObject:card];
-            
-        }
+        [self updateButton:cardButton forCard:card];
         
         cardButton.enabled = !card.isMatched;
     }
     
-    self.scoreDelta = self.game.score - self.scoreDelta;
+    [self updateStatus];
+    [self updateScoreLabel];
     
-    [self updateStatusLabel:self.currentlyPickedCards withScoreDelta:self.scoreDelta];
-    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
-    
-    if ([self.currentlyPickedCards count] == self.numberOfCardsToMatch) {
-        [self.currentlyPickedCards removeAllObjects];
-    }
-    
-    self.scoreDelta = self.game.score;
+}
+
+
+#pragma mark Update Buttons
+
+// override if you don't want to flip cards
+- (void)updateButton:(UIButton *)cardButton forCard:(Card *)card {
+    [cardButton setTitle:[self titleForCard:card]
+                forState:UIControlStateNormal];
+    [cardButton setBackgroundImage:[self backgroundImageForCard:card]
+                          forState:UIControlStateNormal];
 }
 
 - (NSString *)titleForCard:(Card *)card {
@@ -142,5 +112,112 @@
     return [UIImage imageNamed:card.isChosen ? @"cardfront" : @"cardback"];
 }
 
+
+#pragma mark Update Score
+
+
+- (void)updateScoreLabel {
+    self.scoreLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score: %d", self.game.score]
+                                                                     attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+}
+
+
+#pragma mark Update Status
+
+
+- (void)updateStatus {
+    self.scoreDelta = self.game.score - self.scoreDelta;
+    
+    [self updateStatusWithScoreDelta:self.scoreDelta];
+    
+    if ([self.currentlyPickedCards count] == self.numberOfCardsToMatch) {
+        self.currentlyPickedCards = [[NSMutableArray alloc] initWithObjects:self.currentlyPickedCards[self.numberOfCardsToMatch - 1], nil];
+        Card *card = self.currentlyPickedCards[0];
+        if (card.isMatched) {
+            [self.currentlyPickedCards removeObjectAtIndex:0];
+        }
+    }
+    
+    self.scoreDelta = self.game.score;
+    
+}
+
+// updates status before currentlyPickedCards is emptied
+- (void)updateStatusWithScoreDelta:(NSInteger)scoreDelta {
+    NSMutableAttributedString *status = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    NSAttributedString *newline = [[NSAttributedString alloc] initWithString:@"\n"
+                                                                  attributes:@{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
+    for (Card *card in self.currentlyPickedCards) {
+        [status appendAttributedString:[self forStatusDepictCard:card]];
+    }
+    
+    [status appendAttributedString:newline];
+    [status appendAttributedString:[self matchMessageForScoreDelta:scoreDelta]];
+    
+    [status appendAttributedString:newline];
+    [status appendAttributedString:[self coloredScoreDelta:scoreDelta]];
+    
+    self.StatusTextView.attributedText = status;
+    self.StatusTextView.textAlignment = NSTextAlignmentCenter;
+    
+    if ([self.currentlyPickedCards count] == self.numberOfCardsToMatch) {
+        [self.history addObject:status];
+    }
+    
+}
+
+- (NSAttributedString *)forStatusDepictCard:(Card *)aCard { //abstract method
+    return nil;
+}
+
+- (NSAttributedString *)matchMessageForScoreDelta:(NSInteger)scoreDelta {
+    if ([self.currentlyPickedCards count] == self.numberOfCardsToMatch){
+        return [[NSAttributedString alloc] initWithString:((scoreDelta > 0) ? @"Match!" : @"Mismatch!")
+                                               attributes:@{NSForegroundColorAttributeName: [self colorForScoreDelta:scoreDelta],
+                                                            NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
+    } else {
+        return [[NSAttributedString alloc] initWithString:@""];
+    }
+}
+
+- (NSAttributedString *)coloredScoreDelta:(NSInteger)scoreDelta {
+    
+    return [[NSAttributedString alloc] initWithString:[self pointStringForScoreDelta:scoreDelta]
+                                           attributes:@{NSForegroundColorAttributeName: [self colorForScoreDelta:scoreDelta],
+                                                        NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline]}];
+}
+
+- (NSString *)pointStringForScoreDelta:(NSInteger)scoreDelta {
+    return (scoreDelta > 0) ? [NSString stringWithFormat:@"+%d", scoreDelta] : [NSString stringWithFormat:@"%d", scoreDelta];
+}
+
+- (UIColor *)colorForScoreDelta:(NSInteger)scoreDelta {
+    if (scoreDelta > 0) {
+        return [UIColor blueColor];
+    } else if (scoreDelta < -1) {
+        return [UIColor redColor];
+    } else {
+        return [UIColor blackColor];
+    }
+}
+
+- (NSMutableArray *)currentlyPickedCards {
+    if (!_currentlyPickedCards) {
+        _currentlyPickedCards = [[NSMutableArray alloc] init];
+    }
+    return _currentlyPickedCards;
+}
+
+
+#pragma mark MVC lifecycle and Navigation
+
+- (void)viewDidLoad {
+    // see if I can edit this on storyboard
+    self.StatusTextView.editable = NO;
+    self.StatusTextView.backgroundColor = [UIColor whiteColor];
+    
+    [self updateUI];
+}
 
 @end

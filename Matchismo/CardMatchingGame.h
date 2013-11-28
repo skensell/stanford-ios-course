@@ -11,7 +11,6 @@
 
 @interface CardMatchingGame : NSObject
 
-
 - (instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck;
 // designated initializer
 - (instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck withNumberOfCardsToMatch:(NSUInteger)numberToMatch;
@@ -19,8 +18,9 @@
 - (void)chooseCardAtIndex:(NSUInteger)index;
 - (Card *)cardAtIndex:(NSUInteger)index;
 
-@property (nonatomic, readonly) NSInteger score; // don't want there to be any public setter, but privately this will be read-write
+// to be overridden by subclasses
+- (int)calculateMatchScoreForCards:(NSArray *)cards;
 
-//@property (nonatomic, strong) NSMutableArray *lastMatchedCards; // empty if no match
+@property (nonatomic, readonly) NSInteger score; // don't want there to be any public setter, but privately this will be read-write
 
 @end
