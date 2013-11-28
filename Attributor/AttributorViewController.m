@@ -18,7 +18,9 @@
 
 @implementation AttributorViewController
 
+// gives the next MVC the textToAnalyze
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NSLog(@"preparing for segue with id: %@", segue.identifier);
     if ([segue.identifier isEqualToString:@"Analyze Text"]){
         if ([segue.destinationViewController isKindOfClass:[TextStatsViewController class]]) {
             TextStatsViewController *tsvc = (TextStatsViewController *)segue.destinationViewController;
@@ -27,6 +29,7 @@
     }
 }
 
+// draws an outline around the outline button's title
 - (void)viewDidLoad
 {
     [super viewDidLoad];
