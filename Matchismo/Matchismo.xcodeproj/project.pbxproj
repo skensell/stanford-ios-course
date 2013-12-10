@@ -32,6 +32,7 @@
 		765A44521844F22A005CBC14 /* UIColor+FromHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 765A44511844F22A005CBC14 /* UIColor+FromHex.m */; };
 		765A44551847330A005CBC14 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765A44541847330A005CBC14 /* HistoryViewController.m */; };
 		765A44571847750E005CBC14 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 765A44561847750E005CBC14 /* Images.xcassets */; };
+		767D26CC1857995000A99CC1 /* PlayingCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 767D26CB1857995000A99CC1 /* PlayingCardView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,8 @@
 		765A44531847330A005CBC14 /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
 		765A44541847330A005CBC14 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
 		765A44561847750E005CBC14 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		767D26CA1857995000A99CC1 /* PlayingCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardView.h; sourceTree = "<group>"; };
+		767D26CB1857995000A99CC1 /* PlayingCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +154,8 @@
 				76273A7D183C9D4A00E693DE /* PlayingCardGameViewController.h */,
 				765A44531847330A005CBC14 /* HistoryViewController.h */,
 				765A44541847330A005CBC14 /* HistoryViewController.m */,
+				767D26CA1857995000A99CC1 /* PlayingCardView.h */,
+				767D26CB1857995000A99CC1 /* PlayingCardView.m */,
 				76273A7E183C9D4A00E693DE /* PlayingCardGameViewController.m */,
 				76273A83183F6F0C00E693DE /* SetCardGameViewController.h */,
 				76273A84183F6F0C00E693DE /* SetCardGameViewController.m */,
@@ -317,6 +322,7 @@
 				760196851834EB9500FD66F0 /* CardGameViewController.m in Sources */,
 				76273A8B183F6FDE00E693DE /* SetCard.m in Sources */,
 				7601967B1834EB9500FD66F0 /* main.m in Sources */,
+				767D26CC1857995000A99CC1 /* PlayingCardView.m in Sources */,
 				76273A88183F6FB700E693DE /* SetCardDeck.m in Sources */,
 				765A44551847330A005CBC14 /* HistoryViewController.m in Sources */,
 				760196A91837CAF500FD66F0 /* PlayingCard.m in Sources */,

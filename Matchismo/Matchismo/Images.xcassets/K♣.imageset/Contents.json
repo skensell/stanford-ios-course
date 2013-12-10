@@ -3,11 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "ace_of_spades.png"
+      "filename" : "K♣.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "K♣-1.png"
     }
   ],
   "info" : {
