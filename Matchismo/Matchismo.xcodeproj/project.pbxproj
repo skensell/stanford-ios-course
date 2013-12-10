@@ -147,11 +147,11 @@
 			children = (
 				760196801834EB9500FD66F0 /* Main.storyboard */,
 				760196831834EB9500FD66F0 /* CardGameViewController.h */,
+				760196841834EB9500FD66F0 /* CardGameViewController.m */,
 				76273A7D183C9D4A00E693DE /* PlayingCardGameViewController.h */,
 				765A44531847330A005CBC14 /* HistoryViewController.h */,
 				765A44541847330A005CBC14 /* HistoryViewController.m */,
 				76273A7E183C9D4A00E693DE /* PlayingCardGameViewController.m */,
-				760196841834EB9500FD66F0 /* CardGameViewController.m */,
 				76273A83183F6F0C00E693DE /* SetCardGameViewController.h */,
 				76273A84183F6F0C00E693DE /* SetCardGameViewController.m */,
 				760196A618350AAA00FD66F0 /* Model */,
