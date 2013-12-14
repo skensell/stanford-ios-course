@@ -7,23 +7,20 @@
 //
 
 #import "Card.h"
+#import "SetCardAttributes.h"
 
 @interface SetCard : Card
 
-@property (nonatomic, strong) NSString *shape;
-@property (nonatomic, strong) NSNumber *number;
-@property (nonatomic, strong) NSNumber *shading; // alpha
-@property (nonatomic, strong) NSString *color;
+@property (nonatomic) set_shape_t shape;
+@property (nonatomic) set_shading_t shading;
+@property (nonatomic) set_number_t number;
+@property (nonatomic) set_color_t color;
 
-- (instancetype)initWithShape:(NSString *)shape
-                   withNumber:(NSNumber *)number
-                  withShading:(NSNumber *)shading
-                    withColor:(NSString *)color;
+- (instancetype)initWithShape:(set_shape_t)shape
+                   withNumber:(set_number_t)number
+                  withShading:(set_shading_t)shading
+                    withColor:(set_color_t)color;
 
-+ (NSArray *)validShapes;
-+ (NSArray *)validNumbers;
-+ (NSArray *)validShadings;
-+ (NSArray *)validColors;
 + (NSArray *)validAttributes;
 
 @end

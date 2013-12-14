@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7654968F18597AE900D7A950 /* SetCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7654968E18597AE900D7A950 /* SetCardView.m */; };
 		767D26C41857953000A99CC1 /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = 767D26B91857953000A99CC1 /* Card.m */; };
 		767D26C51857953000A99CC1 /* Deck.m in Sources */ = {isa = PBXBuildFile; fileRef = 767D26BB1857953000A99CC1 /* Deck.m */; };
 		767D26C61857953000A99CC1 /* PlayingCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 767D26BD1857953000A99CC1 /* PlayingCard.m */; };
@@ -41,6 +42,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7654968D18597AE800D7A950 /* SetCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetCardView.h; path = SuperCard/SetCardView.h; sourceTree = SOURCE_ROOT; };
+		7654968E18597AE900D7A950 /* SetCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetCardView.m; sourceTree = "<group>"; };
+		765496901859FD6B00D7A950 /* SetCardAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetCardAttributes.h; sourceTree = "<group>"; };
 		767D26B81857953000A99CC1 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
 		767D26B91857953000A99CC1 /* Card.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Card.m; sourceTree = "<group>"; };
 		767D26BA1857953000A99CC1 /* Deck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deck.h; sourceTree = "<group>"; };
@@ -155,9 +159,12 @@
 				ECC246C0180F60380052DF36 /* Main.storyboard */,
 				ECC246E3180F60D70052DF36 /* PlayingCardView.h */,
 				ECC246E4180F60D70052DF36 /* PlayingCardView.m */,
+				765496901859FD6B00D7A950 /* SetCardAttributes.h */,
+				7654968D18597AE800D7A950 /* SetCardView.h */,
+				7654968E18597AE900D7A950 /* SetCardView.m */,
+				ECC246C4180F60380052DF36 /* ViewController.m */,
 				ECC246C3180F60380052DF36 /* ViewController.h */,
 				767D26B71857953000A99CC1 /* Model */,
-				ECC246C4180F60380052DF36 /* ViewController.m */,
 				ECC246C6180F60380052DF36 /* Images.xcassets */,
 				ECC246B5180F60380052DF36 /* Supporting Files */,
 			);
@@ -292,6 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7654968F18597AE900D7A950 /* SetCardView.m in Sources */,
 				767D26C41857953000A99CC1 /* Card.m in Sources */,
 				767D26C71857953000A99CC1 /* PlayingCardDeck.m in Sources */,
 				ECC246C5180F60380052DF36 /* ViewController.m in Sources */,

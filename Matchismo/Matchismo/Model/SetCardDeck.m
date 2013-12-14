@@ -14,19 +14,16 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-      
-        for (NSString *shape in [SetCard validShapes]){
-            for (NSNumber *number in [SetCard validNumbers]) {
-                for (NSNumber *shading in [SetCard validShadings]) {
-                    for (NSString *colorString in [SetCard validColors]){
-                       
-                        SetCard *card = [[SetCard alloc] initWithShape:shape
-                                                            withNumber:number
-                                                           withShading:shading
-                                                             withColor:colorString];
+        for (int i = 1; i <=3; i++){
+            for (int j = 1; j <=3; j++){
+                for (int k = 1; k <=3; k++){
+                    for (int l = 1; l <=3; l++){
+                        SetCard *card = [[SetCard alloc] initWithShape:i
+                                                            withNumber:j
+                                                           withShading:k
+                                                             withColor:l];
                         
                         [self addCard:card];
-                        
                     }
                 }
             }

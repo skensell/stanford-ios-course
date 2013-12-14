@@ -171,6 +171,7 @@
                             verticalOffset:PIP_VOFFSET3_PERCENTAGE
                         mirroredVertically:YES];
     }
+    // draws 4 pips in middle
     if ((self.rank == 9) || (self.rank == 10)) {
         [self drawPipsWithHorizontalOffset:PIP_HOFFSET_PERCENTAGE
                             verticalOffset:PIP_VOFFSET1_PERCENTAGE

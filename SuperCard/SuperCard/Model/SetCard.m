@@ -10,10 +10,10 @@
 
 @implementation SetCard
 
-- (instancetype)initWithShape:(NSString *)shape
-                   withNumber:(NSNumber *)number
-                  withShading:(NSNumber *)shading
-                    withColor:(NSString *)color {
+- (instancetype)initWithShape:(set_shape_t)shape
+                   withNumber:(set_number_t)number
+                  withShading:(set_shading_t)shading
+                    withColor:(set_color_t)color {
     
     self = [super init];
     if (self) {
@@ -56,7 +56,7 @@
 
 
 + (int)allSameOrDifferentCards:(NSArray *)cards
-                 withRespectToAttribute:(NSString *)attribute {
+        withRespectToAttribute:(NSString *)attribute {
     int goodMatch = 0;
     
     if ([cards count] != 3 || ![[SetCard validAttributes] containsObject:attribute]) {
@@ -68,7 +68,7 @@
     for (SetCard *card in cards){
         SEL property = NSSelectorFromString(attribute);
         if ([card respondsToSelector:property]){
-            [attributeSet addObject:[card performSelector:property]];
+            [attributeSet addObject:[NSNumber numberWithInt:(NSUInteger)[card performSelector:property]]];
         }
     }
     
@@ -87,23 +87,23 @@
 
 
 
-
-
-+ (NSArray *)validShapes {
-    return @[@"●", @"▲", @"■"];
-}
-
-+ (NSArray *)validNumbers {
-    return @[@1, @2, @3];
-}
-
-+ (NSArray *)validShadings {
-    return @[@0.0, @0.35, @1.0];
-}
-
-+ (NSArray *)validColors {
-    return @[@"green", @"red", @"purple"];
-}
+//
+////
+////+ (NSArray *)validShapes {
+////    return @[@"●", @"▲", @"■"];
+////}
+////
+////+ (NSArray *)validNumbers {
+////    return @[@1, @2, @3];
+////}
+////
+////+ (NSArray *)validShadings {
+////    return @[@0.0, @0.35, @1.0];
+////}
+////
+////+ (NSArray *)validColors {
+////    return @[@"green", @"red", @"purple"];
+//}
 
 + (NSArray *)validAttributes {
     return @[@"shape", @"number", @"shading", @"color"];
