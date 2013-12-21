@@ -8,32 +8,52 @@
 
 #import "CardGameViewController.h"
 #import "CardMatchingGame.h"
-#import "HistoryViewController.h"
+#import "CardView.h"
+#import "Grid.h"
 
 @interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
+@property (nonatomic, strong) Deck *deck;
 
+@property (strong, nonatomic) IBOutlet UIView *playingArea;
 @property (strong, nonatomic) NSMutableArray *cardViews;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-@property (nonatomic) NSUInteger flipCount;
 @end
 
 @implementation CardGameViewController
 
 
-#pragma mark Lazy instantiation
+#pragma mark - Lazy instantiation
 
 
 - (CardMatchingGame *)game {
-    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:[self.cardViews count]
-                                                          usingDeck:[self createDeck]
-                                           withNumberOfCardsToMatch:self.numberOfCardsToMatch];
+    if (!_game)  {
+        _game = [[CardMatchingGame alloc] initWithCardCount:[self.deck numberOfCards]
+                                                  usingDeck:self.deck
+                                   withNumberOfCardsToMatch:self.numberOfCardsToMatch];
+    }
     return _game;
 }
 
-- (Deck *)createDeck // abstract method
-{
-    return nil;
+- (Deck *)deck {
+    if (!_deck){
+        _deck = [self createDeck];
+    }
+    return _deck;
+}
+
+
+
+- (NSMutableArray *)cardViews {
+    if (!_cardViews) {
+        _cardViews = [[NSMutableArray alloc] init];
+        for (UIView *subView in self.view.subviews) {
+            if ([subView isKindOfClass:[CardView class]]) {
+                [_cardViews addObject:subView];
+            }
+        }
+    }
+    return _cardViews;
 }
 
 static const NSUInteger defaultNumberOfCardsToMatch = 2;
@@ -44,25 +64,56 @@ static const NSUInteger defaultNumberOfCardsToMatch = 2;
 }
 
 
-#pragma mark Game Actions
+#pragma mark - Game Actions
 
 - (IBAction)touchCardView:(UIView *)sender {
+    // touchCard animation (disable things while happening)
+    
     NSUInteger cardIndex = [self.cardViews indexOfObject:sender];
     
     [self.game chooseCardAtIndex:cardIndex];
     
-    self.flipCount++;
     [self updateUI];
 }
 
 - (IBAction)touchRedealButton:(UIButton *)sender {
-    [self restart];
+    [self deal];
 }
 
-- (void)restart {
-    self.flipCount = 0;
+- (void)deal{
     self.game = nil;
+    self.deck = nil;
+    // init the deck
+    // draw X cards from it and init their views
+    // place the views on the board (animated)
+    
+    Grid *grid = [self initializeGrid];
+    if (!grid) return;
+    
+    for (int i=0; i < grid.rowCount; i++) {
+        for (int j=0; j < grid.columnCount; j++) {
+            Card *card = [self.deck drawRandomCard];
+        }
+    }
+    
+    Card *card = [self.deck drawRandomCard];
+    
+    
     [self updateUI];
+}
+
+
+- (Grid *)initializeGrid {
+    Grid *grid = [[Grid alloc] init];
+    grid.cellAspectRatio = [self cardAspectRatio];
+    grid.size = self.playingArea.bounds.size;
+    grid.minimumNumberOfCells = 12;
+    
+    if (!grid.inputsAreValid) {
+        NSLog(@"Invalid inputs for grid");
+        return nil;
+    }
+    return grid;
 }
 
 
@@ -70,17 +121,46 @@ static const NSUInteger defaultNumberOfCardsToMatch = 2;
 
 
 - (void)updateUI {
-    
-    for (UIView *cardView in self.cardViews) {
+    for (CardView *cardView in self.cardViews) {
         NSUInteger cardIndex = [self.cardViews indexOfObject:cardView];
         Card *card = [self.game cardAtIndex:cardIndex];
         
-        // update UI for cardView.
-        // If matched, remove it, redeal.
+        if (card.isMatched) {
+            cardView.matched = YES;
+        } else if (card.isChosen) {
+            cardView.chosen = YES; // animated by subclass
+        } else {
+            cardView.chosen = NO; // animated by subclass
+        }
     }
+    
+//    [self removeMatchedCards];
+//    self.cardViews = nil;
+//    [self dealMoreCards];
 
     [self updateScoreLabel];
     
+}
+
+#pragma mark - Protected
+
+- (Deck *)createDeck // abstract method
+{
+    return nil;
+}
+
+- (CGFloat)cardAspectRatio {
+    // protected for subclasses
+    return 0;
+}
+
+- (void)removeMatchedCards {
+    // remove from the screen and from superview
+}
+
+
+- (void)dealMoreCards {
+    // replace the ones removed
 }
 
 

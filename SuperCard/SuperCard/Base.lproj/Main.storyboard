@@ -26,7 +26,7 @@
                                 </connections>
                             </view>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4d8-b0-GcY" customClass="SetCardView">
-                                <rect key="frame" x="80" y="282" width="184" height="126"/>
+                                <rect key="frame" x="80" y="286" width="195" height="122"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
