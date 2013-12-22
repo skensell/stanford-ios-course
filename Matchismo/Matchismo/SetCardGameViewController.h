@@ -10,6 +10,4 @@
 
 @interface SetCardGameViewController : CardGameViewController
 
-@property (weak, nonatomic) IBOutlet UITextView *status;
-
 @end

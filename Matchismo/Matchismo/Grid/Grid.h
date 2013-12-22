@@ -31,6 +31,7 @@
 @property (nonatomic) CGSize size;                      // overall available space to put grid into
 @property (nonatomic) CGFloat cellAspectRatio;          // width divided by height (of each cell)
 @property (nonatomic) NSUInteger minimumNumberOfCells;
+@property (nonatomic) BOOL prefersWideCards;
 
 // optional inputs (non-positive values are ignored)
 

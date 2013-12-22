@@ -68,7 +68,7 @@
     for (SetCard *card in cards){
         SEL property = NSSelectorFromString(attribute);
         if ([card respondsToSelector:property]){
-            [attributeSet addObject:[NSNumber numberWithInt:[card performSelector:property]]];
+            [attributeSet addObject:[NSNumber numberWithInt:(int)[card performSelector:property]]];
         }
     }
     

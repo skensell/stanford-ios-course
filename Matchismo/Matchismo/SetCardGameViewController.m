@@ -9,7 +9,7 @@
 #import "SetCardGameViewController.h"
 #import "SetCardDeck.h"
 #import "SetCard.h"
-#import "UIColor+FromHex.h"
+#import "SetCardView.h"
 
 @interface SetCardGameViewController ()
 
@@ -21,11 +21,30 @@
     return [[SetCardDeck alloc] init];
 }
 
+- (CardView *)createCardViewInFrame:(CGRect)frame fromCard:(Card *)card {
+    SetCard *setCard = (SetCard *)card;
+    SetCardView *setCardView = [[SetCardView alloc] initWithFrame:frame];
+    setCardView.shape = setCard.shape;
+    setCardView.shading = setCard.shading;
+    setCardView.number = setCard.number;
+    setCardView.color = setCard.color;
+    return setCardView;
+}
+
+- (void)removeMatchedCards {
+    // remove from the screen and from superview
+}
+
+
 
 #pragma mark MVC lifecycle
 
 - (void)viewDidLoad {
     self.numberOfCardsToMatch = 3;
+    self.cardAspectRatio = 7.0/5.0;
+    self.prefersWideCards = YES;
+    self.minimumNumberOfCardsOnBoard = 12;
+    self.maximumNumberOfCardsOnBoard = 12;
     [super viewDidLoad];
 }
 

@@ -38,7 +38,8 @@
     double maxCellHeight = self.maxCellHeight;
     
     BOOL flipped = NO;
-    if (aspectRatio > 1) {
+    if ((aspectRatio > 1 && !self.prefersWideCards) ||
+        (aspectRatio < 1 && self.prefersWideCards)) {
         flipped = YES;
         overallHeight = ABS(self.size.width);
         overallWidth = ABS(self.size.height);
@@ -133,6 +134,11 @@
 {
     if (ABS(cellAspectRatio) != ABS(_cellAspectRatio)) self.resolved = NO;
     _cellAspectRatio = cellAspectRatio;
+}
+
+- (void)setPrefersWideCards:(BOOL)prefersWideCards {
+    if (prefersWideCards != _prefersWideCards) self.resolved = NO;
+    _prefersWideCards = prefersWideCards;
 }
 
 - (void)setMinCellHeight:(CGFloat)minCellHeight
