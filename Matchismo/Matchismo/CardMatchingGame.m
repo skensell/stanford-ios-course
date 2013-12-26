@@ -10,18 +10,14 @@
 
 @interface CardMatchingGame()
 @property (nonatomic, readwrite) NSInteger score; //readwrite is typically only used to make a readonly property readwrite
-@property (nonatomic, strong) NSMutableArray *cards; // of Card
+@property (nonatomic, strong) NSMutableArray *cards; // of Card, cards in play
+@property (nonatomic, strong) Deck *deck; // cards to draw from
 @property (nonatomic) NSUInteger numberOfCardsToMatch;
 @end
 
 @implementation CardMatchingGame
 
-- (NSMutableArray *)cards {
-    if (!_cards) {
-        _cards = [[NSMutableArray alloc] init];
-    }
-    return _cards;
-}
+#pragma mark - Initialization
 
 - (instancetype)initWithCardCount:(NSUInteger)count
                         usingDeck:(Deck *)deck
@@ -36,11 +32,11 @@
     self = [super init];
     
     if (self) {
-        
+        self.deck = deck;
         self.numberOfCardsToMatch = numberToMatch;
         
         for (int i = 0; i < count; i++) {
-            Card *card = [deck drawRandomCard];
+            Card *card = [self.deck drawRandomCard];
             if (card) {
                 [self.cards addObject:card];
             } else {
@@ -53,6 +49,20 @@
     
     return self;
     
+}
+
+- (instancetype)init
+{
+    return nil;
+}
+
+#pragma mark - Properties
+
+- (NSMutableArray *)cards {
+    if (!_cards) {
+        _cards = [[NSMutableArray alloc] init];
+    }
+    return _cards;
 }
 
 @synthesize numberOfCardsToMatch = _numberOfCardsToMatch;
@@ -72,6 +82,7 @@
     return _numberOfCardsToMatch;
 }
 
+#pragma mark - Gameplay
 
 static const int MISMATCH_PENALTY = 2;
 static const int MATCH_BONUS = 4;
@@ -140,14 +151,27 @@ static const int COST_TO_CHOOSE = 1;
     return score;
 }
 
+- (void)dealMoreCards:(NSUInteger)numberOfCards {
+    // do not replace matched cards
+    Card *card;
+    while (numberOfCards-- && (card = [self.deck drawRandomCard])) {
+        [self.cards addObject:card];
+    }
+}
+
+- (NSUInteger)numberOfCardsInPlay {
+    NSUInteger n = 0;
+    for (Card *card in self.cards) {
+        if (!card.isMatched) n++;
+    }
+    return n;
+}
+
+
 - (Card *)cardAtIndex:(NSUInteger)index {
     return (index < [self.cards count]) ? self.cards[index] : nil;
 }
 
-- (instancetype)init
-{
-    return nil;
-}
 
 
 @end

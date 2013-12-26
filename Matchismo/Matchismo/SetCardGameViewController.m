@@ -41,10 +41,15 @@
 
 - (void)viewDidLoad {
     self.numberOfCardsToMatch = 3;
+    
+//    [self.playingArea createGridWithCardAspectRatio:7.0/5.0
+//                                   prefersWideCards:YES
+//                        minimumNumberOfCardsOnBoard:12
+//                        maximumNumberOfCardsOnBoard:18];
     self.cardAspectRatio = 7.0/5.0;
     self.prefersWideCards = YES;
     self.minimumNumberOfCardsOnBoard = 12;
-    self.maximumNumberOfCardsOnBoard = 12;
+    self.maximumNumberOfCardsOnBoard = 18;
     [super viewDidLoad];
 }
 

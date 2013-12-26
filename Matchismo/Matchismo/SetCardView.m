@@ -10,8 +10,6 @@
 
 @implementation SetCardView
 
-// TODO: add property setters
-
 - (void)setShape:(set_shape_t)shape {
     _shape = shape;
     [self setNeedsDisplay];
@@ -50,7 +48,7 @@
     
     [roundedRect addClip];
     
-    [[UIColor whiteColor] setFill];
+    [[self cardBackgroundColor] setFill];
     UIRectFill(self.bounds);
     
     [[UIColor blackColor] setStroke];
@@ -310,6 +308,13 @@
             break;
     }
 }
+
+- (UIColor *)cardBackgroundColor {
+    return (self.isChosen)? [UIColor yellowColor] : [UIColor whiteColor];
+}
+
+#pragma mark - Animations
+
 
 #pragma mark - View lifecycle
 

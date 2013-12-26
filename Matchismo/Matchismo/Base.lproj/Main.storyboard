@@ -33,7 +33,7 @@
                                     <action selector="touchRedealButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="JjO-Qy-YAj"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4aO-Ai-jSL">
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4aO-Ai-jSL" customClass="PlayingAreaView">
                                 <rect key="frame" x="20" y="20" width="280" height="443"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -69,16 +69,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Score: 0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qw7-J0-r4N">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qw7-J0-r4N">
                                 <rect key="frame" x="20" y="478" width="103" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="D4o-Xx-1UZ"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Po8-EA-16h">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Po8-EA-16h">
                                 <rect key="frame" x="212" y="471" width="88" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="88" id="ZLq-cr-W4Z"/>
+                                </constraints>
                                 <state key="normal" title="Redeal" backgroundImage="cardfront">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -86,7 +92,7 @@
                                     <action selector="touchRedealButton:" destination="Aen-tU-KGD" eventType="touchUpInside" id="cDW-th-vlV"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KHw-Qh-sw2">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KHw-Qh-sw2" customClass="PlayingAreaView">
                                 <rect key="frame" x="20" y="20" width="280" height="443"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -94,8 +100,20 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.25098040700000002" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="KHw-Qh-sw2" firstAttribute="top" secondItem="cUl-Zs-neI" secondAttribute="top" constant="20" symbolic="YES" id="1Hf-kN-ijy"/>
+                            <constraint firstItem="KHw-Qh-sw2" firstAttribute="leading" secondItem="cUl-Zs-neI" secondAttribute="leading" constant="20" symbolic="YES" id="2L4-7S-8Vv"/>
+                            <constraint firstAttribute="trailing" secondItem="KHw-Qh-sw2" secondAttribute="trailing" constant="20" symbolic="YES" id="69G-p3-cbv"/>
+                            <constraint firstItem="KHw-Qh-sw2" firstAttribute="leading" secondItem="qw7-J0-r4N" secondAttribute="leading" id="855-p1-F0e"/>
+                            <constraint firstItem="qw7-J0-r4N" firstAttribute="bottom" secondItem="Po8-EA-16h" secondAttribute="bottom" id="MVn-Bj-LS0"/>
+                            <constraint firstItem="Po8-EA-16h" firstAttribute="top" secondItem="KHw-Qh-sw2" secondAttribute="bottom" constant="8" symbolic="YES" id="jDa-1J-uO9"/>
+                            <constraint firstAttribute="bottom" secondItem="qw7-J0-r4N" secondAttribute="bottom" constant="20" symbolic="YES" id="rN6-JK-tou"/>
+                            <constraint firstItem="KHw-Qh-sw2" firstAttribute="trailing" secondItem="Po8-EA-16h" secondAttribute="trailing" id="rWl-bi-7jK"/>
+                            <constraint firstItem="Po8-EA-16h" firstAttribute="leading" secondItem="qw7-J0-r4N" secondAttribute="trailing" constant="89" id="rpL-zv-5w9"/>
+                            <constraint firstItem="qw7-J0-r4N" firstAttribute="top" secondItem="KHw-Qh-sw2" secondAttribute="bottom" constant="15" id="yAM-88-Y3f"/>
+                        </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" image="set-icon" id="LXf-9M-1wL"/>
+                    <tabBarItem key="tabBarItem" title="Set" image="set-icon" id="LXf-9M-1wL"/>
                     <navigationItem key="navigationItem" title="Set" id="ncI-cx-dM1">
                         <barButtonItem key="rightBarButtonItem" title="History" id="evO-EL-bmy">
                             <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>

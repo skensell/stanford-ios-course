@@ -20,14 +20,31 @@
     return self;
 }
 
+- (void)setMatched:(BOOL)matched {
+    _matched = matched;
+    if (matched) {
+        for (UIGestureRecognizer *gr in self.gestureRecognizers) {
+            [self removeGestureRecognizer:gr];
+        }
+        
+        [UIView animateWithDuration:3.0 delay:0 options:0 animations:^{
+            self.transform = CGAffineTransformMakeTranslation(500, 0);
+        } completion:^(BOOL finished) {
+            [self removeFromSuperview];
+        }];
+    }
+}
+
 - (void)setChosen:(BOOL)chosen {
-    if (self.isChosen != chosen) {
+    if (_chosen != chosen) {
         if (chosen) {
             [self animateChoose];
         } else {
             [self animateUnchoose];
         }
     }
+    _chosen = chosen;
+    [self setNeedsDisplay];
 }
 
 - (void)animateChoose {

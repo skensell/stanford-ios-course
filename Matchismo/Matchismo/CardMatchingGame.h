@@ -17,6 +17,9 @@
 
 - (void)chooseCardAtIndex:(NSUInteger)index;
 - (Card *)cardAtIndex:(NSUInteger)index;
+- (void)dealMoreCards:(NSUInteger)numberOfCards;
+- (NSUInteger)numberOfCardsInPlay;
+
 
 // to be overridden by subclasses
 - (int)calculateMatchScoreForCards:(NSArray *)cards;
