@@ -49,7 +49,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="playingArea" destination="4aO-Ai-jSL" id="76z-Rl-of3"/>
+                        <outlet property="playingArea" destination="4aO-Ai-jSL" id="3ic-Mq-1Ha"/>
                         <outlet property="scoreLabel" destination="TOq-Hq-oha" id="9xy-Uh-9UT"/>
                     </connections>
                 </viewController>
@@ -120,7 +120,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="playingArea" destination="KHw-Qh-sw2" id="2JC-cZ-ACu"/>
+                        <outlet property="playingArea" destination="KHw-Qh-sw2" id="e7C-my-GSg"/>
                         <outlet property="scoreLabel" destination="qw7-J0-r4N" id="aWA-Oq-zzb"/>
                     </connections>
                 </viewController>

@@ -9,37 +9,44 @@
 #import "CardGameViewController.h"
 #import "CardMatchingGame.h"
 #import "CardView.h"
+#import "PlayingAreaView.h"
 
 @interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
-@property (nonatomic) NSUInteger indexOfNextCard;
 
-@property (nonatomic, strong) Grid *grid;
-@property (strong, nonatomic) IBOutlet UIView *playingArea;
+// game logic - default is 2
+@property (nonatomic) NSUInteger numberOfCardsToMatch;
+
+// layout of card views
+@property (nonatomic) CGFloat cardAspectRatio;
+@property (nonatomic) BOOL prefersWideCards;
+@property (nonatomic) NSUInteger minimumNumberOfCardsOnBoard;
+@property (nonatomic) NSUInteger maximumNumberOfCardsOnBoard;
+
+// playing area could have an animation delegate which handles all of its animations
+// this would ensure that no two animations run at the same time
+// playingarea could also handle the allocation of cardViews,
+// but that would complicate some code here I think
+@property (strong, nonatomic) IBOutlet PlayingAreaView *playingArea;
+
 
 // index of view in cardViews corresponds to index in game.cards
-// index may  NOT correspond to visual place on screen
+// index does NOT correspond to visual place on screen
+// Note: to get current card views I could iterate over the subviews of playingArea
 @property (strong, nonatomic) NSMutableArray *cardViews;
-// to get current card views I can iterate over the subviews of playingArea
-
 
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-
-// I will have a matchedBehavior which removes matched cards
-// I will have an init cardView point off screen where I init new cards in a frame of right aspect ratio.
-
 @end
 
 @implementation CardGameViewController
 
 
-#pragma mark - Lazy instantiation
-
+#pragma mark - Properties and setup
 
 - (CardMatchingGame *)game {
     if (!_game)  {
         // initing the game draws every card of the deck so it will be nil
-        _game = [[CardMatchingGame alloc] initWithCardCount:[self minimumNumberOfCardsOnBoard]
+        _game = [[CardMatchingGame alloc] initWithCardCount:self.minimumNumberOfCardsOnBoard
                                                   usingDeck:[self createDeck]
                                    withNumberOfCardsToMatch:self.numberOfCardsToMatch];
     }
@@ -54,6 +61,19 @@
     return _cardViews;
 }
 
+- (void)setupGameWithNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
+                          CardAspectRatio:(CGFloat)aspectRatio
+                         prefersWideCards:(BOOL)prefersWideCards
+              minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
+              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard {
+
+    _numberOfCardsToMatch = numberOfCardsToMatch;
+    _cardAspectRatio = aspectRatio;
+    _prefersWideCards = prefersWideCards;
+    _minimumNumberOfCardsOnBoard = minimumNumberOfCardsOnBoard;
+    _maximumNumberOfCardsOnBoard = maximumNumberOfCardsOnBoard;
+
+}
 
 #pragma mark - Game Actions
 
@@ -89,78 +109,17 @@
     NSArray *cardsJustDealt = [cardsInPlay subarrayWithRange:NSMakeRange([cardsInPlay count] - numberOfCards - 1, numberOfCards)];
     NSArray *cardViews = [self makeCardViewsFromCards:cardsJustDealt];
     
-    [self animateCardViewsIntoEmptySpaces:cardViews];
+    [self.playingArea animateCardViewsIntoEmptySpaces:cardViews];
 
 }
 
-#pragma mark - Grid
-
-- (NSArray *)indicesOfEmptySpacesInGrid {
-    // returns @[@[@1,@2],@[@3,@6]] if those are open spaces in grid
-    
-    NSMutableArray *indices = [[NSMutableArray alloc] init];
-
-    for (int i=0; i < self.grid.rowCount; i++) {
-        for (int j=0; j < self.grid.columnCount; j++) {
-
-            UIView *hitView = [self.playingArea hitTest:[self.grid centerOfCellAtRow:i inColumn:j] withEvent:nil];
-            if (hitView == self.playingArea) {
-                // hit an empty space
-                [indices addObject:@[@(i),@(j)]];
-            }
-            
-        }
-    }
-    
-    return indices;
-}
-
-- (Grid *)grid {
-    if (!_grid){
-        _grid = [[Grid alloc] init];
-        _grid.size = self.playingArea.bounds.size;
-        _grid.cellAspectRatio = self.cardAspectRatio;
-        _grid.minimumNumberOfCells = self.minimumNumberOfCardsOnBoard;
-        _grid.prefersWideCards = self.prefersWideCards;
-        
-        if (!_grid.inputsAreValid) {
-            NSLog(@"Invalid inputs for grid");
-            NSLog(@"aspect ratio: %f",self.cardAspectRatio);
-            NSLog(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
-            
-            return nil;
-        }
-    }
-    return _grid;
-}
-
-- (CGRect)cardSpawnFrame {
-    // just to the top left off the screen
-    CGFloat x = self.view.bounds.origin.x - self.grid.cellSize.width - 100;
-    CGFloat y = self.view.bounds.origin.y - self.grid.cellSize.height - 100;
-    CGFloat w = self.grid.cellSize.width;
-    CGFloat h = self.grid.cellSize.height;
-    return [self slightlyInsideFrame:CGRectMake(x, y, w, h) fraction:0.95];
-}
-
-- (CGRect)slightlyInsideFrame:(CGRect)frame fraction:(CGFloat)fraction {
-    // scales height and width by percent and moves origin appropriateley
-    if (!fraction) fraction = 0.95;
-    CGFloat h = frame.size.height * fraction;
-    CGFloat w = frame.size.width * fraction;
-    CGPoint origin = CGPointMake(frame.origin.x + (1 - fraction) * frame.size.width / 2,
-                                 frame.origin.y + (1 - fraction) * frame.size.height / 2);
-    
-    return CGRectMake(origin.x, origin.y, w, h);
-}
-
-#pragma mark - Update UI and animations
+#pragma mark - Update UI
 
 - (void)updateUI {
     if ([self noCardsDealtYet]) {
         NSArray *cardsInPlay = [self getCardsInPlayFromGame];
         NSArray *cardViews = [self makeCardViewsFromCards:cardsInPlay];
-        [self animateCardViewsIntoEmptySpaces:cardViews];
+        [self.playingArea animateCardViewsIntoEmptySpaces:cardViews];
 
         [self updateScoreLabel];
         return;
@@ -168,7 +127,7 @@
     
     BOOL needToDealMoreCards = NO;
     for (CardView *cardView in self.cardViews) {
-        if ([cardView superview] != self.playingArea) continue; // matched views are removed from superview but not cardViews
+        if ([cardView superview] != self.playingArea) continue; // matched views are removed from superview but not from self.cardViews
         
         NSUInteger cardIndex = [self.cardViews indexOfObject:cardView];
         Card *card = [self.game cardAtIndex:cardIndex];
@@ -185,8 +144,6 @@
     
     if (needToDealMoreCards) {
         // I need to deal more cards only after the matched animations finished.
-        // I can create a PlayingAreaView which serves as a layer between the CardGameViewController
-        // and the cardViews.  Here I can handle some animations much better.
         [self dealMoreCardsIntoPlay:[self numberOfCardsToMatch]];
     }
 //    [self removeMatchedCards]; in its completion block I should call deal
@@ -194,31 +151,6 @@
     [self updateScoreLabel];
 }
 
-- (void)animateCardViewsIntoEmptySpaces:cardViews {
-    NSArray *indicesOfEmptySpacesInGrid = [self indicesOfEmptySpacesInGrid];
-    
-    if ([indicesOfEmptySpacesInGrid count] < [cardViews count]) {
-        NSLog(@"ERROR: More cards to place on grid than empty spaces.");
-        return;
-    }
-    
-    int idx=0;
-    for (CardView *cardView in cardViews) {
-        int i = [indicesOfEmptySpacesInGrid[idx][0] intValue];
-        int j = [indicesOfEmptySpacesInGrid[idx][1] intValue];
-        
-        cardView.transform = CGAffineTransformMakeRotation(M_PI);
-        [UIView animateWithDuration:0.5 delay:0.04*idx options:0 animations:^{
-            cardView.center = [self.grid centerOfCellAtRow:i inColumn:j];
-            cardView.transform = CGAffineTransformMakeRotation(0);
-        } completion:^(BOOL fin){
-            if (fin) {
-            }
-        }];
-        
-        idx++;
-    }
-}
 
 - (void)updateScoreLabel {
     self.scoreLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score: %d", self.game.score]
@@ -253,7 +185,7 @@
     
     NSMutableArray *cardViews = [[NSMutableArray alloc] init];
     [cards enumerateObjectsUsingBlock:^(Card *card, NSUInteger idx, BOOL *stop) {
-        CardView *cardView = [self createCardViewInFrame:[self cardSpawnFrame] fromCard:card];
+        CardView *cardView = [self createCardViewFromCard:card];
         [self.playingArea addSubview:cardView];
         [self.cardViews addObject:cardView];
         UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapCardView:)];
@@ -263,6 +195,10 @@
     }];
     
     return cardViews;
+}
+
+- (CardView *)createCardViewFromCard:(Card *)card {
+    return [self createCardViewInFrame:[self.playingArea cardSpawnFrame] fromCard:card];
 }
 
 - (BOOL)noCardsDealtYet {
@@ -293,18 +229,16 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     NSLog(@"Calling viewDidAppear.");
+    [self.playingArea createGridWithCardAspectRatio:self.cardAspectRatio
+                                   prefersWideCards:self.prefersWideCards
+                        minimumNumberOfCardsOnBoard:self.minimumNumberOfCardsOnBoard
+                        maximumNumberOfCardsOnBoard:self.maximumNumberOfCardsOnBoard];
     [self updateUI];
 }
 
 - (void)viewDidLayoutSubviews {
     NSLog(@"Calling viewDidLayoutSubviews.");
     [super viewDidLayoutSubviews];
-    
-    if (!CGSizeEqualToSize(self.grid.size, self.playingArea.bounds.size)){
-        NSLog(@"INFO: Grid not equal to playing area. Resetting grid to nil.");
-        self.grid = nil;
-    }
-    //[self updateUI];
 }
 
 

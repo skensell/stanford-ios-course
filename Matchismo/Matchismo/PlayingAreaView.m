@@ -12,7 +12,10 @@
 
 @interface PlayingAreaView()
 @property (nonatomic, strong) Grid *grid;
-
+@property (nonatomic) CGFloat cardAspectRatio;
+@property (nonatomic) BOOL prefersWideCards;
+@property (nonatomic) NSUInteger minimumNumberOfCardsOnBoard;
+@property (nonatomic) NSUInteger maximumNumberOfCardsOnBoard;
 @end
 
 @implementation PlayingAreaView
@@ -24,22 +27,28 @@
           minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
           maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard {
     
-    _grid = [[Grid alloc] init];
-    _grid.size = self.bounds.size;
-    _grid.cellAspectRatio = aspectRatio;
-    _grid.minimumNumberOfCells = minimumNumberOfCardsOnBoard;
-    _grid.prefersWideCards = prefersWideCards;
-    
-    if (!_grid.inputsAreValid) {
-        NSLog(@"Invalid inputs for grid");
-        NSLog(@"aspect ratio: %f", aspectRatio);
-        NSLog(@"min number of cells: %d", minimumNumberOfCardsOnBoard);
-    }
+    self.cardAspectRatio = aspectRatio;
+    self.prefersWideCards = prefersWideCards;
+    self.minimumNumberOfCardsOnBoard = minimumNumberOfCardsOnBoard;
+    self.maximumNumberOfCardsOnBoard = maximumNumberOfCardsOnBoard;
+    _grid = nil;
     
 }
 
 - (Grid *)grid {
-    if (!_grid) _grid = [[Grid alloc] init];
+    if (!_grid) {
+        _grid = [[Grid alloc] init];
+        _grid.size = self.bounds.size;
+        _grid.cellAspectRatio = self.cardAspectRatio;
+        _grid.minimumNumberOfCells = self.minimumNumberOfCardsOnBoard;
+        _grid.prefersWideCards = self.prefersWideCards;
+        
+        if (!_grid.inputsAreValid) {
+            NSLog(@"Invalid inputs for grid");
+            NSLog(@"aspect ratio: %f", self.cardAspectRatio);
+            NSLog(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
+        }
+    }
     return _grid;
 }
 
@@ -63,9 +72,18 @@
     return indices;
 }
 
+- (CGRect)cardSpawnFrame {
+    // just to the top left off the screen
+    CGFloat x = self.bounds.origin.x - self.grid.cellSize.width - 100;
+    CGFloat y = self.bounds.origin.y - self.grid.cellSize.height - 100;
+    CGFloat w = self.grid.cellSize.width;
+    CGFloat h = self.grid.cellSize.height;
+    return [self slightlyInsideFrame:CGRectMake(x, y, w, h) fraction:0.95];
+}
+
 #pragma mark - Animations
 
-- (void)animateCardViewsIntoEmptySpaces:cardViews {
+- (void)animateCardViewsIntoEmptySpaces:(NSArray *)cardViews {
     NSArray *indicesOfEmptySpacesInGrid = [self indicesOfEmptySpacesInGrid];
     
     if ([indicesOfEmptySpacesInGrid count] < [cardViews count]) {
@@ -93,15 +111,6 @@
 
 #pragma mark - Private
 
-- (CGRect)cardSpawnFrame {
-    // just to the top left off the screen
-    CGFloat x = self.bounds.origin.x - self.grid.cellSize.width - 100;
-    CGFloat y = self.bounds.origin.y - self.grid.cellSize.height - 100;
-    CGFloat w = self.grid.cellSize.width;
-    CGFloat h = self.grid.cellSize.height;
-    return [self slightlyInsideFrame:CGRectMake(x, y, w, h) fraction:0.95];
-}
-
 - (CGRect)slightlyInsideFrame:(CGRect)frame fraction:(CGFloat)fraction {
     // scales height and width by percent and moves origin appropriateley
     if (!fraction) fraction = 0.95;
@@ -117,6 +126,7 @@
 
 - (void)setup
 {
+    // possibly unnecessary
     self.contentMode = UIViewContentModeRedraw;
 }
 
@@ -134,6 +144,16 @@
         [self setup];
     }
     return self;
+}
+
+-(void)layoutSubviews {
+    NSLog(@"Calling PlayingAreaView:layoutSubviews");
+    [super layoutSubviews];
+    
+    if (!CGSizeEqualToSize(self.grid.size, self.bounds.size)){
+        NSLog(@"INFO: Grid not equal to playingArea. Resetting grid to nil.");
+        self.grid = nil;
+    }
 }
 
 @end

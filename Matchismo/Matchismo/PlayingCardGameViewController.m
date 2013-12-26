@@ -30,14 +30,12 @@
     return playingCardView;
 }
 
-- (void)removeMatchedCards {
-    // remove from the screen and from superview
-}
-
 - (void)viewDidLoad {
-    self.numberOfCardsToMatch = 2;
-    self.cardAspectRatio = 5.0/7.0;
-    self.minimumNumberOfCardsOnBoard = 12;
+    [self setupGameWithNumberOfCardsToMatch:2
+                            CardAspectRatio:5.0/7.0
+                           prefersWideCards:YES
+                minimumNumberOfCardsOnBoard:16
+                maximumNumberOfCardsOnBoard:24];
     [super viewDidLoad];
 }
 

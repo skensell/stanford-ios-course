@@ -14,22 +14,15 @@
 @interface CardGameViewController : UIViewController
 
 
-// game logic
-@property (nonatomic) NSUInteger numberOfCardsToMatch;
+// subclass should call once in viewDidLoad
+- (void)setupGameWithNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
+                          CardAspectRatio:(CGFloat)aspectRatio
+                         prefersWideCards:(BOOL)prefersWideCards
+              minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
+              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard;
 
-// layout of card views
-@property (nonatomic) CGFloat cardAspectRatio; // ABSTRACT
-@property (nonatomic) NSUInteger minimumNumberOfCardsOnBoard; // ABSTRACT
-@property (nonatomic) NSUInteger maximumNumberOfCardsOnBoard; // ABSTRACT
-@property (nonatomic) BOOL prefersWideCards;
+// protected
 - (CardView *)createCardViewInFrame:(CGRect)frame fromCard:(Card *)card; // ABSTRACT
-
-// deck specific
-- (Deck *)createDeck; // abstract method
-
-
-// I don't think this needs to be public
-- (void)removeMatchedCards;
-
+- (Deck *)createDeck; // ABSTRACT
 
 @end
