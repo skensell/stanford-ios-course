@@ -22,17 +22,17 @@
 
 - (void)setMatched:(BOOL)matched {
     _matched = matched;
-    if (matched) {
-        for (UIGestureRecognizer *gr in self.gestureRecognizers) {
-            [self removeGestureRecognizer:gr];
-        }
-        
-        [UIView animateWithDuration:3.0 delay:0 options:0 animations:^{
-            self.transform = CGAffineTransformMakeTranslation(500, 0);
-        } completion:^(BOOL finished) {
-            [self removeFromSuperview];
-        }];
-    }
+//    if (matched) {
+//        for (UIGestureRecognizer *gr in self.gestureRecognizers) {
+//            [self removeGestureRecognizer:gr];
+//        }
+//        
+//        [UIView animateWithDuration:3.0 delay:0 options:0 animations:^{
+//            self.transform = CGAffineTransformMakeTranslation(500, 0);
+//        } completion:^(BOOL finished) {
+//            [self removeFromSuperview];
+//        }];
+//    }
 }
 
 - (void)setChosen:(BOOL)chosen {
@@ -40,7 +40,9 @@
         if (chosen) {
             [self animateChoose];
         } else {
-            [self animateUnchoose];
+            if (!self.matched){ // we don't want to flip matched cards back over
+                [self animateUnchoose];
+            }
         }
     }
     _chosen = chosen;

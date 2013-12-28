@@ -10,8 +10,9 @@
 #import "CardMatchingGame.h"
 #import "CardView.h"
 #import "PlayingAreaView.h"
+#import "MatchedBehavior.h"
 
-@interface CardGameViewController ()
+@interface CardGameViewController () <UIDynamicAnimatorDelegate>
 @property (nonatomic, strong) CardMatchingGame *game;
 
 // game logic - default is 2
@@ -29,6 +30,8 @@
 // but that would complicate some code here I think
 @property (strong, nonatomic) IBOutlet PlayingAreaView *playingArea;
 
+@property (strong, nonatomic) UIDynamicAnimator *animator;
+@property (strong, nonatomic) MatchedBehavior *matchedBehavior;
 
 // index of view in cardViews corresponds to index in game.cards
 // index does NOT correspond to visual place on screen
@@ -42,6 +45,20 @@
 
 
 #pragma mark - Properties and setup
+
+- (void)setupGameWithNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
+                          CardAspectRatio:(CGFloat)aspectRatio
+                         prefersWideCards:(BOOL)prefersWideCards
+              minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
+              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard {
+
+    _numberOfCardsToMatch = numberOfCardsToMatch;
+    _cardAspectRatio = aspectRatio;
+    _prefersWideCards = prefersWideCards;
+    _minimumNumberOfCardsOnBoard = minimumNumberOfCardsOnBoard;
+    _maximumNumberOfCardsOnBoard = maximumNumberOfCardsOnBoard;
+
+}
 
 - (CardMatchingGame *)game {
     if (!_game)  {
@@ -61,18 +78,20 @@
     return _cardViews;
 }
 
-- (void)setupGameWithNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
-                          CardAspectRatio:(CGFloat)aspectRatio
-                         prefersWideCards:(BOOL)prefersWideCards
-              minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
-              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard {
+- (UIDynamicAnimator *)animator {
+    if (!_animator) {
+        _animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.playingArea];
+        _animator.delegate = self;
+    }
+    return _animator;
+}
 
-    _numberOfCardsToMatch = numberOfCardsToMatch;
-    _cardAspectRatio = aspectRatio;
-    _prefersWideCards = prefersWideCards;
-    _minimumNumberOfCardsOnBoard = minimumNumberOfCardsOnBoard;
-    _maximumNumberOfCardsOnBoard = maximumNumberOfCardsOnBoard;
-
+- (MatchedBehavior *)matchedBehavior {
+    if (!_matchedBehavior) {
+        _matchedBehavior = [[MatchedBehavior alloc] init];
+        [self.animator addBehavior:_matchedBehavior];
+    }
+    return _matchedBehavior;
 }
 
 #pragma mark - Game Actions
@@ -125,32 +144,38 @@
         return;
     }
     
-    BOOL needToDealMoreCards = NO;
+    NSMutableArray *matchedCardViews = [[NSMutableArray alloc] init];
     for (CardView *cardView in self.cardViews) {
-        if ([cardView superview] != self.playingArea) continue; // matched views are removed from superview but not from self.cardViews
+        if (cardView.isMatched) continue;
         
         NSUInteger cardIndex = [self.cardViews indexOfObject:cardView];
         Card *card = [self.game cardAtIndex:cardIndex];
         
-        if (card.isMatched) {
-            cardView.matched = YES; // add to matched behavior
-            needToDealMoreCards = YES;
-        } else if (card.isChosen) {
-            cardView.chosen = YES; // animated by subclass of CardView
-        } else {
-            cardView.chosen = NO; // animated by subclass of CardView
-        }
+        cardView.matched = card.isMatched;
+        cardView.chosen = card.isChosen; // animated by subclass if not matched
+        
+        if (cardView.isMatched) [matchedCardViews addObject:cardView];
     }
     
-    if (needToDealMoreCards) {
-        // I need to deal more cards only after the matched animations finished.
-        [self dealMoreCardsIntoPlay:[self numberOfCardsToMatch]];
-    }
+    [self animateMatchedCardViewsOffScreen:matchedCardViews];
+    
+//    // This should go in the DidPause delegate call
+//    if (needToDealMoreCards) {
+//        // I need to deal more cards only after the matched animations finished.
+//        [self dealMoreCardsIntoPlay:[self numberOfCardsToMatch]];
+//    }
 //    [self removeMatchedCards]; in its completion block I should call deal
     
     [self updateScoreLabel];
 }
 
+- (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews {
+    if (![matchedCardViews count]) return;
+    
+    [matchedCardViews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
+        [self.matchedBehavior addItem:cardView];
+    }];
+}
 
 - (void)updateScoreLabel {
     self.scoreLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score: %d", self.game.score]

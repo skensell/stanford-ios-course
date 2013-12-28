@@ -35,23 +35,6 @@
     
 }
 
-- (Grid *)grid {
-    if (!_grid) {
-        _grid = [[Grid alloc] init];
-        _grid.size = self.bounds.size;
-        _grid.cellAspectRatio = self.cardAspectRatio;
-        _grid.minimumNumberOfCells = self.minimumNumberOfCardsOnBoard;
-        _grid.prefersWideCards = self.prefersWideCards;
-        
-        if (!_grid.inputsAreValid) {
-            NSLog(@"Invalid inputs for grid");
-            NSLog(@"aspect ratio: %f", self.cardAspectRatio);
-            NSLog(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
-        }
-    }
-    return _grid;
-}
-
 - (NSArray *)indicesOfEmptySpacesInGrid {
     // returns @[@[@1,@2],@[@3,@6]] if those are open spaces in grid
     
@@ -120,6 +103,23 @@
                                  frame.origin.y + (1 - fraction) * frame.size.height / 2);
     
     return CGRectMake(origin.x, origin.y, w, h);
+}
+
+- (Grid *)grid {
+    if (!_grid) {
+        _grid = [[Grid alloc] init];
+        _grid.size = self.bounds.size;
+        _grid.cellAspectRatio = self.cardAspectRatio;
+        _grid.minimumNumberOfCells = self.minimumNumberOfCardsOnBoard;
+        _grid.prefersWideCards = self.prefersWideCards;
+        
+        if (!_grid.inputsAreValid) {
+            NSLog(@"Invalid inputs for grid");
+            NSLog(@"aspect ratio: %f", self.cardAspectRatio);
+            NSLog(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
+        }
+    }
+    return _grid;
 }
 
 #pragma mark - View lifecycle
