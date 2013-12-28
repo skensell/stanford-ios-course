@@ -16,11 +16,9 @@
           minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
           maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard;
 
-// animations
-- (void)animateCardViewsIntoEmptySpaces:(NSArray *)cardViews;
-
 // computed outputs
-- (NSArray *)indicesOfEmptySpacesInGrid;
+- (NSArray *)indicesOfEmptySpacesInGrid; // array of @[3,5], @[4,6], ...
+- (NSArray *)centersOfEmptySpacesInGrid; // array of NSValue's of CGPoint
 - (CGRect)cardSpawnFrame;
 
 @end

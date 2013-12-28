@@ -64,32 +64,13 @@
     return [self slightlyInsideFrame:CGRectMake(x, y, w, h) fraction:0.95];
 }
 
-#pragma mark - Animations
-
-- (void)animateCardViewsIntoEmptySpaces:(NSArray *)cardViews {
-    NSArray *indicesOfEmptySpacesInGrid = [self indicesOfEmptySpacesInGrid];
-    
-    if ([indicesOfEmptySpacesInGrid count] < [cardViews count]) {
-        NSLog(@"ERROR: More cards to place on grid than empty spaces.");
-        return;
+- (NSArray *)centersOfEmptySpacesInGrid {
+    NSArray *indices = [self indicesOfEmptySpacesInGrid];
+    NSMutableArray *centers = [[NSMutableArray alloc] init];
+    for (NSArray *ij in indices) {
+        [centers addObject:[NSValue valueWithCGPoint:[self.grid centerOfCellAtRow:[ij[0] intValue] inColumn:[ij[1] intValue]]]];
     }
-    
-    int idx=0;
-    for (CardView *cardView in cardViews) {
-        int i = [indicesOfEmptySpacesInGrid[idx][0] intValue];
-        int j = [indicesOfEmptySpacesInGrid[idx][1] intValue];
-        
-        cardView.transform = CGAffineTransformMakeRotation(M_PI);
-        [UIView animateWithDuration:0.5 delay:0.04*idx options:0 animations:^{
-            cardView.center = [self.grid centerOfCellAtRow:i inColumn:j];
-            cardView.transform = CGAffineTransformMakeRotation(0);
-        } completion:^(BOOL fin){
-            if (fin) {
-            }
-        }];
-        
-        idx++;
-    }
+    return centers;
 }
 
 #pragma mark - Private

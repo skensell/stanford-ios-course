@@ -10,9 +10,10 @@
 #import "CardMatchingGame.h"
 #import "CardView.h"
 #import "PlayingAreaView.h"
-#import "MatchedBehavior.h"
+#import "Animator.h"
 
-@interface CardGameViewController () <UIDynamicAnimatorDelegate>
+
+@interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
 
 // game logic - default is 2
@@ -24,14 +25,13 @@
 @property (nonatomic) NSUInteger minimumNumberOfCardsOnBoard;
 @property (nonatomic) NSUInteger maximumNumberOfCardsOnBoard;
 
-// playing area could have an animation delegate which handles all of its animations
-// this would ensure that no two animations run at the same time
+
 // playingarea could also handle the allocation of cardViews,
 // but that would complicate some code here I think
 @property (strong, nonatomic) IBOutlet PlayingAreaView *playingArea;
 
-@property (strong, nonatomic) UIDynamicAnimator *animator;
-@property (strong, nonatomic) MatchedBehavior *matchedBehavior;
+@property (strong, nonatomic) Animator *animator;
+
 
 // index of view in cardViews corresponds to index in game.cards
 // index does NOT correspond to visual place on screen
@@ -62,7 +62,6 @@
 
 - (CardMatchingGame *)game {
     if (!_game)  {
-        // initing the game draws every card of the deck so it will be nil
         _game = [[CardMatchingGame alloc] initWithCardCount:self.minimumNumberOfCardsOnBoard
                                                   usingDeck:[self createDeck]
                                    withNumberOfCardsToMatch:self.numberOfCardsToMatch];
@@ -71,28 +70,13 @@
 }
 
 - (NSMutableArray *)cardViews {
-    // the index of a view here corresponds to index in game
+    // the index of a view here corresponds to index of card in game
     if (!_cardViews) {
         _cardViews = [[NSMutableArray alloc] init];
     }
     return _cardViews;
 }
 
-- (UIDynamicAnimator *)animator {
-    if (!_animator) {
-        _animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.playingArea];
-        _animator.delegate = self;
-    }
-    return _animator;
-}
-
-- (MatchedBehavior *)matchedBehavior {
-    if (!_matchedBehavior) {
-        _matchedBehavior = [[MatchedBehavior alloc] init];
-        [self.animator addBehavior:_matchedBehavior];
-    }
-    return _matchedBehavior;
-}
 
 #pragma mark - Game Actions
 
@@ -128,7 +112,7 @@
     NSArray *cardsJustDealt = [cardsInPlay subarrayWithRange:NSMakeRange([cardsInPlay count] - numberOfCards - 1, numberOfCards)];
     NSArray *cardViews = [self makeCardViewsFromCards:cardsJustDealt];
     
-    [self.playingArea animateCardViewsIntoEmptySpaces:cardViews];
+    [self.animator animateCardViewsIntoEmptySpaces:cardViews];
 
 }
 
@@ -136,9 +120,8 @@
 
 - (void)updateUI {
     if ([self noCardsDealtYet]) {
-        NSArray *cardsInPlay = [self getCardsInPlayFromGame];
-        NSArray *cardViews = [self makeCardViewsFromCards:cardsInPlay];
-        [self.playingArea animateCardViewsIntoEmptySpaces:cardViews];
+        NSArray *cardViews = [self makeCardViewsFromCards:[self getCardsInPlayFromGame]];
+        [self.animator animateCardViewsIntoEmptySpaces:cardViews];
 
         [self updateScoreLabel];
         return;
@@ -152,12 +135,12 @@
         Card *card = [self.game cardAtIndex:cardIndex];
         
         cardView.matched = card.isMatched;
-        cardView.chosen = card.isChosen; // animated by subclass if not matched
+        cardView.chosen = card.isChosen; // animated by cardView if not matched
         
         if (cardView.isMatched) [matchedCardViews addObject:cardView];
     }
     
-    [self animateMatchedCardViewsOffScreen:matchedCardViews];
+    [self.animator animateMatchedCardViewsOffScreen:matchedCardViews];
     
 //    // This should go in the DidPause delegate call
 //    if (needToDealMoreCards) {
@@ -169,13 +152,6 @@
     [self updateScoreLabel];
 }
 
-- (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews {
-    if (![matchedCardViews count]) return;
-    
-    [matchedCardViews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
-        [self.matchedBehavior addItem:cardView];
-    }];
-}
 
 - (void)updateScoreLabel {
     self.scoreLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score: %d", self.game.score]
@@ -248,21 +224,22 @@
 
 #pragma mark - MVC lifecycle
 
-//- (void)viewDidLoad {
-//    [self updateUI];
-//}
+- (void)viewDidLoad {
+    self.animator = [[Animator alloc] initWithPlayingArea:self.playingArea];
+}
 
 - (void)viewDidAppear:(BOOL)animated {
-    NSLog(@"Calling viewDidAppear.");
+    NSLog(@"Calling CardGameViewController:viewDidAppear.");
     [self.playingArea createGridWithCardAspectRatio:self.cardAspectRatio
                                    prefersWideCards:self.prefersWideCards
                         minimumNumberOfCardsOnBoard:self.minimumNumberOfCardsOnBoard
                         maximumNumberOfCardsOnBoard:self.maximumNumberOfCardsOnBoard];
+    
     [self updateUI];
 }
 
 - (void)viewDidLayoutSubviews {
-    NSLog(@"Calling viewDidLayoutSubviews.");
+    NSLog(@"Calling CardGameViewController:viewDidLayoutSubviews.");
     [super viewDidLayoutSubviews];
 }
 

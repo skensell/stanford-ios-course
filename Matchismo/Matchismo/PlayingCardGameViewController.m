@@ -33,7 +33,7 @@
 - (void)viewDidLoad {
     [self setupGameWithNumberOfCardsToMatch:2
                             CardAspectRatio:5.0/7.0
-                           prefersWideCards:YES
+                           prefersWideCards:NO
                 minimumNumberOfCardsOnBoard:16
                 maximumNumberOfCardsOnBoard:24];
     [super viewDidLoad];
