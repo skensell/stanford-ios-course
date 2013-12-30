@@ -14,12 +14,13 @@
 @interface CardGameViewController : UIViewController
 
 
-// subclass should call once in viewDidLoad
+// any subclass should call this setup method once in viewDidLoad
+
 - (void)setupGameWithNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
                           CardAspectRatio:(CGFloat)aspectRatio
                          prefersWideCards:(BOOL)prefersWideCards
-              minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
-              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard;
+              minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard // this many cards will be dealt at start and always kept on board
+              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard; // enough space will be left for this many cards
 
 // protected
 - (CardView *)createCardViewInFrame:(CGRect)frame fromCard:(Card *)card; // ABSTRACT

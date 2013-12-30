@@ -20,21 +20,6 @@
     return self;
 }
 
-- (void)setMatched:(BOOL)matched {
-    _matched = matched;
-//    if (matched) {
-//        for (UIGestureRecognizer *gr in self.gestureRecognizers) {
-//            [self removeGestureRecognizer:gr];
-//        }
-//        
-//        [UIView animateWithDuration:3.0 delay:0 options:0 animations:^{
-//            self.transform = CGAffineTransformMakeTranslation(500, 0);
-//        } completion:^(BOOL finished) {
-//            [self removeFromSuperview];
-//        }];
-//    }
-}
-
 - (void)setChosen:(BOOL)chosen {
     if (_chosen != chosen) {
         if (chosen) {
@@ -44,6 +29,9 @@
                 [self animateUnchoose];
             }
         }
+    } else if (self.matched) {
+        // the last chosen card which matches actually is never "chosen" in the game
+        [self animateChoose];
     }
     _chosen = chosen;
     [self setNeedsDisplay];
@@ -55,6 +43,13 @@
 
 - (void)animateUnchoose {
     // abstract method
+}
+
+- (void)removeAllGestureRecognizers {
+    int numberOfGRs = [self.gestureRecognizers count];
+    for (int i = 0; i < numberOfGRs; i++) {
+        [self removeGestureRecognizer:self.gestureRecognizers[i]];
+    }
 }
 
 /*

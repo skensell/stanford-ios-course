@@ -12,6 +12,10 @@
 #import "PlayingAreaView.h"
 #import "Animator.h"
 
+#ifdef DEBUG
+#undef DEBUG
+#define DEBUG(...)   
+#endif
 
 @interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
@@ -78,7 +82,7 @@
 }
 
 
-#pragma mark - Game Actions
+#pragma mark - Game actions
 
 - (void)tapCardView:(UITapGestureRecognizer *)sender {
     CardView *cardView = (CardView *)sender.view;
@@ -91,25 +95,32 @@
 
 - (IBAction)touchRedealButton:(UIButton *)sender {
     self.game = nil;
-    [UIView animateWithDuration:0.5 delay:0 options:0 animations:^{
-        for (CardView *cardView in self.cardViews) {
-            cardView.alpha = 0.0;
-        }
-    } completion:^(BOOL finished) {
+    
+    __weak CardGameViewController *weakSelf = self;
+    CompletionBlock completion = ^(BOOL finished) {
         if (finished) {
-            [self.cardViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-            [self.cardViews removeAllObjects];
-            [self updateUI];
+            [weakSelf.cardViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            [weakSelf.cardViews removeAllObjects];
+            [weakSelf updateUI];
         }
-    }];
+    };
+    
+    [self.animator animateRedealGivenCardViews:self.cardViews completion:completion];
+}
+- (IBAction)touchThreeMoreButton:(UIButton *)sender {
+    if ([[self getCardsInPlayFromGame] count] + 3 <= self.maximumNumberOfCardsOnBoard &&
+        [[self.playingArea centersOfEmptySpacesInGrid] count] >= 3) {
+        [self dealMoreCardsIntoPlay:3];
+    }
 }
 
 - (void)dealMoreCardsIntoPlay:(NSUInteger)numberOfCards{
     // deal cards in the model
-    [self.game dealMoreCards:numberOfCards];
+    NSUInteger numberDealt = [self.game dealMoreCards:numberOfCards];
+    if (!numberDealt) return;
     
     NSArray *cardsInPlay = [self getCardsInPlayFromGame];
-    NSArray *cardsJustDealt = [cardsInPlay subarrayWithRange:NSMakeRange([cardsInPlay count] - numberOfCards - 1, numberOfCards)];
+    NSArray *cardsJustDealt = [cardsInPlay subarrayWithRange:NSMakeRange([cardsInPlay count] - numberDealt, numberOfCards)];
     NSArray *cardViews = [self makeCardViewsFromCards:cardsJustDealt];
     
     [self.animator animateCardViewsIntoEmptySpaces:cardViews];
@@ -119,48 +130,28 @@
 #pragma mark - Update UI
 
 - (void)updateUI {
-    if ([self noCardsDealtYet]) {
+    if ([self noCardViewsDealtYet]) {
         NSArray *cardViews = [self makeCardViewsFromCards:[self getCardsInPlayFromGame]];
         [self.animator animateCardViewsIntoEmptySpaces:cardViews];
-
-        [self updateScoreLabel];
-        return;
+    } else if ([self tooFewCardViewsInPlay]){
+        [self dealMoreCardsIntoPlay:[self numberOfCardsToMatch]];
+    } else {
+        // set chosen and matched, then remove matched cards
+        [self animateChosenAndMatchedCardViews];
     }
-    
-    NSMutableArray *matchedCardViews = [[NSMutableArray alloc] init];
-    for (CardView *cardView in self.cardViews) {
-        if (cardView.isMatched) continue;
-        
-        NSUInteger cardIndex = [self.cardViews indexOfObject:cardView];
-        Card *card = [self.game cardAtIndex:cardIndex];
-        
-        cardView.matched = card.isMatched;
-        cardView.chosen = card.isChosen; // animated by cardView if not matched
-        
-        if (cardView.isMatched) [matchedCardViews addObject:cardView];
-    }
-    
-    [self.animator animateMatchedCardViewsOffScreen:matchedCardViews];
-    
-//    // This should go in the DidPause delegate call
-//    if (needToDealMoreCards) {
-//        // I need to deal more cards only after the matched animations finished.
-//        [self dealMoreCardsIntoPlay:[self numberOfCardsToMatch]];
-//    }
-//    [self removeMatchedCards]; in its completion block I should call deal
     
     [self updateScoreLabel];
 }
 
 
 - (void)updateScoreLabel {
-    self.scoreLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score: %d", self.game.score]
+    self.scoreLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d", self.game.score]
                                                                      attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
 }
 
 
 
-#pragma mark - Private
+#pragma mark - Game status
 
 - (NSArray *)getCardsInPlayFromGame {
     NSUInteger n = [self.game numberOfCardsInPlay];
@@ -182,6 +173,17 @@
     return cardsInPlay;
 }
 
+- (BOOL)noCardViewsDealtYet {
+    return [self.cardViews count] == 0;
+}
+
+- (BOOL)tooFewCardViewsInPlay {
+    return [self.playingArea.subviews count] < self.minimumNumberOfCardsOnBoard;
+}
+
+
+#pragma mark - CardView management
+
 - (NSArray *)makeCardViewsFromCards:(NSArray *)cards{
     
     NSMutableArray *cardViews = [[NSMutableArray alloc] init];
@@ -198,13 +200,57 @@
     return cardViews;
 }
 
+- (void)removeMatchedCardViews:(NSArray *)matchedCardViews {
+    // cardViews will not be dealloced because they are always in self.cardViews
+    if ([matchedCardViews count] == 0) return;
+    
+    __weak CardGameViewController *weakSelf = self;
+    [self.animator animateMatchedCardViewsOffScreen:matchedCardViews completion:^(BOOL finished) {
+        if (finished) {
+            [matchedCardViews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
+                [cardView removeAllGestureRecognizers];
+                [cardView removeFromSuperview]; // its superview is playingArea
+            }];
+            [weakSelf updateUI]; // needs to deal more cards
+        }
+    }];
+}
+
+- (void)animateChosenAndMatchedCardViews {
+    NSMutableArray *matchedCardViews = [[NSMutableArray alloc] init];
+    NSMutableArray *chosenCardViews = [[NSMutableArray alloc] init];
+    
+    for (CardView *cardView in self.cardViews) {
+        if (cardView.isMatched) continue;
+        [cardView.layer removeAllAnimations];
+        
+        Card *card = [self.game cardAtIndex:[self.cardViews indexOfObject:cardView]];
+        cardView.matched = card.isMatched;
+        cardView.chosen = card.isChosen; // unchosen cards get all animations removed
+        
+        if (cardView.isChosen) {
+            [chosenCardViews addObject:cardView];
+            DEBUG(@"Chosen cardview");
+        }
+        
+        if (cardView.isMatched) [matchedCardViews addObject:cardView];
+    }
+    
+    
+    if ([chosenCardViews count]) {
+        [self.animator animateChosenCardViews:chosenCardViews];
+    }
+    
+    if ([matchedCardViews count]) {
+        DEBUG(@"Removing matched cardViews %@", matchedCardViews);
+        [self removeMatchedCardViews:matchedCardViews];
+    }
+}
+
 - (CardView *)createCardViewFromCard:(Card *)card {
     return [self createCardViewInFrame:[self.playingArea cardSpawnFrame] fromCard:card];
 }
 
-- (BOOL)noCardsDealtYet {
-    return [self.cardViews count] == 0;
-}
 
 #pragma mark - Protected
 
@@ -214,12 +260,8 @@
 }
 
 - (CardView *)createCardViewInFrame:(CGRect)frame fromCard:(Card *)card {
-    // alloc init a card view
+    // ABSTRACT METHOD: alloc init a card view
     return nil;
-}
-
-- (void)removeMatchedCards {
-    // remove from the screen and from superview
 }
 
 #pragma mark - MVC lifecycle
@@ -229,18 +271,13 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    NSLog(@"Calling CardGameViewController:viewDidAppear.");
+//    NSLog(@"Calling CardGameViewController:viewDidAppear.");
     [self.playingArea createGridWithCardAspectRatio:self.cardAspectRatio
                                    prefersWideCards:self.prefersWideCards
                         minimumNumberOfCardsOnBoard:self.minimumNumberOfCardsOnBoard
                         maximumNumberOfCardsOnBoard:self.maximumNumberOfCardsOnBoard];
     
     [self updateUI];
-}
-
-- (void)viewDidLayoutSubviews {
-    NSLog(@"Calling CardGameViewController:viewDidLayoutSubviews.");
-    [super viewDidLayoutSubviews];
 }
 
 

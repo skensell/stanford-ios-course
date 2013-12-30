@@ -310,11 +310,14 @@
 }
 
 - (UIColor *)cardBackgroundColor {
-    return (self.isChosen)? [UIColor yellowColor] : [UIColor whiteColor];
+    return [UIColor whiteColor];
 }
 
 #pragma mark - Animations
 
+- (void)animateUnchoose {
+    //[self.layer removeAllAnimations];
+}
 
 #pragma mark - View lifecycle
 

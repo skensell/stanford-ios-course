@@ -9,11 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "PlayingAreaView.h"
 
+typedef void (^CompletionBlock)(BOOL finished);
+typedef void (^AnimationBlock)();
+
 @interface Animator : NSObject
 
 - (instancetype)initWithPlayingArea:(PlayingAreaView *)playingArea;
 
 - (void)animateCardViewsIntoEmptySpaces:(NSArray *)cardViews;
-- (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews;
-
+- (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews completion:(CompletionBlock)completion;
+- (void)animateChosenCardViews:(NSArray *)chosenCardViews;
+- (void)animateRedealGivenCardViews:(NSArray *)cardViews completion:(CompletionBlock)completion;
 @end

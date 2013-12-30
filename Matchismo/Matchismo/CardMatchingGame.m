@@ -151,12 +151,15 @@ static const int COST_TO_CHOOSE = 1;
     return score;
 }
 
-- (void)dealMoreCards:(NSUInteger)numberOfCards {
-    // do not replace matched cards
+- (NSUInteger)dealMoreCards:(NSUInteger)numberOfCards {
+    // returns the number dealt
+    NSUInteger i = 0;
     Card *card;
-    while (numberOfCards-- && (card = [self.deck drawRandomCard])) {
+    while (i < numberOfCards && (card = [self.deck drawRandomCard])) {
         [self.cards addObject:card];
+        i++;
     }
+    return i;
 }
 
 - (NSUInteger)numberOfCardsInPlay {

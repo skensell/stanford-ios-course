@@ -13,6 +13,8 @@
 @property (nonatomic, getter = isChosen) BOOL chosen;
 @property (nonatomic, getter = isMatched) BOOL matched;
 
+- (void)removeAllGestureRecognizers;
+
 // abstract, protected for subclasses
 - (void)animateChoose;
 - (void)animateUnchoose;

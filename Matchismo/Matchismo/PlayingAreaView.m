@@ -61,7 +61,7 @@
     CGFloat y = self.bounds.origin.y - self.grid.cellSize.height - 100;
     CGFloat w = self.grid.cellSize.width;
     CGFloat h = self.grid.cellSize.height;
-    return [self slightlyInsideFrame:CGRectMake(x, y, w, h) fraction:0.95];
+    return [self slightlyInsideFrame:CGRectMake(x, y, w, h) fraction:CARDVIEW_FRAME_FRACTION];
 }
 
 - (NSArray *)centersOfEmptySpacesInGrid {
@@ -73,11 +73,35 @@
     return centers;
 }
 
+- (CGSize)cardViewSize {
+    return CGSizeMake(self.cellSize.width*CARDVIEW_FRAME_FRACTION, self.cellSize.height*CARDVIEW_FRAME_FRACTION);
+}
+
+- (CGSize)cellSize {
+    return self.grid.cellSize;
+}
+
+- (NSUInteger)rowCount {
+    return self.grid.rowCount;
+}
+
+- (NSUInteger)columnCount {
+    return self.grid.columnCount;
+}
+
+- (CGPoint)centerOfCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column {
+    return [self.grid centerOfCellAtRow:row inColumn:column];
+}
+
+- (CGRect)frameOfCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column {
+    return [self.grid frameOfCellAtRow:row inColumn:column];
+}
+
 #pragma mark - Private
 
 - (CGRect)slightlyInsideFrame:(CGRect)frame fraction:(CGFloat)fraction {
     // scales height and width by percent and moves origin appropriateley
-    if (!fraction) fraction = 0.95;
+    if (!fraction) fraction = CARDVIEW_FRAME_FRACTION;
     CGFloat h = frame.size.height * fraction;
     CGFloat w = frame.size.width * fraction;
     CGPoint origin = CGPointMake(frame.origin.x + (1 - fraction) * frame.size.width / 2,
@@ -91,7 +115,7 @@
         _grid = [[Grid alloc] init];
         _grid.size = self.bounds.size;
         _grid.cellAspectRatio = self.cardAspectRatio;
-        _grid.minimumNumberOfCells = self.minimumNumberOfCardsOnBoard;
+        _grid.minimumNumberOfCells = self.maximumNumberOfCardsOnBoard; // need to allow space for a maximum deal
         _grid.prefersWideCards = self.prefersWideCards;
         
         if (!_grid.inputsAreValid) {

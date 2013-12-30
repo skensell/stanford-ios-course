@@ -10,11 +10,13 @@
 #import "MatchedBehavior.h"
 #import "CardView.h"
 
-
 @interface Animator() <UIDynamicAnimatorDelegate>
 @property (strong, nonatomic) PlayingAreaView *playingArea;
-@property (strong, nonatomic) UIDynamicAnimator *animator;
+
+@property (strong, nonatomic) UIDynamicAnimator *matchedAnimator;
 @property (strong, nonatomic) MatchedBehavior *matchedBehavior;
+
+@property (strong, nonatomic) NSMutableArray *matchedCardsCompletionBlocks;
 @end
 
 @implementation Animator
@@ -31,30 +33,20 @@
 
 #pragma mark - Properties
 
-- (UIDynamicAnimator *)animator {
-    if (!_animator) {
-        _animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.playingArea];
-        _animator.delegate = self;
+- (UIDynamicAnimator *)matchedAnimator {
+    if (!_matchedAnimator) {
+        _matchedAnimator = [[UIDynamicAnimator alloc] initWithReferenceView:self.playingArea];
+        _matchedAnimator.delegate = self;
     }
-    return _animator;
+    return _matchedAnimator;
 }
 
 - (MatchedBehavior *)matchedBehavior {
     if (!_matchedBehavior) {
         _matchedBehavior = [[MatchedBehavior alloc] init];
-        [self.animator addBehavior:_matchedBehavior];
+        [self.matchedAnimator addBehavior:_matchedBehavior];
     }
     return _matchedBehavior;
-}
-
-#pragma mark - DynamicAnimator animations
-
-- (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews {
-    if (![matchedCardViews count]) return;
-    
-    [matchedCardViews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
-        [self.matchedBehavior addItem:cardView];
-    }];
 }
 
 #pragma mark - Normal animations
@@ -83,5 +75,107 @@
         idx++;
     }
 }
+
+- (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews completion:(CompletionBlock)completion {
+    // bring to front and center then slide off bottom
+    
+    if (![matchedCardViews count]) return;
+    
+    // bring to front and center
+    
+    [matchedCardViews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
+        [cardView removeFromSuperview];
+        [self.playingArea addSubview:cardView]; // brings to front
+    }];
+    
+    // bring to center
+    AnimationBlock animation1 = ^{
+        NSUInteger centerRowIndex = self.playingArea.rowCount/2;
+        for (int i=0; i < [matchedCardViews count]; i++) {
+            CardView *cardView = matchedCardViews[i];
+            cardView.center = [self.playingArea centerOfCellAtRow:centerRowIndex inColumn:i];
+            cardView.frame = [self.playingArea frameOfCellAtRow:centerRowIndex inColumn:i];
+        }
+    };
+    // slide off bottom of screen
+    AnimationBlock animation2 = ^{
+        for (int i=0; i < [matchedCardViews count]; i++) {
+            CardView *cardView = matchedCardViews[i];
+            cardView.center = CGPointMake(cardView.center.x, cardView.center.y + self.playingArea.bounds.size.height);
+        }
+    };
+    
+    [UIView animateWithDuration:1.0
+                     animations:animation1
+                     completion:^(BOOL finished){
+                         [UIView animateWithDuration:1.0
+                                          animations:animation2
+                                          completion:completion];
+                     }];
+    
+}
+
+- (void)animateChosenCardViews:(NSArray *)chosenCardViews {
+    // they pulsate together until unchosen
+//    for (CardView *cardView in chosenCardViews){
+//        cardView.alpha = 1.0;
+//    }
+//    
+    AnimationBlock animation1 = ^{
+        for (CardView *cardView in chosenCardViews){
+            cardView.alpha = 0.75;
+        }
+    };
+    
+    // this ensures the alpha will be 1.0 when finished
+    AnimationBlock animation2 = ^{
+        for (CardView *cardView in chosenCardViews){
+            cardView.alpha = 1.0;
+        }
+    };
+    
+    [UIView animateWithDuration:0.25
+                          delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction |
+     UIViewAnimationOptionCurveEaseIn
+                     animations:animation1
+                     completion:^(BOOL fin){
+                         
+                         [UIView animateWithDuration:0.25
+                                               delay:0
+                                             options:UIViewAnimationOptionAllowUserInteraction |
+                          UIViewAnimationOptionCurveEaseOut |
+                          UIViewAnimationOptionAutoreverse |
+                          UIViewAnimationOptionRepeat
+                                          animations:animation2
+                                          completion:nil];
+                         
+                     }];
+    
+}
+
+- (void)animateRedealGivenCardViews:(NSArray *)cardViews completion:(CompletionBlock)completion {
+    [UIView animateWithDuration:0.5 delay:0 options:0 animations:^{
+        for (CardView *cardView in cardViews) {
+            cardView.alpha = 0.0;
+        }
+    } completion:completion];
+    
+}
+
+#pragma mark - UIDynamicAnimatorDelegate
+
+//- (void)dynamicAnimatorDidPause:(UIDynamicAnimator *)animator {
+//    if ([animator isEqual:self.matchedAnimator]) {
+//        
+//        while ([self.matchedCardsCompletionBlocks count]) {
+//            CompletionBlock completion = [self.matchedCardsCompletionBlocks firstObject];
+//            completion(YES);
+//            [self.matchedCardsCompletionBlocks removeObjectAtIndex:0];
+//        }
+//
+//    }
+//}
+
 
 @end
