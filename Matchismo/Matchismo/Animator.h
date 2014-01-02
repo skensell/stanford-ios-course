@@ -20,4 +20,9 @@ typedef void (^AnimationBlock)();
 - (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews completion:(CompletionBlock)completion;
 - (void)animateChosenCardViews:(NSArray *)chosenCardViews;
 - (void)animateRedealGivenCardViews:(NSArray *)cardViews completion:(CompletionBlock)completion;
+
+- (void)realignAndScaleCardViewsToGridCells:(NSArray *)cardViews;
+- (void)fillHolesInGridWithRecentCardsDealt;
+
+@property (nonatomic, readonly) BOOL isMovingCardViews;
 @end

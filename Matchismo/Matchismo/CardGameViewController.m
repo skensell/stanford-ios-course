@@ -14,11 +14,12 @@
 
 #ifdef DEBUG
 #undef DEBUG
-#define DEBUG(...)   
+#define DEBUG(A, ...) NSLog(A, ##__VA_ARGS__)
 #endif
 
 @interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
+@property (nonatomic) BOOL deckIsEmpty;
 
 // game logic - default is 2
 @property (nonatomic) NSUInteger numberOfCardsToMatch;
@@ -61,6 +62,7 @@
     _prefersWideCards = prefersWideCards;
     _minimumNumberOfCardsOnBoard = minimumNumberOfCardsOnBoard;
     _maximumNumberOfCardsOnBoard = maximumNumberOfCardsOnBoard;
+    _deckIsEmpty = NO;
 
 }
 
@@ -81,10 +83,19 @@
     return _cardViews;
 }
 
+- (Animator *)animator {
+    if (!_animator) {
+        _animator = [[Animator alloc] initWithPlayingArea:self.playingArea];
+    }
+    return _animator;
+}
+
 
 #pragma mark - Game actions
 
 - (void)tapCardView:(UITapGestureRecognizer *)sender {
+    if (self.animator.isMovingCardViews) return;
+    
     CardView *cardView = (CardView *)sender.view;
     NSUInteger cardIndex = [self.cardViews indexOfObject:cardView];
     
@@ -95,6 +106,7 @@
 
 - (IBAction)touchRedealButton:(UIButton *)sender {
     self.game = nil;
+    if (self.animator.isMovingCardViews) return;
     
     __weak CardGameViewController *weakSelf = self;
     CompletionBlock completion = ^(BOOL finished) {
@@ -107,8 +119,11 @@
     
     [self.animator animateRedealGivenCardViews:self.cardViews completion:completion];
 }
+
+// TODO: I should move this to SetCardGameController
 - (IBAction)touchThreeMoreButton:(UIButton *)sender {
-    if ([[self getCardsInPlayFromGame] count] + 3 <= self.maximumNumberOfCardsOnBoard &&
+    if (!self.animator.isMovingCardViews &&
+        [[self getCardsInPlayFromGame] count] + 3 <= self.maximumNumberOfCardsOnBoard &&
         [[self.playingArea centersOfEmptySpacesInGrid] count] >= 3) {
         [self dealMoreCardsIntoPlay:3];
     }
@@ -117,7 +132,8 @@
 - (void)dealMoreCardsIntoPlay:(NSUInteger)numberOfCards{
     // deal cards in the model
     NSUInteger numberDealt = [self.game dealMoreCards:numberOfCards];
-    if (!numberDealt) return;
+    if (numberDealt < numberOfCards) self.deckIsEmpty = YES;
+    if (numberDealt == 0) return;
     
     NSArray *cardsInPlay = [self getCardsInPlayFromGame];
     NSArray *cardsJustDealt = [cardsInPlay subarrayWithRange:NSMakeRange([cardsInPlay count] - numberDealt, numberOfCards)];
@@ -131,10 +147,18 @@
 
 - (void)updateUI {
     if ([self noCardViewsDealtYet]) {
+        
         NSArray *cardViews = [self makeCardViewsFromCards:[self getCardsInPlayFromGame]];
         [self.animator animateCardViewsIntoEmptySpaces:cardViews];
+        
     } else if ([self tooFewCardViewsInPlay]){
+        
         [self dealMoreCardsIntoPlay:[self numberOfCardsToMatch]];
+        
+    } else if (self.playingArea.hasHolesInGrid) {
+        
+        [self.animator fillHolesInGridWithRecentCardsDealt];
+        
     } else {
         // set chosen and matched, then remove matched cards
         [self animateChosenAndMatchedCardViews];
@@ -178,7 +202,8 @@
 }
 
 - (BOOL)tooFewCardViewsInPlay {
-    return [self.playingArea.subviews count] < self.minimumNumberOfCardsOnBoard;
+    
+    return ([self.playingArea.subviews count] < self.minimumNumberOfCardsOnBoard) && !self.deckIsEmpty;
 }
 
 
@@ -266,12 +291,10 @@
 
 #pragma mark - MVC lifecycle
 
-- (void)viewDidLoad {
-    self.animator = [[Animator alloc] initWithPlayingArea:self.playingArea];
-}
-
 - (void)viewDidAppear:(BOOL)animated {
-//    NSLog(@"Calling CardGameViewController:viewDidAppear.");
+    [super viewDidAppear:animated];
+    
+    DEBUG(@"Calling CardGameViewController:viewDidAppear.");
     [self.playingArea createGridWithCardAspectRatio:self.cardAspectRatio
                                    prefersWideCards:self.prefersWideCards
                         minimumNumberOfCardsOnBoard:self.minimumNumberOfCardsOnBoard
@@ -280,5 +303,10 @@
     [self updateUI];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    DEBUG(@"Calling CardGameViewController:didRotateFromInterfaceOrientation.");
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self.animator realignAndScaleCardViewsToGridCells:self.playingArea.subviews];
+}
 
 @end

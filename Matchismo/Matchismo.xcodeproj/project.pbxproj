@@ -30,7 +30,6 @@
 		76273A88183F6FB700E693DE /* SetCardDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A87183F6FB700E693DE /* SetCardDeck.m */; };
 		76273A8B183F6FDE00E693DE /* SetCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 76273A8A183F6FDE00E693DE /* SetCard.m */; };
 		7635DD07186CA93C00AEE9B2 /* PlayingAreaView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7635DD06186CA93C00AEE9B2 /* PlayingAreaView.m */; };
-		7635DD0A186DDA5C00AEE9B2 /* MatchedBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = 7635DD09186DDA5C00AEE9B2 /* MatchedBehavior.m */; };
 		7635DD0D186F0CDD00AEE9B2 /* Animator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7635DD0C186F0CDD00AEE9B2 /* Animator.m */; };
 		76549694186386A400D7A950 /* SetCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76549693186386A400D7A950 /* SetCardView.m */; };
 		7654969A1863942300D7A950 /* Grid.m in Sources */ = {isa = PBXBuildFile; fileRef = 765496991863942300D7A950 /* Grid.m */; };
@@ -38,6 +37,7 @@
 		765A44521844F22A005CBC14 /* UIColor+FromHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 765A44511844F22A005CBC14 /* UIColor+FromHex.m */; };
 		765A44571847750E005CBC14 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 765A44561847750E005CBC14 /* Images.xcassets */; };
 		767D26CC1857995000A99CC1 /* PlayingCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 767D26CB1857995000A99CC1 /* PlayingCardView.m */; };
+		76BA91EB187193EE004746CF /* StickToGridBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BA91EA187193EE004746CF /* StickToGridBehavior.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,8 +89,6 @@
 		76273A8A183F6FDE00E693DE /* SetCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetCard.m; path = Model/SetCard.m; sourceTree = "<group>"; };
 		7635DD05186CA93C00AEE9B2 /* PlayingAreaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingAreaView.h; sourceTree = "<group>"; };
 		7635DD06186CA93C00AEE9B2 /* PlayingAreaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingAreaView.m; sourceTree = "<group>"; };
-		7635DD08186DDA5C00AEE9B2 /* MatchedBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchedBehavior.h; sourceTree = "<group>"; };
-		7635DD09186DDA5C00AEE9B2 /* MatchedBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchedBehavior.m; sourceTree = "<group>"; };
 		7635DD0B186F0CDD00AEE9B2 /* Animator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Animator.h; sourceTree = "<group>"; };
 		7635DD0C186F0CDD00AEE9B2 /* Animator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Animator.m; sourceTree = "<group>"; };
 		76549691186386A400D7A950 /* SetCardAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetCardAttributes.h; sourceTree = "<group>"; };
@@ -105,6 +103,8 @@
 		765A44561847750E005CBC14 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		767D26CA1857995000A99CC1 /* PlayingCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardView.h; sourceTree = "<group>"; };
 		767D26CB1857995000A99CC1 /* PlayingCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardView.m; sourceTree = "<group>"; };
+		76BA91E9187193EE004746CF /* StickToGridBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StickToGridBehavior.h; sourceTree = "<group>"; };
+		76BA91EA187193EE004746CF /* StickToGridBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StickToGridBehavior.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,8 +234,8 @@
 			children = (
 				7635DD0B186F0CDD00AEE9B2 /* Animator.h */,
 				7635DD0C186F0CDD00AEE9B2 /* Animator.m */,
-				7635DD08186DDA5C00AEE9B2 /* MatchedBehavior.h */,
-				7635DD09186DDA5C00AEE9B2 /* MatchedBehavior.m */,
+				76BA91E9187193EE004746CF /* StickToGridBehavior.h */,
+				76BA91EA187193EE004746CF /* StickToGridBehavior.m */,
 			);
 			name = Animator;
 			sourceTree = "<group>";
@@ -389,13 +389,13 @@
 				760196A91837CAF500FD66F0 /* PlayingCard.m in Sources */,
 				760196B218392C5400FD66F0 /* CardMatchingGame.m in Sources */,
 				76549694186386A400D7A950 /* SetCardView.m in Sources */,
-				7635DD0A186DDA5C00AEE9B2 /* MatchedBehavior.m in Sources */,
 				765A44521844F22A005CBC14 /* UIColor+FromHex.m in Sources */,
 				7635DD07186CA93C00AEE9B2 /* PlayingAreaView.m in Sources */,
 				760196AF1838B7F100FD66F0 /* PlayingCardDeck.m in Sources */,
 				760196AC1837D50800FD66F0 /* Deck.m in Sources */,
 				760196A518350AA300FD66F0 /* Card.m in Sources */,
 				76273A7F183C9D4A00E693DE /* PlayingCardGameViewController.m in Sources */,
+				76BA91EB187193EE004746CF /* StickToGridBehavior.m in Sources */,
 				76273A85183F6F0C00E693DE /* SetCardGameViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

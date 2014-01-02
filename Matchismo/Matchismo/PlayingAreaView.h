@@ -21,9 +21,15 @@
 
 // computed outputs
 
-- (NSArray *)indicesOfEmptySpacesInGrid; // array of @[3,5], @[4,6], ...
+//- (NSArray *)indicesOfEmptySpacesInGrid; // array of @[3,5], @[4,6], ...
 - (NSArray *)centersOfEmptySpacesInGrid; // array of NSValue's of CGPoint
+@property (nonatomic, strong, readonly) NSArray *indicesOfEmptySpacesInGrid;
+@property (nonatomic, strong, readonly) NSArray *indicesOfHolesInGrid; // holes are the empty spaces in middle of grid
+@property (nonatomic, strong, readonly) NSArray *cardViewsInVisualOrder;
+@property (nonatomic, readonly) BOOL hasHolesInGrid;
+
 - (CGRect)cardSpawnFrame;
+- (CGRect)frameOfCardViewInCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column; // 95% of the cell
 @property (nonatomic, readonly) CGSize cardViewSize; // 95% of cell size
 
 

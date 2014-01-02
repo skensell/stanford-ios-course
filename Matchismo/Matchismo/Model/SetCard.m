@@ -80,6 +80,8 @@
         goodMatch = 2;
     }
     
+    // FOR DEBUGGING PURPOSES
+    return 1;
     return goodMatch;
 }
 

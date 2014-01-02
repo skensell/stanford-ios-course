@@ -10,12 +10,23 @@
 #import "CardView.h"
 #import "Grid.h"
 
+#ifdef DEBUG
+#undef DEBUG
+#define DEBUG(A, ...) NSLog(A, ##__VA_ARGS__)
+#endif
+
 @interface PlayingAreaView()
 @property (nonatomic, strong) Grid *grid;
 @property (nonatomic) CGFloat cardAspectRatio;
 @property (nonatomic) BOOL prefersWideCards;
 @property (nonatomic) NSUInteger minimumNumberOfCardsOnBoard;
 @property (nonatomic) NSUInteger maximumNumberOfCardsOnBoard;
+
+@property (nonatomic, strong, readwrite) NSArray *indicesOfHolesInGrid;
+@property (nonatomic, strong, readwrite) NSArray *indicesOfEmptySpacesInGrid;
+@property (nonatomic, strong, readwrite) NSArray *cardViewsInVisualOrder;
+
+@property (nonatomic) BOOL resolved;
 @end
 
 @implementation PlayingAreaView
@@ -35,24 +46,81 @@
     
 }
 
-- (NSArray *)indicesOfEmptySpacesInGrid {
-    // returns @[@[@1,@2],@[@3,@6]] if those are open spaces in grid
+#pragma mark - Computed outputs
+
+- (void)computeOutputs {
     
-    NSMutableArray *indices = [[NSMutableArray alloc] init];
+    NSMutableArray *indicesOfEmptySpaces = [[NSMutableArray alloc] init];
+    NSMutableArray *potentialHoleIndices = [[NSMutableArray alloc] init];
+    NSMutableArray *indicesOfHoles = [[NSMutableArray alloc] init];
+    NSMutableArray *cardViewsInVisualOrder = [[NSMutableArray alloc] init];
     
+
     for (int i=0; i < self.grid.rowCount; i++) {
         for (int j=0; j < self.grid.columnCount; j++) {
-            
             UIView *hitView = [self hitTest:[self.grid centerOfCellAtRow:i inColumn:j] withEvent:nil];
             if (hitView == self) {
                 // hit an empty space
-                [indices addObject:@[@(i),@(j)]];
+                [indicesOfEmptySpaces addObject:@[@(i),@(j)]];
+                [potentialHoleIndices addObject:@[@(i),@(j)]];
+            } else {
+                // hit a cardView
+                if ([potentialHoleIndices count]) {
+                    [indicesOfHoles addObjectsFromArray:potentialHoleIndices];
+                    [potentialHoleIndices removeAllObjects];
+                }
+                if ([hitView isKindOfClass:[CardView class]]) {
+                    [cardViewsInVisualOrder addObject:hitView];
+                } else {
+                    DEBUG(@"Found a non cardview in playingarea.");
+                }
             }
             
         }
     }
     
-    return indices;
+    // holes on the last row of cards are not actually holes
+    if ([indicesOfHoles count]) {
+        CardView *lastCardView = [cardViewsInVisualOrder lastObject];
+        int lastRowOfCards = floor(lastCardView.center.y / self.grid.cellSize.height);
+        while ([[indicesOfHoles lastObject][0] integerValue] == lastRowOfCards) {
+            [indicesOfHoles removeLastObject];
+        }
+    }
+    
+    DEBUG(@"Computed outputs.");
+    DEBUG(@"%d %d %d", [cardViewsInVisualOrder count], [indicesOfEmptySpaces count], [indicesOfHoles count]);
+    
+    self.cardViewsInVisualOrder = cardViewsInVisualOrder;
+    self.indicesOfHolesInGrid = indicesOfHoles;
+    self.indicesOfEmptySpacesInGrid = indicesOfEmptySpaces;
+    self.resolved = YES;
+}
+
+- (NSArray *)indicesOfEmptySpacesInGrid {
+    // returns @[@[@1,@2],@[@3,@6]] if those are open spaces in grid
+    if (!_indicesOfEmptySpacesInGrid) _indicesOfEmptySpacesInGrid = [[NSArray alloc] init];
+    if (!self.resolved) [self computeOutputs];
+    
+    return _indicesOfEmptySpacesInGrid;
+}
+
+- (NSArray *)indicesOfHolesInGrid {
+    if (!_indicesOfHolesInGrid) _indicesOfHolesInGrid = [[NSArray alloc] init];
+    if (!self.resolved) [self computeOutputs];
+    
+    return _indicesOfHolesInGrid;
+}
+
+- (NSArray *)cardViewsInVisualOrder {
+    if (!_cardViewsInVisualOrder) _cardViewsInVisualOrder = [[NSArray alloc] init];
+    if (!self.resolved) [self computeOutputs];
+    
+    return _cardViewsInVisualOrder;
+}
+
+- (BOOL)hasHolesInGrid {
+    return [self.indicesOfHolesInGrid count] > 0;
 }
 
 - (CGRect)cardSpawnFrame {
@@ -65,7 +133,7 @@
 }
 
 - (NSArray *)centersOfEmptySpacesInGrid {
-    NSArray *indices = [self indicesOfEmptySpacesInGrid];
+    NSArray *indices = self.indicesOfEmptySpacesInGrid;
     NSMutableArray *centers = [[NSMutableArray alloc] init];
     for (NSArray *ij in indices) {
         [centers addObject:[NSValue valueWithCGPoint:[self.grid centerOfCellAtRow:[ij[0] intValue] inColumn:[ij[1] intValue]]]];
@@ -97,10 +165,15 @@
     return [self.grid frameOfCellAtRow:row inColumn:column];
 }
 
+- (CGRect)frameOfCardViewInCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column {
+    return [self slightlyInsideFrame:[self.grid frameOfCellAtRow:row inColumn:column] fraction:CARDVIEW_FRAME_FRACTION];
+}
+
 #pragma mark - Private
 
 - (CGRect)slightlyInsideFrame:(CGRect)frame fraction:(CGFloat)fraction {
     // scales height and width by percent and moves origin appropriateley
+    // could be moved to more general utility
     if (!fraction) fraction = CARDVIEW_FRAME_FRACTION;
     CGFloat h = frame.size.height * fraction;
     CGFloat w = frame.size.width * fraction;
@@ -119,9 +192,9 @@
         _grid.prefersWideCards = self.prefersWideCards;
         
         if (!_grid.inputsAreValid) {
-            NSLog(@"Invalid inputs for grid");
-            NSLog(@"aspect ratio: %f", self.cardAspectRatio);
-            NSLog(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
+            DEBUG(@"Invalid inputs for grid");
+            DEBUG(@"aspect ratio: %f", self.cardAspectRatio);
+            DEBUG(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
         }
     }
     return _grid;
@@ -151,14 +224,24 @@
     return self;
 }
 
--(void)layoutSubviews {
-    NSLog(@"Calling PlayingAreaView:layoutSubviews");
+- (void)willRemoveSubview:(UIView *)subview {
+    self.resolved = NO;
+}
+
+- (void)didAddSubview:(UIView *)subview {
+    self.resolved = NO;
+}
+
+- (void)layoutSubviews {
+    DEBUG(@"Calling PlayingAreaView:layoutSubviews");
     [super layoutSubviews];
     
     if (!CGSizeEqualToSize(self.grid.size, self.bounds.size)){
-        NSLog(@"INFO: Grid not equal to playingArea. Resetting grid to nil.");
+        // Happens at startup and on device rotation
+        DEBUG(@"INFO: Grid not equal to playingArea. Resetting grid to nil.");
         self.grid = nil;
     }
+    self.resolved = NO;
 }
 
 @end
