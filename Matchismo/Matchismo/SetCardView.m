@@ -315,9 +315,6 @@
 
 #pragma mark - Animations
 
-- (void)animateUnchoose {
-    //[self.layer removeAllAnimations];
-}
 
 #pragma mark - View lifecycle
 

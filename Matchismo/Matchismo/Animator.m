@@ -17,6 +17,7 @@
 @property (strong, nonatomic) UIDynamicAnimator *stickToGridAnimator;
 @property (strong, nonatomic) StickToGridBehavior *stickToGridBehavior;
 
+@property (nonatomic) BOOL allowsFlippingOfCards;
 @property (nonatomic, readwrite) BOOL isMovingCardViews;
 @end
 
@@ -24,11 +25,12 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithPlayingArea:(PlayingAreaView *)playingArea {
+- (instancetype)initWithPlayingArea:(PlayingAreaView *)playingArea allowsFlippingOfCards:(BOOL)allowsFlippingOfCards {
     self = [super init];
     if (self) {
         _playingArea = playingArea;
         _isMovingCardViews = NO;
+        _allowsFlippingOfCards = allowsFlippingOfCards;
     }
     return self;
 }
@@ -139,6 +141,10 @@
 }
 
 - (void)animateChosenCardViews:(NSArray *)chosenCardViews {
+    // This method is only meant to distinguish cards when flipping is not an option.
+    // Typically a card's flip animation is animated by the cardView itself when it becomes chosen.
+    if (self.allowsFlippingOfCards) return;
+    
     
     AnimationBlock animation1 = ^{
         for (CardView *cardView in chosenCardViews){

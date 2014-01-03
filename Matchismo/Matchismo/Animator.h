@@ -14,7 +14,7 @@ typedef void (^AnimationBlock)();
 
 @interface Animator : NSObject
 
-- (instancetype)initWithPlayingArea:(PlayingAreaView *)playingArea;
+- (instancetype)initWithPlayingArea:(PlayingAreaView *)playingArea allowsFlippingOfCards:(BOOL)allowsFlippingOfCards;
 
 - (void)animateCardViewsIntoEmptySpaces:(NSArray *)cardViews;
 - (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews completion:(CompletionBlock)completion;

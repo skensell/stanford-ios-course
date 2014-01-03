@@ -216,6 +216,27 @@
     }
 }
 
+#pragma mark - Animations
+
+- (void)animateUnchoose {
+    [UIView transitionWithView:self
+                      duration:0.25
+                       options:UIViewAnimationOptionTransitionFlipFromLeft
+                    animations:^{
+                        self.faceUp = !self.faceUp;
+                    } completion:nil];
+}
+
+- (void)animateChoose {
+    [UIView transitionWithView:self
+                      duration:0.25
+                       options:UIViewAnimationOptionTransitionFlipFromRight
+                    animations:^{
+                        self.faceUp = !self.faceUp;
+                    } completion:nil];
+}
+
+
 #pragma mark - Initialization
 
 - (void)setup

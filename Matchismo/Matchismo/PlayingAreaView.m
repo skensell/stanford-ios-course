@@ -23,6 +23,7 @@
 @property (nonatomic, strong, readwrite) NSArray *cardViewsInVisualOrder;
 
 @property (nonatomic) BOOL resolved;
+@property (nonatomic) BOOL gridLoadedAtLeastOnce;
 @end
 
 @implementation PlayingAreaView
@@ -186,11 +187,12 @@
         _grid.minimumNumberOfCells = self.maximumNumberOfCardsOnBoard; // need to allow space for a maximum deal
         _grid.prefersWideCards = self.prefersWideCards;
         
-        if (!_grid.inputsAreValid) {
+        if (!_grid.inputsAreValid && self.gridLoadedAtLeastOnce) {
             WARNING(@"Invalid inputs for grid: %f %d", self.cardAspectRatio, self.minimumNumberOfCardsOnBoard);
             _grid = nil;
         } else {
             INFO(@"Grid inputs valid.");
+            self.gridLoadedAtLeastOnce = YES;
         }
     }
     return _grid;
@@ -204,6 +206,7 @@
     self.contentMode = UIViewContentModeRedraw;
     self.clipsToBounds = YES;
     self.opaque = NO;
+    self.gridLoadedAtLeastOnce = NO;
     
 }
 

@@ -26,12 +26,12 @@
 @property (nonatomic) NSUInteger minimumNumberOfCardsOnBoard;
 @property (nonatomic) NSUInteger maximumNumberOfCardsOnBoard;
 
-
 // playingarea could also handle the allocation of cardViews,
 // but that would complicate some code here I think
 @property (strong, nonatomic) IBOutlet PlayingAreaView *playingArea;
 
 @property (strong, nonatomic) Animator *animator;
+@property (nonatomic) BOOL allowsFlippingOfCards;
 
 
 // index of view in cardViews corresponds to index in game.cards
@@ -51,13 +51,15 @@
                           CardAspectRatio:(CGFloat)aspectRatio
                          prefersWideCards:(BOOL)prefersWideCards
               minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
-              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard {
+              maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard
+                    allowsFlippingOfCards:(BOOL)allowsFlippingOfCards{
 
     _numberOfCardsToMatch = numberOfCardsToMatch;
     _cardAspectRatio = aspectRatio;
     _prefersWideCards = prefersWideCards;
     _minimumNumberOfCardsOnBoard = minimumNumberOfCardsOnBoard;
     _maximumNumberOfCardsOnBoard = maximumNumberOfCardsOnBoard;
+    _allowsFlippingOfCards = allowsFlippingOfCards;
     _deckIsEmpty = NO;
 
 }
@@ -81,7 +83,7 @@
 
 - (Animator *)animator {
     if (!_animator) {
-        _animator = [[Animator alloc] initWithPlayingArea:self.playingArea];
+        _animator = [[Animator alloc] initWithPlayingArea:self.playingArea allowsFlippingOfCards:self.allowsFlippingOfCards];
     }
     return _animator;
 }

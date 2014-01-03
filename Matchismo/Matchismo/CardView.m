@@ -29,9 +29,6 @@
                 [self animateUnchoose];
             }
         }
-    } else if (self.matched) {
-        // the last chosen card which matches actually is never "chosen" in the game
-        [self animateChoose];
     }
     _chosen = chosen;
     [self setNeedsDisplay];
