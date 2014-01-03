@@ -11,6 +11,11 @@
 #import "PlayingCard.h"
 #import "PlayingCardView.h"
 
+#ifdef DEBUG
+#undef DEBUG
+#define DEBUG(A, ...) NSLog(A, ##__VA_ARGS__)
+#endif
+
 @interface PlayingCardGameViewController ()
 
 @end
@@ -37,6 +42,11 @@
                 minimumNumberOfCardsOnBoard:16
                 maximumNumberOfCardsOnBoard:20];
     [super viewDidLoad];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    DEBUG(@"Calling PlayingCardGameViewController:viewDidAppear:");
+    [super viewDidAppear:animated];
 }
 
 @end

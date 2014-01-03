@@ -16,30 +16,49 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Score: 0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TOq-Hq-oha">
-                                <rect key="frame" x="20" y="478" width="103" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="046-aX-0Ig">
+                                <rect key="frame" x="115" y="456" width="89" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="43" id="dEC-bK-yyq"/>
+                                    <constraint firstAttribute="width" constant="89" id="udu-O1-3sO"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="giL-aa-vPc">
-                                <rect key="frame" x="212" y="471" width="88" height="28"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sSS-7D-LbL">
+                                <rect key="frame" x="212" y="456" width="88" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="88" id="gXK-zS-nDS"/>
+                                </constraints>
                                 <state key="normal" title="Redeal" backgroundImage="cardfront">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="touchRedealButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="JjO-Qy-YAj"/>
+                                    <action selector="touchRedealButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="agl-an-X6z"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4aO-Ai-jSL" customClass="PlayingAreaView">
-                                <rect key="frame" x="20" y="20" width="280" height="443"/>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="abT-EN-05e" customClass="PlayingAreaView">
+                                <rect key="frame" x="20" y="20" width="280" height="428"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="0.25098040699958801" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="abT-EN-05e" secondAttribute="trailing" constant="20" symbolic="YES" id="Dxk-ys-Sh7"/>
+                            <constraint firstItem="sSS-7D-LbL" firstAttribute="top" secondItem="abT-EN-05e" secondAttribute="bottom" constant="8" symbolic="YES" id="L0L-HZ-Lov"/>
+                            <constraint firstItem="sSS-7D-LbL" firstAttribute="bottom" secondItem="046-aX-0Ig" secondAttribute="bottom" id="XQ9-Hl-HdG"/>
+                            <constraint firstItem="abT-EN-05e" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" symbolic="YES" id="Xcx-7X-tls"/>
+                            <constraint firstAttribute="bottom" secondItem="046-aX-0Ig" secondAttribute="bottom" constant="20" symbolic="YES" id="Zhn-BE-qts"/>
+                            <constraint firstItem="046-aX-0Ig" firstAttribute="top" secondItem="abT-EN-05e" secondAttribute="bottom" constant="8" symbolic="YES" id="bdg-ox-rCB"/>
+                            <constraint firstItem="sSS-7D-LbL" firstAttribute="leading" secondItem="046-aX-0Ig" secondAttribute="trailing" constant="8" symbolic="YES" id="i5n-ys-0eF"/>
+                            <constraint firstItem="abT-EN-05e" firstAttribute="trailing" secondItem="sSS-7D-LbL" secondAttribute="trailing" id="tdc-T5-FqN"/>
+                            <constraint firstItem="abT-EN-05e" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" constant="20" symbolic="YES" id="xeU-bk-3zw"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Memory" image="spade" id="Zz2-aW-ah3"/>
                     <navigationItem key="navigationItem" title="Memory" id="yJR-gt-SmT">
@@ -48,8 +67,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="playingArea" destination="4aO-Ai-jSL" id="3ic-Mq-1Ha"/>
-                        <outlet property="scoreLabel" destination="TOq-Hq-oha" id="9xy-Uh-9UT"/>
+                        <outlet property="scoreLabel" destination="046-aX-0Ig" id="mRp-Qk-Fj6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

@@ -192,7 +192,7 @@
         _grid.prefersWideCards = self.prefersWideCards;
         
         if (!_grid.inputsAreValid) {
-            DEBUG(@"Invalid inputs for grid");
+            DEBUG(@"ERROR: Invalid inputs for grid");
             DEBUG(@"aspect ratio: %f", self.cardAspectRatio);
             DEBUG(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
         }

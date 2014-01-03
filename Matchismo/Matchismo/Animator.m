@@ -63,6 +63,7 @@
     
     if ([centersOfEmptySpacesInGrid count] < [cardViews count]) {
         DEBUG(@"ERROR: More cards to place on grid than empty spaces.");
+        DEBUG(@"only %d empty spaces in grid and %d cardViews to place.", [centersOfEmptySpacesInGrid count], [cardViews count]);
         return;
     }
     self.isMovingCardViews = YES;
