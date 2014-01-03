@@ -9,11 +9,7 @@
 #import "Animator.h"
 #import "CardView.h"
 #import "StickToGridBehavior.h"
-
-#ifdef DEBUG
-#undef DEBUG
-#define DEBUG(A, ...) NSLog(A, ##__VA_ARGS__)
-#endif
+#import "Common.h"
 
 @interface Animator() <UIDynamicAnimatorDelegate>
 @property (strong, nonatomic) PlayingAreaView *playingArea;
@@ -62,8 +58,8 @@
     NSArray *centersOfEmptySpacesInGrid = [self.playingArea centersOfEmptySpacesInGrid];
     
     if ([centersOfEmptySpacesInGrid count] < [cardViews count]) {
-        DEBUG(@"ERROR: More cards to place on grid than empty spaces.");
-        DEBUG(@"only %d empty spaces in grid and %d cardViews to place.", [centersOfEmptySpacesInGrid count], [cardViews count]);
+        ERROR(@"More cards to place on grid than empty spaces.");
+        ERROR(@"Only %d empty spaces in grid and %d cardViews to place.", [centersOfEmptySpacesInGrid count], [cardViews count]);
         return;
     }
     self.isMovingCardViews = YES;
@@ -204,7 +200,7 @@
     NSUInteger numberOfHolesInGrid = [self.playingArea.indicesOfHolesInGrid count];
     NSArray *cardviews = self.playingArea.cardViewsInVisualOrder;
     if (numberOfHolesInGrid > [cardviews count]) {
-        DEBUG(@"ERROR: Too many holes to fill.");
+        ERROR(@"Too many holes to fill.");
         return;
     }
     NSArray *bottomCardViews = [cardviews subarrayWithRange:NSMakeRange([cardviews count] - numberOfHolesInGrid, numberOfHolesInGrid)];
@@ -213,8 +209,7 @@
 }
 
 - (void)realignAndScaleCardViewsToGridCells:(NSArray *)cardViews {
-    // move each cardView to the top of the grid
-    // adjust their frames as necessary
+    // move and scale each cardView to the top of the grid
     
     int idx = 0;
     for (int i = 0; i < self.playingArea.rowCount; i++) {
@@ -249,7 +244,7 @@
     }
     
     if (self.isMovingCardViews) {
-        DEBUG(@"ERROR: Waited too long to move card views.");
+        ERROR(@"Waited too long to move card views.");
     } else {
         self.isMovingCardViews = YES;
     }

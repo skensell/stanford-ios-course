@@ -7,6 +7,7 @@
 //
 
 #import "CardMatchingGame.h"
+#import "Common.h"
 
 @interface CardMatchingGame()
 @property (nonatomic, readwrite) NSInteger score; //readwrite is typically only used to make a readonly property readwrite
@@ -69,10 +70,10 @@
 - (void)setNumberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch
 {
     if ([@[@2, @3] containsObject:@(numberOfCardsToMatch)]) {
-        NSLog(@"Matching %@ cards", @(numberOfCardsToMatch));
+        DEBUG(@"Matching %@ cards", @(numberOfCardsToMatch));
         _numberOfCardsToMatch = numberOfCardsToMatch;
     } else {
-        NSLog(@"Matching 2 cards");
+        DEBUG(@"Matching 2 cards");
         _numberOfCardsToMatch = 2;
     }
 }

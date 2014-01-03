@@ -10,11 +10,7 @@
 #import "PlayingCardDeck.h"
 #import "PlayingCard.h"
 #import "PlayingCardView.h"
-
-#ifdef DEBUG
-#undef DEBUG
-#define DEBUG(A, ...) NSLog(A, ##__VA_ARGS__)
-#endif
+#import "Common.h"
 
 @interface PlayingCardGameViewController ()
 
@@ -40,13 +36,8 @@
                             CardAspectRatio:5.0/7.0
                            prefersWideCards:NO
                 minimumNumberOfCardsOnBoard:16
-                maximumNumberOfCardsOnBoard:20];
+                maximumNumberOfCardsOnBoard:16];
     [super viewDidLoad];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    DEBUG(@"Calling PlayingCardGameViewController:viewDidAppear:");
-    [super viewDidAppear:animated];
 }
 
 @end

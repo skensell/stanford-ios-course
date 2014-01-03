@@ -7,6 +7,7 @@
 //
 
 #import "SetCard.h"
+#import "Common.h"
 
 @implementation SetCard
 
@@ -34,7 +35,6 @@
     int score = 0;
     
     if ([otherCards count] != 2) {
-        NSLog(@"Match returns 0");
         return 0;
     }
     
@@ -51,6 +51,11 @@
         }
     }
     
+    if (score) {
+        DEBUG(@"Matched with score of %d.", score);
+    } else {
+        DEBUG(@"Mismatch.");
+    }
     return score;
 }
 
@@ -73,15 +78,13 @@
     }
     
     if ([attributeSet count] == 1) {
-        NSLog(@"All are the same with respect to %@", attribute);
+        DEBUG(@"All are the same with respect to %@", attribute);
         goodMatch = 1;
     } else if ([attributeSet count] == 3) {
-        NSLog(@"All are different with respect to %@", attribute);
+        DEBUG(@"All are different with respect to %@", attribute);
         goodMatch = 2;
     }
     
-    // FOR DEBUGGING PURPOSES
-    return 1;
     return goodMatch;
 }
 

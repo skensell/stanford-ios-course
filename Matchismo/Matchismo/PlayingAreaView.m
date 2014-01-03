@@ -9,11 +9,7 @@
 #import "PlayingAreaView.h"
 #import "CardView.h"
 #import "Grid.h"
-
-#ifdef DEBUG
-#undef DEBUG
-#define DEBUG(A, ...) NSLog(A, ##__VA_ARGS__)
-#endif
+#import "Common.h"
 
 @interface PlayingAreaView()
 @property (nonatomic, strong) Grid *grid;
@@ -33,7 +29,7 @@
 
 #pragma mark - Grid
 
-- (void)createGridWithCardAspectRatio:(CGFloat)aspectRatio
+- (void)resetGridWithCardAspectRatio:(CGFloat)aspectRatio
                      prefersWideCards:(BOOL)prefersWideCards
           minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
           maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard {
@@ -72,7 +68,7 @@
                 if ([hitView isKindOfClass:[CardView class]]) {
                     [cardViewsInVisualOrder addObject:hitView];
                 } else {
-                    DEBUG(@"Found a non cardview in playingarea.");
+                    ERROR(@"Found a non cardview in playingarea.");
                 }
             }
             
@@ -88,8 +84,7 @@
         }
     }
     
-    DEBUG(@"Computed outputs.");
-    DEBUG(@"%d %d %d", [cardViewsInVisualOrder count], [indicesOfEmptySpaces count], [indicesOfHoles count]);
+    DEBUG(@"Computed outputs: %d %d %d", [cardViewsInVisualOrder count], [indicesOfEmptySpaces count], [indicesOfHoles count]);
     
     self.cardViewsInVisualOrder = cardViewsInVisualOrder;
     self.indicesOfHolesInGrid = indicesOfHoles;
@@ -192,9 +187,10 @@
         _grid.prefersWideCards = self.prefersWideCards;
         
         if (!_grid.inputsAreValid) {
-            DEBUG(@"ERROR: Invalid inputs for grid");
-            DEBUG(@"aspect ratio: %f", self.cardAspectRatio);
-            DEBUG(@"min number of cells: %d", self.minimumNumberOfCardsOnBoard);
+            WARNING(@"Invalid inputs for grid: %f %d", self.cardAspectRatio, self.minimumNumberOfCardsOnBoard);
+            _grid = nil;
+        } else {
+            INFO(@"Grid inputs valid.");
         }
     }
     return _grid;
@@ -206,6 +202,9 @@
 {
     // possibly unnecessary
     self.contentMode = UIViewContentModeRedraw;
+    self.clipsToBounds = YES;
+    self.opaque = NO;
+    
 }
 
 // I need this because I'm being awoken from the freeze-dried storyboard state
@@ -233,14 +232,14 @@
 }
 
 - (void)layoutSubviews {
-    DEBUG(@"Calling PlayingAreaView:layoutSubviews");
     [super layoutSubviews];
     
     if (!CGSizeEqualToSize(self.grid.size, self.bounds.size)){
         // Happens at startup and on device rotation
-        DEBUG(@"INFO: Grid not equal to playingArea. Resetting grid to nil.");
+        INFO(@"Grid not equal to playingArea. Resetting grid to nil.");
         self.grid = nil;
     }
+    
     self.resolved = NO;
 }
 

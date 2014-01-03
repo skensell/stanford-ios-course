@@ -11,11 +11,7 @@
 #import "CardView.h"
 #import "PlayingAreaView.h"
 #import "Animator.h"
-
-#ifdef DEBUG
-#undef DEBUG
-#define DEBUG(A, ...) NSLog(A, ##__VA_ARGS__)
-#endif
+#import "Common.h"
 
 @interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
@@ -255,19 +251,18 @@
         
         if (cardView.isChosen) {
             [chosenCardViews addObject:cardView];
-            DEBUG(@"Chosen cardview");
         }
         
         if (cardView.isMatched) [matchedCardViews addObject:cardView];
     }
     
-    
     if ([chosenCardViews count]) {
         [self.animator animateChosenCardViews:chosenCardViews];
+        DEBUG(@"There are %d chosen cardViews.", [chosenCardViews count]);
     }
     
     if ([matchedCardViews count]) {
-        DEBUG(@"Removing matched cardViews %@", matchedCardViews);
+        DEBUG(@"There are %d matched cardViews.", [matchedCardViews count]);
         [self removeMatchedCardViews:matchedCardViews];
     }
 }
@@ -294,17 +289,20 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    DEBUG(@"Calling CardGameViewController:viewDidAppear.");
-    [self.playingArea createGridWithCardAspectRatio:self.cardAspectRatio
+    [self.playingArea resetGridWithCardAspectRatio:self.cardAspectRatio
                                    prefersWideCards:self.prefersWideCards
                         minimumNumberOfCardsOnBoard:self.minimumNumberOfCardsOnBoard
                         maximumNumberOfCardsOnBoard:self.maximumNumberOfCardsOnBoard];
     
-    [self updateUI];
+    if ([self.playingArea.subviews count]) {
+        // cards on board already
+        [self.animator realignAndScaleCardViewsToGridCells:self.playingArea.subviews];
+    } else {
+        [self updateUI];
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    DEBUG(@"Calling CardGameViewController:didRotateFromInterfaceOrientation.");
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     [self.animator realignAndScaleCardViewsToGridCells:self.playingArea.subviews];
 }

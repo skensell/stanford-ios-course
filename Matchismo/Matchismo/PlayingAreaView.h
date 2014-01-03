@@ -14,7 +14,7 @@
 
 // To use this class call this at least once
 
-- (void)createGridWithCardAspectRatio:(CGFloat)aspectRatio
+- (void)resetGridWithCardAspectRatio:(CGFloat)aspectRatio
                      prefersWideCards:(BOOL)prefersWideCards
           minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
           maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard;
