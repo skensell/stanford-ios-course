@@ -263,11 +263,11 @@
 			children = (
 				760196831834EB9500FD66F0 /* CardGameViewController.h */,
 				760196841834EB9500FD66F0 /* CardGameViewController.m */,
-				7635DD0E186F0D0000AEE9B2 /* Animator */,
 				76273A7D183C9D4A00E693DE /* PlayingCardGameViewController.h */,
 				76273A7E183C9D4A00E693DE /* PlayingCardGameViewController.m */,
 				76273A83183F6F0C00E693DE /* SetCardGameViewController.h */,
 				76273A84183F6F0C00E693DE /* SetCardGameViewController.m */,
+				7635DD0E186F0D0000AEE9B2 /* Animator */,
 			);
 			name = Controller;
 			sourceTree = "<group>";

@@ -21,7 +21,8 @@
                          prefersWideCards:(BOOL)prefersWideCards // if an aspect ratio >= 1 is preferred
               minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard // this many cards will be dealt at start and always kept on board
               maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard // enough space will be left for this many cards
-                    allowsFlippingOfCards:(BOOL)allowsFlippingOfCards; // if NO, then chosen cards are animated by blinking
+                    allowsFlippingOfCards:(BOOL)allowsFlippingOfCards // if NO, then chosen cards are animated by blinking
+  numberToDealWhenDealMoreButtonIsPressed:(NSUInteger)numberToDealWhenDealMoreButtonIsPressed; // ctrl-drag to touchDealMoreButton if using this
 
 // protected
 - (CardView *)createCardViewInFrame:(CGRect)frame fromCard:(Card *)card; // ABSTRACT

@@ -37,7 +37,8 @@
                            prefersWideCards:YES
                 minimumNumberOfCardsOnBoard:12
                 maximumNumberOfCardsOnBoard:18
-                      allowsFlippingOfCards:NO];
+                      allowsFlippingOfCards:NO
+    numberToDealWhenDealMoreButtonIsPressed:3];
 
     [super viewDidLoad];
 }

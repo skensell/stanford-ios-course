@@ -56,6 +56,8 @@
     } else {
         DEBUG(@"Mismatch.");
     }
+    // FOR DEBUGGING
+    return 1;
     return score;
 }
 

@@ -121,7 +121,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="touchThreeMoreButton:" destination="Aen-tU-KGD" eventType="touchUpInside" id="nwo-x5-M34"/>
+                                    <action selector="touchDealMoreButton:" destination="Aen-tU-KGD" eventType="touchUpInside" id="ZZg-gk-AiQ"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -151,6 +151,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="dealMoreButton" destination="teg-Cs-AQV" id="Jn2-SV-lkd"/>
                         <outlet property="playingArea" destination="KHw-Qh-sw2" id="e7C-my-GSg"/>
                         <outlet property="scoreLabel" destination="qw7-J0-r4N" id="aWA-Oq-zzb"/>
                     </connections>

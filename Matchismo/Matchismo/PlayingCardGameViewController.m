@@ -27,7 +27,7 @@
     PlayingCardView *playingCardView = [[PlayingCardView alloc] initWithFrame:frame];
     playingCardView.suit = playingCard.suit;
     playingCardView.rank = playingCard.rank;
-    playingCardView.faceUp = NO; // TODO: should be no
+    playingCardView.faceUp = NO;
     return playingCardView;
 }
 
@@ -37,7 +37,9 @@
                            prefersWideCards:NO
                 minimumNumberOfCardsOnBoard:16
                 maximumNumberOfCardsOnBoard:16
-                      allowsFlippingOfCards:YES];
+                      allowsFlippingOfCards:YES
+    numberToDealWhenDealMoreButtonIsPressed:0];
+    
     [super viewDidLoad];
 }
 

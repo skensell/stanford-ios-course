@@ -26,6 +26,9 @@
 @property (nonatomic) NSUInteger minimumNumberOfCardsOnBoard;
 @property (nonatomic) NSUInteger maximumNumberOfCardsOnBoard;
 
+@property (nonatomic) NSUInteger numberToDealWhenDealMoreButtonIsPressed;
+@property (strong, nonatomic) IBOutlet UIButton *dealMoreButton;
+
 // playingarea could also handle the allocation of cardViews,
 // but that would complicate some code here I think
 @property (strong, nonatomic) IBOutlet PlayingAreaView *playingArea;
@@ -52,7 +55,8 @@
                          prefersWideCards:(BOOL)prefersWideCards
               minimumNumberOfCardsOnBoard:(NSUInteger)minimumNumberOfCardsOnBoard
               maximumNumberOfCardsOnBoard:(NSUInteger)maximumNumberOfCardsOnBoard
-                    allowsFlippingOfCards:(BOOL)allowsFlippingOfCards{
+                    allowsFlippingOfCards:(BOOL)allowsFlippingOfCards
+  numberToDealWhenDealMoreButtonIsPressed:(NSUInteger)numberToDealWhenDealMoreButtonIsPressed {
 
     _numberOfCardsToMatch = numberOfCardsToMatch;
     _cardAspectRatio = aspectRatio;
@@ -60,6 +64,7 @@
     _minimumNumberOfCardsOnBoard = minimumNumberOfCardsOnBoard;
     _maximumNumberOfCardsOnBoard = maximumNumberOfCardsOnBoard;
     _allowsFlippingOfCards = allowsFlippingOfCards;
+    _numberToDealWhenDealMoreButtonIsPressed = numberToDealWhenDealMoreButtonIsPressed;
     _deckIsEmpty = NO;
 
 }
@@ -88,6 +93,12 @@
     return _animator;
 }
 
+- (void)setDeckIsEmpty:(BOOL)deckIsEmpty {
+    if (_deckIsEmpty != deckIsEmpty && deckIsEmpty) {
+        self.dealMoreButton.enabled = NO;
+        _deckIsEmpty = deckIsEmpty;
+    }
+}
 
 #pragma mark - Game actions
 
@@ -103,8 +114,9 @@
 }
 
 - (IBAction)touchRedealButton:(UIButton *)sender {
-    self.game = nil;
     if (self.animator.isMovingCardViews) return;
+    self.game = nil;
+    self.dealMoreButton.enabled = YES;
     
     __weak CardGameViewController *weakSelf = self;
     CompletionBlock completion = ^(BOOL finished) {
@@ -118,12 +130,14 @@
     [self.animator animateRedealGivenCardViews:self.cardViews completion:completion];
 }
 
-// TODO: I should move this to SetCardGameController
-- (IBAction)touchThreeMoreButton:(UIButton *)sender {
+- (IBAction)touchDealMoreButton:(UIButton *)sender {
+    NSUInteger numberToDeal = self.numberToDealWhenDealMoreButtonIsPressed;
+    if (!numberToDeal) return;
+    
     if (!self.animator.isMovingCardViews &&
-        [[self getCardsInPlayFromGame] count] + 3 <= self.maximumNumberOfCardsOnBoard &&
-        [[self.playingArea centersOfEmptySpacesInGrid] count] >= 3) {
-        [self dealMoreCardsIntoPlay:3];
+        [[self getCardsInPlayFromGame] count] + numberToDeal <= self.maximumNumberOfCardsOnBoard &&
+        [[self.playingArea centersOfEmptySpacesInGrid] count] >= numberToDeal) {
+        [self dealMoreCardsIntoPlay:numberToDeal];
     }
 }
 

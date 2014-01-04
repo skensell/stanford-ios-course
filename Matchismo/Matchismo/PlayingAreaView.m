@@ -191,7 +191,7 @@
             WARNING(@"Invalid inputs for grid: %f %d", self.cardAspectRatio, self.minimumNumberOfCardsOnBoard);
             _grid = nil;
         } else {
-            INFO(@"Grid inputs valid.");
+            DEBUG(@"Grid inputs valid.");
             self.gridLoadedAtLeastOnce = YES;
         }
     }
@@ -204,7 +204,7 @@
 {
     // possibly unnecessary
     self.contentMode = UIViewContentModeRedraw;
-    self.clipsToBounds = YES;
+    self.clipsToBounds = NO;
     self.opaque = NO;
     self.gridLoadedAtLeastOnce = NO;
     
