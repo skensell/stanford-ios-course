@@ -14,8 +14,9 @@
 @interface Animator() <UIDynamicAnimatorDelegate>
 @property (strong, nonatomic) PlayingAreaView *playingArea;
 
-@property (strong, nonatomic) UIDynamicAnimator *stickToGridAnimator;
-@property (strong, nonatomic) StickToGridBehavior *stickToGridBehavior;
+@property (strong, nonatomic) UIDynamicAnimator *pileCardsAnimator;
+@property (strong, nonatomic) NSMutableArray *attachments; // of UIAttachmentBehavior
+@property (nonatomic) CGPoint centerOfPile;
 
 @property (nonatomic) BOOL allowsFlippingOfCards;
 @property (nonatomic, readwrite) BOOL isMovingCardViews;
@@ -31,26 +32,28 @@
         _playingArea = playingArea;
         _isMovingCardViews = NO;
         _allowsFlippingOfCards = allowsFlippingOfCards;
+        
+        // pile cards up when pinched
+        UIPinchGestureRecognizer *pinchgr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(playingAreaPinched:)];
+        [playingArea addGestureRecognizer:pinchgr];
+        
     }
     return self;
 }
 
 #pragma mark - Properties
 
-- (UIDynamicAnimator *)stickToGridAnimator {
-    if (!_stickToGridAnimator) {
-        _stickToGridAnimator = [[UIDynamicAnimator alloc] initWithReferenceView:self.playingArea];
-        _stickToGridAnimator.delegate = self;
+- (UIDynamicAnimator *)pileCardsAnimator {
+    if (!_pileCardsAnimator) {
+        _pileCardsAnimator = [[UIDynamicAnimator alloc] initWithReferenceView:self.playingArea];
+        _pileCardsAnimator.delegate = self;
     }
-    return _stickToGridAnimator;
+    return _pileCardsAnimator;
 }
 
-- (StickToGridBehavior *)stickToGridBehavior {
-    if (!_stickToGridBehavior) {
-        _stickToGridBehavior = [[StickToGridBehavior alloc] init];
-        [self.stickToGridAnimator addBehavior:_stickToGridBehavior];
-    }
-    return _stickToGridBehavior;
+- (NSMutableArray *)attachments {
+    if (!_attachments) _attachments = [[NSMutableArray alloc] init];
+    return _attachments;
 }
 
 #pragma mark - Normal animations
@@ -88,6 +91,23 @@
         
         idx++;
     }
+}
+
+- (void)animateCardViewsIntoPileAtPoint:(CGPoint)destination {
+    NSArray *cardViews = self.playingArea.cardViewsInVisualOrder;
+    if (![cardViews count]) return;
+    
+    [cardViews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
+        cardView.transform = CGAffineTransformMakeRotation(M_PI); // flip upside down before rotating
+    }];
+    
+    [UIView animateWithDuration:0.75 animations:^{
+        for (int i = 0; i < [cardViews count]; i++) {
+            CardView *cardView = (CardView *)cardViews[i];
+            cardView.transform = CGAffineTransformMakeRotation(0 + ([cardViews count] - 1 - i)*.02);
+            cardView.center = destination;
+        }
+    } completion:nil];
 }
 
 - (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews completion:(CompletionBlock)completion {
@@ -216,6 +236,11 @@
 
 - (void)realignAndScaleCardViewsToGridCells:(NSArray *)cardViews {
     // move and scale each cardView to the top of the grid
+    if (self.isMovingCardViews) {
+        DEBUG(@"Animation cancelled. Cards are being moved.");
+        return;
+    }
+    self.isMovingCardViews = YES;
     
     int idx = 0;
     for (int i = 0; i < self.playingArea.rowCount; i++) {
@@ -228,13 +253,92 @@
                                 options:0
                              animations:^{
                                  cardView.center = [self.playingArea centerOfCellAtRow:i inColumn:j];
-                                 cardView.frame = [self.playingArea frameOfCardViewInCellAtRow:i inColumn:j];
-                             } completion:nil];
+                                 cardView.transform = CGAffineTransformMakeRotation(0);
+                             } completion:^(BOOL fin){
+                                 // this should only be the last one
+                                 self.isMovingCardViews = NO;
+                             }];
             
             idx++;
         }
     }
     
+}
+
+#pragma mark - Pile cards when pinched
+
+- (void)playingAreaPinched:(UIPinchGestureRecognizer *)pinchgr {
+    // animate cards under a transparent stack view (alpha .5 for testing)
+    // this stack will have a pan gesture to move it and the cards via an attachment behavior
+    // this stack will have a tap gesture to kill the attachment behavior and return cards to their original spot
+    if (pinchgr.state == UIGestureRecognizerStateEnded) {
+        if ([self.playingArea.subviews count] == 0 || self.isMovingCardViews) {
+            DEBUG(@"Animation cancelled: cards currently being moved or no cards are in play.");
+            return;
+        }
+        self.isMovingCardViews = YES; // don't set to NO until pile is tapped
+        
+        self.centerOfPile = [pinchgr locationInView:self.playingArea];
+        [self animateCardViewsIntoPileAtPoint:self.centerOfPile];
+        
+        // create transparent view on top of cards called pile
+        NSUInteger w = self.playingArea.cellSize.width;
+        NSUInteger h = self.playingArea.cellSize.height;
+        UIView *pile = [[UIView alloc] initWithFrame:CGRectMake(self.centerOfPile.x - w/2, self.centerOfPile.y - h/2, w, h)];
+        pile.backgroundColor = [UIColor clearColor];
+        
+        UIPanGestureRecognizer *pangr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pilePanned:)];
+        UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pileTapped:)];
+        [pile addGestureRecognizer:pangr];
+        [pile addGestureRecognizer:tapgr];
+        
+        [self.playingArea addSubview:pile];
+        
+    }
+}
+
+- (void)pilePanned:(UIPanGestureRecognizer *)pangr {
+    // moves the pile around
+    
+    CGPoint gesturePoint = [pangr locationInView:self.playingArea];
+    if (pangr.state == UIGestureRecognizerStateBegan) {
+        // attach cardViews and pile to currently touched point
+        
+        for (UIView *subview in self.playingArea.subviews){ // iterates over cardViews and pileView
+            UIAttachmentBehavior *ab = [[UIAttachmentBehavior alloc] initWithItem:subview attachedToAnchor:gesturePoint];
+            
+            [self.pileCardsAnimator addBehavior:ab];
+            [self.attachments addObject:ab];
+        }
+        
+    } else if (pangr.state == UIGestureRecognizerStateChanged) {
+        // update the centers of cards and pile to the currently touched point
+        
+        for (UIAttachmentBehavior *ab in self.attachments) {
+            ab.length = 0;
+            ab.anchorPoint = gesturePoint;
+        }
+        
+    } else if (pangr.state == UIGestureRecognizerStateEnded) {
+        // remove attachment behavior from animator
+        
+        for (UIAttachmentBehavior *ab in self.attachments) {
+            [self.pileCardsAnimator removeBehavior:ab];
+        }
+        [self.attachments removeAllObjects];
+    }
+}
+
+- (void)pileTapped:(UITapGestureRecognizer *)tapgr {
+    // set isMovingCardViews back to NO
+    self.isMovingCardViews = NO;
+    [self removeThePileView];
+    
+    // give the cards some rotation so that we can use the realignAndScale method with a little extra flare.
+    [self.playingArea.subviews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
+        cardView.transform = CGAffineTransformMakeRotation(M_PI);
+    }];
+    [self realignAndScaleCardViewsToGridCells:self.playingArea.subviews];
 }
 
 #pragma mark - Private
@@ -253,6 +357,27 @@
         ERROR(@"Waited too long to move card views.");
     } else {
         self.isMovingCardViews = YES;
+    }
+}
+
+- (NSArray *)cardViewsInPlayingArea {
+    // weeds out the non CardViews that are subviews
+    NSMutableArray *cardViews = [[NSMutableArray alloc] init];
+    for (UIView *subview in self.playingArea.subviews) {
+        if ([subview isKindOfClass:[CardView class]]){
+            [cardViews addObject:subview];
+        }
+    }
+    return cardViews;
+}
+
+- (void)removeThePileView {
+    for (int i=0; i < [self.playingArea.subviews count]; i++) {
+        UIView *subview = self.playingArea.subviews[i];
+        if (![subview isKindOfClass:[CardView class]]) {
+            [subview removeFromSuperview];
+            break;
+        }
     }
 }
 
