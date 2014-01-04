@@ -8,7 +8,6 @@
 
 #import "Animator.h"
 #import "CardView.h"
-#import "StickToGridBehavior.h"
 #import "Common.h"
 
 @interface Animator() <UIDynamicAnimatorDelegate>
@@ -383,17 +382,7 @@
 
 #pragma mark - UIDynamicAnimatorDelegate
 
-//- (void)dynamicAnimatorDidPause:(UIDynamicAnimator *)animator {
-//    if ([animator isEqual:self.stickToGridAnimator]) {
-//        
-//        while ([self.matchedCardsCompletionBlocks count]) {
-//            CompletionBlock completion = [self.matchedCardsCompletionBlocks firstObject];
-//            completion(YES);
-//            [self.matchedCardsCompletionBlocks removeObjectAtIndex:0];
-//        }
-//
-//    }
-//}
+// Not used.
 
 
 @end
