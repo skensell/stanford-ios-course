@@ -18,7 +18,12 @@
 @implementation SetCardGameViewController
 
 -(Deck *)createDeck {
-    return [[SetCardDeck alloc] init];
+    SetCardDeck *fullDeck = [[SetCardDeck alloc] init];
+    Deck *smallerDeck = [[Deck alloc] init];
+    for (int i=0; i < 27; i++) {
+        [smallerDeck addCard:[fullDeck drawRandomCard]];
+    }
+    return smallerDeck;
 }
 
 - (CardView *)createCardViewInFrame:(CGRect)frame fromCard:(Card *)card {

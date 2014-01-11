@@ -47,8 +47,10 @@
 // Note: to get current card views you could iterate over the subviews of playingArea
 @property (strong, nonatomic) NSMutableArray *cardViews;
 
+// stats UI
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-@property (strong, nonatomic) UIBezierPath *deckProgressBar;
+@property (nonatomic) NSUInteger numberOfCardsInDeckAtStart;
+@property (strong, nonatomic) IBOutlet UIProgressView *deckProgressView;
 
 @property (strong, nonatomic) UITextView *gameOverView;
 @end
@@ -75,14 +77,18 @@
     _numberToDealWhenDealMoreButtonIsPressed = numberToDealWhenDealMoreButtonIsPressed;
     _deckIsEmpty = NO;
     _numberOfTimesCheatedSoFar = 0;
+    
     _numberOfCheatsAllowed = 3; // could be a parameter
 
 }
 
 - (CardMatchingGame *)game {
     if (!_game)  {
+        Deck *deck = [self createDeck];
+        self.numberOfCardsInDeckAtStart = [deck numberOfCards];
+        
         _game = [[CardMatchingGame alloc] initWithCardCount:self.minimumNumberOfCardsOnBoard
-                                                  usingDeck:[self debugDeck]
+                                                  usingDeck:deck
                                    withNumberOfCardsToMatch:self.numberOfCardsToMatch];
     }
     return _game;
@@ -217,6 +223,7 @@
     [self.animator animateCardViewsIntoEmptySpaces:cardViews];
     
     [self updateScoreLabel]; // unnecessary deals are punished
+    [self updateDeckProgressBar];
 }
 
 static NSString* const highScoresKey = @"highScores";
@@ -264,7 +271,6 @@ static NSString* const highScoresKey = @"highScores";
     }
     
     [self updateScoreLabel];
-    
     [self updateDeckProgressBar]; // insert same line after dealing too
 }
 
@@ -275,7 +281,8 @@ static NSString* const highScoresKey = @"highScores";
 }
 
 - (void)updateDeckProgressBar {
-    
+    float progress = [self.cardViews count]/(float)self.numberOfCardsInDeckAtStart;
+    [self.deckProgressView setProgress:progress animated:YES];
 }
 
 - (void)showOneMatchingSetIfThereIsOne {
