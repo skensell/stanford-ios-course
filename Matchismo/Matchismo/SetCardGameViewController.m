@@ -36,7 +36,7 @@
                             CardAspectRatio:7.0/5.0
                            prefersWideCards:YES
                 minimumNumberOfCardsOnBoard:12
-                maximumNumberOfCardsOnBoard:18
+                maximumNumberOfCardsOnBoard:15
                       allowsFlippingOfCards:NO
     numberToDealWhenDealMoreButtonIsPressed:3];
 

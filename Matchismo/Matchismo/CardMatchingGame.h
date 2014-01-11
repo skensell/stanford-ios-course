@@ -20,9 +20,8 @@
 - (NSUInteger)dealMoreCards:(NSUInteger)numberOfCards;
 - (NSUInteger)numberOfCardsInPlay;
 
-
-// to be overridden by subclasses
 - (int)calculateMatchScoreForCards:(NSArray *)cards;
+- (NSArray *)indicesOfMatchingSetOfCards; // of NSNumber
 
 @property (nonatomic, readonly) NSInteger score; // don't want there to be any public setter, but privately this will be read-write
 

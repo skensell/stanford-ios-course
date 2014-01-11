@@ -12,6 +12,8 @@
 #import "PlayingAreaView.h"
 #import "Animator.h"
 #import "Common.h"
+#import "NSArray+Combinations.h"
+#import "UIColor+FromHex.h"
 
 @interface CardGameViewController ()
 @property (nonatomic, strong) CardMatchingGame *game;
@@ -19,6 +21,8 @@
 
 // game logic - default is 2
 @property (nonatomic) NSUInteger numberOfCardsToMatch;
+@property (nonatomic) NSUInteger numberOfCheatsAllowed;
+@property (nonatomic) NSUInteger numberOfTimesCheatedSoFar;
 
 // layout of card views
 @property (nonatomic) CGFloat cardAspectRatio;
@@ -28,6 +32,7 @@
 
 @property (nonatomic) NSUInteger numberToDealWhenDealMoreButtonIsPressed;
 @property (strong, nonatomic) IBOutlet UIButton *dealMoreButton;
+@property (strong, nonatomic) IBOutlet UIButton *cheatButton;
 
 // playingarea could also handle the allocation of cardViews,
 // but that would complicate some code here I think
@@ -39,10 +44,13 @@
 
 // index of view in cardViews corresponds to index in game.cards
 // index does NOT correspond to visual place on screen
-// Note: to get current card views I could iterate over the subviews of playingArea
+// Note: to get current card views you could iterate over the subviews of playingArea
 @property (strong, nonatomic) NSMutableArray *cardViews;
 
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
+@property (strong, nonatomic) UIBezierPath *deckProgressBar;
+
+@property (strong, nonatomic) UITextView *gameOverView;
 @end
 
 @implementation CardGameViewController
@@ -66,16 +74,27 @@
     _allowsFlippingOfCards = allowsFlippingOfCards;
     _numberToDealWhenDealMoreButtonIsPressed = numberToDealWhenDealMoreButtonIsPressed;
     _deckIsEmpty = NO;
+    _numberOfTimesCheatedSoFar = 0;
+    _numberOfCheatsAllowed = 3; // could be a parameter
 
 }
 
 - (CardMatchingGame *)game {
     if (!_game)  {
         _game = [[CardMatchingGame alloc] initWithCardCount:self.minimumNumberOfCardsOnBoard
-                                                  usingDeck:[self createDeck]
+                                                  usingDeck:[self debugDeck]
                                    withNumberOfCardsToMatch:self.numberOfCardsToMatch];
     }
     return _game;
+}
+
+- (Deck *)debugDeck {
+    Deck *tempDeck = [self createDeck];
+    Deck *deck = [[Deck alloc] init];
+    for (int i=0; i < self.minimumNumberOfCardsOnBoard + 3; i++) {
+        [deck addCard:[tempDeck drawRandomCard]];
+    }
+    return deck;
 }
 
 - (NSMutableArray *)cardViews {
@@ -94,10 +113,29 @@
 }
 
 - (void)setDeckIsEmpty:(BOOL)deckIsEmpty {
-    if (_deckIsEmpty != deckIsEmpty && deckIsEmpty) {
-        self.dealMoreButton.enabled = NO;
+    if (_deckIsEmpty != deckIsEmpty) {
+        self.dealMoreButton.enabled = !deckIsEmpty;
         _deckIsEmpty = deckIsEmpty;
     }
+}
+
+- (UITextView *)gameOverView {
+    if (!_gameOverView) {
+        _gameOverView = [[UITextView alloc] initWithFrame:self.playingArea.frame];
+        _gameOverView.backgroundColor = [UIColor fromHex:0x86C67C alpha:0.98];
+        
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        NSMutableAttributedString *gameOver = [[NSMutableAttributedString alloc] initWithString:[self highScores]
+                                                                                     attributes:@{NSParagraphStyleAttributeName: paragraphStyle,
+                                                                                                  NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleHeadline]}];
+        
+
+        
+        _gameOverView.attributedText = gameOver;
+        
+    }
+    return _gameOverView;
 }
 
 #pragma mark - Game actions
@@ -117,6 +155,11 @@
     if (self.animator.isMovingCardViews) return;
     self.game = nil;
     self.dealMoreButton.enabled = YES;
+    self.deckIsEmpty = NO;
+    self.cheatButton.enabled = YES;
+    self.numberOfTimesCheatedSoFar = 0;
+    [self.gameOverView removeFromSuperview];
+    self.gameOverView = nil;
     
     __weak CardGameViewController *weakSelf = self;
     CompletionBlock completion = ^(BOOL finished) {
@@ -137,22 +180,73 @@
     if (!self.animator.isMovingCardViews &&
         [[self getCardsInPlayFromGame] count] + numberToDeal <= self.maximumNumberOfCardsOnBoard &&
         [[self.playingArea centersOfEmptySpacesInGrid] count] >= numberToDeal) {
+        
+        NSArray *overlookedCardViews = [self overlookedCardViews];
         [self dealMoreCardsIntoPlay:numberToDeal];
+        
+        if (!self.deckIsEmpty) {
+            [self.animator spinCardViews:overlookedCardViews]; // the overlooked set being punished for
+        }
+        
     }
 }
+
+- (IBAction)touchCheatButton:(UIButton *)sender {
+    if (++self.numberOfTimesCheatedSoFar >= self.numberOfCheatsAllowed) {
+        sender.enabled = NO;
+    }
+    [self showOneMatchingSetIfThereIsOne];
+}
+
 
 - (void)dealMoreCardsIntoPlay:(NSUInteger)numberOfCards{
     // deal cards in the model
     NSUInteger numberDealt = [self.game dealMoreCards:numberOfCards];
     if (numberDealt < numberOfCards) self.deckIsEmpty = YES;
-    if (numberDealt == 0) return;
+    if (numberDealt == 0) {
+        if ([self gameIsOver]){
+            [self showGameOverView];
+        }
+        return;
+    }
     
     NSArray *cardsInPlay = [self getCardsInPlayFromGame];
-    NSArray *cardsJustDealt = [cardsInPlay subarrayWithRange:NSMakeRange([cardsInPlay count] - numberDealt, numberOfCards)];
+    NSArray *cardsJustDealt = [cardsInPlay subarrayWithRange:NSMakeRange([cardsInPlay count] - numberDealt, numberDealt)];
     NSArray *cardViews = [self makeCardViewsFromCards:cardsJustDealt];
     
     [self.animator animateCardViewsIntoEmptySpaces:cardViews];
+    
+    [self updateScoreLabel]; // unnecessary deals are punished
+}
 
+static NSString* const highScoresKey = @"highScores";
+- (NSString *)highScores {
+    // returns a string of top 10 scores separated by \n
+    NSMutableArray *topTen = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:highScoresKey]];
+    
+    for (int i=0; i < [topTen count]; i++) {
+        if (self.game.score > [topTen[i] intValue]) {
+            [topTen insertObject:@(self.game.score) atIndex:i];
+            break;
+        } else if (i < 10 && i == [topTen count] - 1) {
+            [topTen addObject:@(self.game.score)];
+            break;
+        }
+    }
+    
+    if (!topTen) {
+        [topTen addObject:@(self.game.score)];
+    }
+    
+     NSArray *theTopTen = [topTen subarrayWithRange:NSMakeRange(0, MIN(10,[topTen count]))];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:theTopTen forKey:highScoresKey];
+    
+    NSMutableString *result = [[NSMutableString alloc] initWithString:@"High Scores"];
+    for (NSNumber *score in theTopTen){
+        [result appendString:[NSString stringWithFormat:@"\n%@", score]];
+    }
+    return result;
 }
 
 #pragma mark - Update UI
@@ -163,20 +257,15 @@
         NSArray *cardViews = [self makeCardViewsFromCards:[self getCardsInPlayFromGame]];
         [self.animator animateCardViewsIntoEmptySpaces:cardViews];
         
-    } else if ([self tooFewCardViewsInPlay]){
-        
-        [self dealMoreCardsIntoPlay:[self numberOfCardsToMatch]];
-        
-    } else if (self.playingArea.hasHolesInGrid) {
-        
-        [self.animator fillHolesInGridWithRecentCardsDealt];
-        
     } else {
         // set chosen and matched, then remove matched cards
         [self animateChosenAndMatchedCardViews];
+        
     }
     
     [self updateScoreLabel];
+    
+    [self updateDeckProgressBar]; // insert same line after dealing too
 }
 
 
@@ -185,7 +274,34 @@
                                                                      attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
 }
 
+- (void)updateDeckProgressBar {
+    
+}
 
+- (void)showOneMatchingSetIfThereIsOne {
+    // spins a matching set
+    [self.animator spinCardViews:[self overlookedCardViews]];
+}
+
+- (void)showGameOverView {
+    [self.view addSubview:self.gameOverView];
+}
+
+- (NSArray *)overlookedCardViews {
+    NSArray *indicesFormingMatch = [self.game indicesOfMatchingSetOfCards];
+    if ([indicesFormingMatch count]) {
+        DEBUG(@"Overlooked match at indices %@", indicesFormingMatch);
+        
+        NSMutableArray *overlookedCardViews = [[NSMutableArray alloc] init];
+        for (int i=0; i < [indicesFormingMatch count]; i++) {
+            [overlookedCardViews addObject:[self.cardViews objectAtIndex:[indicesFormingMatch[i] intValue]]];
+        }
+        return overlookedCardViews;
+        // TODO - sleep here, but have the main animation run on another thread
+        // [NSThread sleepForTimeInterval:animationDuration];
+    }
+    return nil;
+}
 
 #pragma mark - Game status
 
@@ -218,6 +334,14 @@
     return ([self.playingArea.subviews count] < self.minimumNumberOfCardsOnBoard) && !self.deckIsEmpty;
 }
 
+- (BOOL)thereIsNoSet {
+    return [[self.game indicesOfMatchingSetOfCards] count] == 0;
+}
+
+- (BOOL)gameIsOver {
+    return self.deckIsEmpty && [self thereIsNoSet];
+}
+
 
 #pragma mark - CardView management
 
@@ -238,7 +362,7 @@
 }
 
 - (void)removeMatchedCardViews:(NSArray *)matchedCardViews {
-    // cardViews will not be dealloced because they are always in self.cardViews
+    // cardViews will not be dealloced until redeal because they are always in self.cardViews
     if ([matchedCardViews count] == 0) return;
     
     __weak CardGameViewController *weakSelf = self;
@@ -248,7 +372,18 @@
                 [cardView removeAllGestureRecognizers];
                 [cardView removeFromSuperview]; // its superview is playingArea
             }];
-            [weakSelf updateUI]; // needs to deal more cards
+            
+            [weakSelf updateScoreLabel];
+            
+            if ([weakSelf gameIsOver]) {
+                [weakSelf showGameOverView];
+            } else if ([weakSelf tooFewCardViewsInPlay]){
+                [weakSelf dealMoreCardsIntoPlay:[weakSelf numberOfCardsToMatch]];
+            } else if (weakSelf.playingArea.hasHolesInGrid) {
+                [weakSelf.animator fillHolesInGridWithRecentCardsDealt];
+            }
+            
+
         }
     }];
 }
@@ -316,6 +451,7 @@
     } else {
         [self updateUI];
     }
+    
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {

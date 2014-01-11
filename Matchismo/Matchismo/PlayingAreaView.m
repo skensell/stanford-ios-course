@@ -167,7 +167,7 @@
 
 #pragma mark - Private
 
-- (CGRect)slightlyInsideFrame:(CGRect)frame fraction:(CGFloat)fraction {
+- (CGRect)slightlyInsideFrame:(const CGRect)frame fraction:(CGFloat)fraction {
     // scales height and width by percent and moves origin appropriateley
     // could be moved to more general utility
     if (!fraction) fraction = CARDVIEW_FRAME_FRACTION;

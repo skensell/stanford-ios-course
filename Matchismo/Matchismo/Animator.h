@@ -16,11 +16,16 @@ typedef void (^AnimationBlock)();
 
 - (instancetype)initWithPlayingArea:(PlayingAreaView *)playingArea allowsFlippingOfCards:(BOOL)allowsFlippingOfCards;
 
+// coming and going
 - (void)animateCardViewsIntoEmptySpaces:(NSArray *)cardViews;
 - (void)animateMatchedCardViewsOffScreen:(NSArray *)matchedCardViews completion:(CompletionBlock)completion;
-- (void)animateChosenCardViews:(NSArray *)chosenCardViews;
 - (void)animateRedealGivenCardViews:(NSArray *)cardViews completion:(CompletionBlock)completion;
 
+// in place
+- (NSUInteger)spinCardViews:(NSArray *)cardViews;
+- (void)animateChosenCardViews:(NSArray *)chosenCardViews;
+
+// grid management
 - (void)realignAndScaleCardViewsToGridCells:(NSArray *)cardViews;
 - (void)fillHolesInGridWithRecentCardsDealt;
 

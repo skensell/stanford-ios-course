@@ -8,11 +8,13 @@
 
 #import "CardMatchingGame.h"
 #import "Common.h"
+#import "NSArray+Combinations.h"
 
 @interface CardMatchingGame()
 @property (nonatomic, readwrite) NSInteger score; //readwrite is typically only used to make a readonly property readwrite
-@property (nonatomic, strong) NSMutableArray *cards; // of Card, cards in play
+@property (nonatomic, strong) NSMutableArray *cards; // of Card, cards in play and cards matched already
 @property (nonatomic, strong) Deck *deck; // cards to draw from
+@property (nonatomic) NSUInteger minimumNumberOfCardsInPlay;
 @property (nonatomic) NSUInteger numberOfCardsToMatch;
 @end
 
@@ -35,6 +37,7 @@
     if (self) {
         self.deck = deck;
         self.numberOfCardsToMatch = numberToMatch;
+        self.minimumNumberOfCardsInPlay = count;
         
         for (int i = 0; i < count; i++) {
             Card *card = [self.deck drawRandomCard];
@@ -88,6 +91,7 @@
 static const int MISMATCH_PENALTY = 2;
 static const int MATCH_BONUS = 4;
 static const int COST_TO_CHOOSE = 1;
+static const int UNNEEDED_DEAL_PENALTY = 50;
 
 - (void)chooseCardAtIndex:(NSUInteger)index {
     
@@ -136,7 +140,7 @@ static const int COST_TO_CHOOSE = 1;
 }
 
 - (int)calculateMatchScoreForCards:(NSArray *)cards {
-    
+    // returns 0 if no match, else > 0
     int score = 0;
     
     NSMutableArray *allCards = [cards mutableCopy];
@@ -154,6 +158,11 @@ static const int COST_TO_CHOOSE = 1;
 
 - (NSUInteger)dealMoreCards:(NSUInteger)numberOfCards {
     // returns the number dealt
+    
+    if ([self numberOfCardsInPlay] >= self.minimumNumberOfCardsInPlay && [[self indicesOfMatchingSetOfCards] count]) {
+        self.score -= UNNEEDED_DEAL_PENALTY;
+    }
+    
     NSUInteger i = 0;
     Card *card;
     while (i < numberOfCards && (card = [self.deck drawRandomCard])) {
@@ -176,6 +185,42 @@ static const int COST_TO_CHOOSE = 1;
     return (index < [self.cards count]) ? self.cards[index] : nil;
 }
 
+- (NSArray *)indicesOfMatchingSetOfCards {
+    // returns an array of NSNumbers whose intvalues correspond to indices in the game of
+    // cards which form a match (if exists), else returns nil
+    
+    // get cards in play
+    // iterate over all n choose numberOfCardsToMatch combinations
+    //      if calculateMatchScore returns positive
+    //          theArray = currentIndices;
+    //          return theArray;
+    //
+    // return nil;
+    
+    NSMutableArray *indicesOfCardsInPlay = [[NSMutableArray alloc] init];
+    [self.cards enumerateObjectsUsingBlock:^(Card *card, NSUInteger idx, BOOL *stop) {
+        if (!card.isMatched) {
+            [indicesOfCardsInPlay addObject:@(idx)];
+        }
+    }];
+    
+    NSMutableArray *cardsToCompare = [[NSMutableArray alloc] init];
+    for (NSArray *indexGroup in [indicesOfCardsInPlay allCombinationsOfSize:self.numberOfCardsToMatch]) {
+        for (int i=0; i < [indexGroup count]; i++) {
+            [cardsToCompare addObject:self.cards[[indexGroup[i] intValue]]];
+        }
+        
+        if ([self calculateMatchScoreForCards:cardsToCompare]) {
+            DEBUG(@"A set exists!");
+            return indexGroup;
+        }
+        
+        [cardsToCompare removeAllObjects];
+    }
+    
+    return nil;
+}
 
+#pragma mark - Private
 
 @end

@@ -254,8 +254,14 @@
                                  cardView.center = [self.playingArea centerOfCellAtRow:i inColumn:j];
                                  cardView.transform = CGAffineTransformMakeRotation(0);
                              } completion:^(BOOL fin){
-                                 // this should only be the last one
-                                 self.isMovingCardViews = NO;
+                                 [UIView animateWithDuration:0.2
+                                                       delay:0
+                                                     options:0
+                                                  animations:^{
+                                                      cardView.frame = [self.playingArea frameOfCardViewInCellAtRow:i inColumn:j];
+                                                  } completion:^(BOOL fin){
+                                                      self.isMovingCardViews = NO;
+                                                  }];
                              }];
             
             idx++;
@@ -263,6 +269,49 @@
     }
     
 }
+
+- (NSUInteger)spinCardViews:(NSArray *)cardViews {
+    if (![cardViews count]) {
+        return 0;
+    }
+    // I should return the totalDuration
+    NSUInteger totalDuration = 1;
+    
+    AnimationBlock quarterSpin = ^{
+        for (CardView *cardView in cardViews) {
+            cardView.transform = CGAffineTransformRotate(cardView.transform, M_PI/2);
+        }
+    };
+    
+    // TODO - abstract this out to a generic spin method
+    [UIView animateWithDuration:totalDuration/4.0
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:quarterSpin
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:totalDuration/4.0
+                                               delay:0
+                                             options:UIViewAnimationOptionCurveLinear
+                                          animations:quarterSpin
+                                          completion:^(BOOL finished) {
+                                              [UIView animateWithDuration:totalDuration/4.0
+                                                                    delay:0
+                                                                  options:UIViewAnimationOptionCurveLinear
+                                                               animations:quarterSpin
+                                                               completion:^(BOOL finished) {
+                                                                   [UIView animateWithDuration:totalDuration/4.0
+                                                                                         delay:0
+                                                                                       options:UIViewAnimationOptionCurveLinear
+                                                                                    animations:quarterSpin
+                                                                                    completion:nil];
+                                                               }];
+                                          }];
+                     }];
+    
+    return totalDuration;
+}
+
+
 
 #pragma mark - Pile cards when pinched
 
