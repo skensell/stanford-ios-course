@@ -79,13 +79,13 @@
     _deckIsEmpty = NO;
     _numberOfTimesCheatedSoFar = 0;
     
-    _numberOfCheatsAllowed = 3; // could be a parameter
+    _numberOfCheatsAllowed = 1; // could be a parameter
 
 }
 
 - (CardMatchingGame *)game {
     if (!_game)  {
-        Deck *deck = [self debugDeck];
+        Deck *deck = [self createDeck];
         self.numberOfCardsInDeckAtStart = [deck numberOfCards];
         
         _game = [[CardMatchingGame alloc] initWithCardCount:self.minimumNumberOfCardsOnBoard
@@ -235,18 +235,22 @@ static NSString* const highScoresKey = @"highScores";
     
     NSNumber *timeTaken = @(ABS((int)[self.startDate timeIntervalSinceNow]));
     NSArray *scoreAndTime = @[@(self.game.score), timeTaken];
-    for (int i=0; i < [topTen count]; i++) {
-        if ([timeTaken intValue] < [topTen[i][1] intValue]) {
-            [topTen insertObject:scoreAndTime atIndex:i];
-            break;
-        } else if (i < 10 && i == [topTen count] - 1) {
-            [topTen addObject:scoreAndTime];
-            break;
-        }
-    }
     
-    if (!topTen || [topTen count] == 0) {
-        [topTen addObject:scoreAndTime];
+    // add the entry to top 10 if score > 0
+    if (self.game.score > 0) {
+        for (int i=0; i < [topTen count]; i++) {
+            if ([timeTaken intValue] < [topTen[i][1] intValue]) {
+                [topTen insertObject:scoreAndTime atIndex:i];
+                break;
+            } else if (i < 10 && i == [topTen count] - 1) {
+                [topTen addObject:scoreAndTime];
+                break;
+            }
+        }
+        
+        if (!topTen || [topTen count] == 0) {
+            [topTen addObject:scoreAndTime];
+        }
     }
     
      NSArray *theTopTen = [topTen subarrayWithRange:NSMakeRange(0, MIN(10,[topTen count]))];
