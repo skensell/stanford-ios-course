@@ -51,6 +51,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (nonatomic) NSUInteger numberOfCardsInDeckAtStart;
 @property (strong, nonatomic) IBOutlet UIProgressView *deckProgressView;
+@property (strong, nonatomic) NSDate *startDate;
 
 @property (strong, nonatomic) UITextView *gameOverView;
 @end
@@ -84,7 +85,7 @@
 
 - (CardMatchingGame *)game {
     if (!_game)  {
-        Deck *deck = [self createDeck];
+        Deck *deck = [self debugDeck];
         self.numberOfCardsInDeckAtStart = [deck numberOfCards];
         
         _game = [[CardMatchingGame alloc] initWithCardCount:self.minimumNumberOfCardsOnBoard
@@ -129,6 +130,7 @@
     if (!_gameOverView) {
         _gameOverView = [[UITextView alloc] initWithFrame:self.playingArea.frame];
         _gameOverView.backgroundColor = [UIColor fromHex:0x86C67C alpha:0.98];
+        _gameOverView.editable = NO;
         
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.alignment = NSTextAlignmentCenter;
@@ -231,27 +233,31 @@ static NSString* const highScoresKey = @"highScores";
     // returns a string of top 10 scores separated by \n
     NSMutableArray *topTen = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:highScoresKey]];
     
+    NSNumber *timeTaken = @(ABS((int)[self.startDate timeIntervalSinceNow]));
+    NSArray *scoreAndTime = @[@(self.game.score), timeTaken];
     for (int i=0; i < [topTen count]; i++) {
-        if (self.game.score > [topTen[i] intValue]) {
-            [topTen insertObject:@(self.game.score) atIndex:i];
+        if ([timeTaken intValue] < [topTen[i][1] intValue]) {
+            [topTen insertObject:scoreAndTime atIndex:i];
             break;
         } else if (i < 10 && i == [topTen count] - 1) {
-            [topTen addObject:@(self.game.score)];
+            [topTen addObject:scoreAndTime];
             break;
         }
     }
     
-    if (!topTen) {
-        [topTen addObject:@(self.game.score)];
+    if (!topTen || [topTen count] == 0) {
+        [topTen addObject:scoreAndTime];
     }
     
      NSArray *theTopTen = [topTen subarrayWithRange:NSMakeRange(0, MIN(10,[topTen count]))];
     
     [[NSUserDefaults standardUserDefaults] setObject:theTopTen forKey:highScoresKey];
     
-    NSMutableString *result = [[NSMutableString alloc] initWithString:@"High Scores"];
-    for (NSNumber *score in theTopTen){
-        [result appendString:[NSString stringWithFormat:@"\n%@", score]];
+    NSMutableString *result = [[NSMutableString alloc] initWithString:@"Quickest Rounds\n"];
+    [result appendString:@" Time  Score\n"];
+    for (NSArray *aScoreAndTime in theTopTen){
+        NSString *timeString = [NSString stringWithFormat:@"%02d:%02d", [aScoreAndTime[1] intValue]/60, [aScoreAndTime[1] intValue]%60];
+        [result appendString:[NSString stringWithFormat:@"%@   %5d\n", timeString, [aScoreAndTime[0] intValue]]];
     }
     return result;
 }
@@ -260,7 +266,7 @@ static NSString* const highScoresKey = @"highScores";
 
 - (void)updateUI {
     if ([self noCardViewsDealtYet]) {
-        
+        self.startDate = [NSDate date];
         NSArray *cardViews = [self makeCardViewsFromCards:[self getCardsInPlayFromGame]];
         [self.animator animateCardViewsIntoEmptySpaces:cardViews];
         
