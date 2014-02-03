@@ -11,4 +11,7 @@
 
 @interface FlickrPhotoTableViewController : CommonTableViewController
 
+// Lists < 50 photos from the following place
+@property (nonatomic, strong) NSString *placeID;
+
 @end

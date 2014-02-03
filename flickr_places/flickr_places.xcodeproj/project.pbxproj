@@ -27,6 +27,7 @@
 		76BD3DE5189A4D74004236D6 /* FlickrPhotoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BD3DE4189A4D74004236D6 /* FlickrPhotoTableViewController.m */; };
 		76BD3DE8189A4EE3004236D6 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BD3DE7189A4EE3004236D6 /* PhotoViewController.m */; };
 		76BD3DEB189F819D004236D6 /* CommonTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BD3DEA189F819D004236D6 /* CommonTableViewController.m */; };
+		76BD3DEF18A04F39004236D6 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BD3DEE18A04F39004236D6 /* ImageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,8 @@
 		76BD3DE9189F819D004236D6 /* CommonTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonTableViewController.h; sourceTree = "<group>"; };
 		76BD3DEA189F819D004236D6 /* CommonTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonTableViewController.m; sourceTree = "<group>"; };
 		76BD3DEC189F8975004236D6 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
+		76BD3DED18A04F39004236D6 /* ImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
+		76BD3DEE18A04F39004236D6 /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,16 +136,18 @@
 			children = (
 				76BD3DB218997146004236D6 /* Main_iPhone.storyboard */,
 				76BD3DB518997146004236D6 /* Main_iPad.storyboard */,
+				76BD3DE018998B66004236D6 /* HistoryTableViewController.h */,
+				76BD3DE118998B66004236D6 /* HistoryTableViewController.m */,
 				76BD3DE6189A4EE3004236D6 /* PhotoViewController.h */,
 				76BD3DE7189A4EE3004236D6 /* PhotoViewController.m */,
 				76BD3DE3189A4D74004236D6 /* FlickrPhotoTableViewController.h */,
 				76BD3DE4189A4D74004236D6 /* FlickrPhotoTableViewController.m */,
-				76BD3DE018998B66004236D6 /* HistoryTableViewController.h */,
-				76BD3DE118998B66004236D6 /* HistoryTableViewController.m */,
 				76BD3DDD18998A21004236D6 /* FlickrPlacesTableViewController.h */,
 				76BD3DDE18998A21004236D6 /* FlickrPlacesTableViewController.m */,
 				76BD3DE9189F819D004236D6 /* CommonTableViewController.h */,
 				76BD3DEA189F819D004236D6 /* CommonTableViewController.m */,
+				76BD3DED18A04F39004236D6 /* ImageViewController.h */,
+				76BD3DEE18A04F39004236D6 /* ImageViewController.m */,
 				76BD3DD8189971A2004236D6 /* Flickr Fetcher */,
 				76BD3DA718997146004236D6 /* Supporting Files */,
 			);
@@ -297,6 +302,7 @@
 				76BD3DDC189971A2004236D6 /* FlickrFetcher.m in Sources */,
 				76BD3DAD18997146004236D6 /* main.m in Sources */,
 				76BD3DE218998B66004236D6 /* HistoryTableViewController.m in Sources */,
+				76BD3DEF18A04F39004236D6 /* ImageViewController.m in Sources */,
 				76BD3DEB189F819D004236D6 /* CommonTableViewController.m in Sources */,
 				76BD3DE8189A4EE3004236D6 /* PhotoViewController.m in Sources */,
 			);
