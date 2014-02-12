@@ -56,7 +56,8 @@
     
     // self.scrollView could be nil on the next line if outlet-setting has not happened yet
     self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
-
+    
+    [self.scrollView zoomToRect:self.imageView.frame animated:YES];
     [self.spinner stopAnimating];
 }
 
@@ -118,7 +119,9 @@
                         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localfile]];
                         // but calling "self.image =" is definitely not an exception to that!
                         // so we must dispatch this back to the main queue
-                        dispatch_async(dispatch_get_main_queue(), ^{ self.image = image; });
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            self.image = image;
+                        });
                     }
                 }
         }];
@@ -157,5 +160,17 @@
 {
     self.navigationItem.leftBarButtonItem = nil;
 }
+
+#pragma mark - AutoLayout
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    self.image = self.image; // resets things
+}
+//
+//- (void)viewDidLayoutSubviews {
+//    [super viewDidLayoutSubviews];
+//    self.image = self.image; // resets things
+//}
 
 @end

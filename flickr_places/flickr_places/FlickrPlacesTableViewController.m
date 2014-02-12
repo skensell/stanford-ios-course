@@ -17,31 +17,74 @@
 
 @implementation FlickrPlacesTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self setupWithTitle:@"Top Places"
+ tableViewCellIdentifier:@"Flickr Place Cell"
+segueIdentifierToNextViewController:@"List Photos"
+classOfViewControllerAfterSegue:[FlickrPhotoTableViewController class]];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
+
+#pragma mark - CommonTVC required
+
+- (IBAction)fetchFlickrData {
     [self fetchFlickrDataAtURL:[FlickrFetcher URLforTopPlaces]
                        keyPath:FLICKR_RESULTS_PLACES];
-    
-
 }
 
-#pragma mark - Inherited
+- (void)prepareNextViewController:(UIViewController *)vc afterSelectingIndexPath:(NSIndexPath *)indexPath {
+    if ([vc isKindOfClass:[FlickrPhotoTableViewController class]]) {
+        FlickrPhotoTableViewController *fptvc = (FlickrPhotoTableViewController *)vc;
+        NSString *country = self.sortedCountryNames[indexPath.section];
+        fptvc.placeName = self.countries[country][indexPath.row][0];
+        fptvc.placeID = self.countries[country][indexPath.row][2];
+    }
+}
+
+- (NSString *)titleForCellAtIndexPath:(NSIndexPath *)indexPath {
+    return [[self placeInfoAtIndexPath:indexPath] firstObject];
+}
+
+- (NSString *)subtitleForCellAtIndexPath:(NSIndexPath *)indexPath {
+    return [[self placeInfoAtIndexPath:indexPath] objectAtIndex:1];
+}
+
+#pragma mark - Private
+
+- (NSArray *)placeInfoAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *country = self.sortedCountryNames[indexPath.section];
+    return self.countries[country][indexPath.row];
+}
+
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return [self.sortedCountryNames count];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.countries[self.sortedCountryNames[section]] count];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return self.sortedCountryNames[section];
+}
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    NSMutableArray *firstLetters = [NSMutableArray new];
+    for (NSString *country in self.sortedCountryNames) {
+        [firstLetters addObject:[country substringToIndex:1]];
+    }
+    return firstLetters;
+}
+
+#pragma mark - CommonTVC Optional
 
 - (void)prepareFetchedDataForTableReload {
     // self.fetchedDataFromFlickr is available to manipulate
     // take its data, curate, and store in ivar
-    
     NSMutableDictionary *countries = [[NSMutableDictionary alloc] init];
     for (NSDictionary *placeDict in self.fetchedDataFromFlickr) {
         NSArray *content = [placeDict[FLICKR_PLACE_NAME] componentsSeparatedByString:@", "];
@@ -71,71 +114,6 @@
     self.sortedCountryNames = [[countries allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     DEBUG(@"%@", self.sortedCountryNames);
 }
-
-#pragma mark - Private
-
-- (void)preparePhotoTableViewController:(FlickrPhotoTableViewController *)fptvc
-              toShowPhotosFromIndexPath:(NSIndexPath *)indexPath {
-    NSString *country = self.sortedCountryNames[indexPath.section];
-    fptvc.placeID = self.countries[country][indexPath.row][2];
-}
-
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [self.sortedCountryNames count];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.countries[self.sortedCountryNames[section]] count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Flickr Place Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    NSString *country = self.sortedCountryNames[indexPath.section];
-    NSArray *placeInfo = self.countries[country][indexPath.row];
-    NSString *city = placeInfo[0];
-    NSString *region = placeInfo[1];
-    
-    cell.textLabel.text = city;
-    cell.detailTextLabel.text = region;
-    
-    return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.sortedCountryNames[section];
-}
-
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    NSMutableArray *firstLetters = [NSMutableArray new];
-    for (NSString *country in self.sortedCountryNames) {
-        [firstLetters addObject:[country substringToIndex:1]];
-    }
-    return firstLetters;
-}
-
-
-#pragma mark - Navigation
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([sender isKindOfClass:[UITableViewCell class]]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        if (indexPath && [segue.identifier isEqualToString:@"List Photos"] &&
-            [segue.destinationViewController isKindOfClass: [FlickrPhotoTableViewController class]]) {
-            
-            [self preparePhotoTableViewController:segue.destinationViewController
-                        toShowPhotosFromIndexPath:indexPath];
-            
-        }
-    }
-    
-}
-
 
 
 @end

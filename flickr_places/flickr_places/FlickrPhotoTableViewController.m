@@ -12,30 +12,66 @@
 
 @interface FlickrPhotoTableViewController ()
 
-@property (nonatomic, strong) NSDictionary *photos; // { photo_id : [ title, description] }
-
 @end
 
 @implementation FlickrPhotoTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setupWithTitle:self.placeName
+ tableViewCellIdentifier:@"Flickr Photo Cell"
+segueIdentifierToNextViewController:@"Show Photo"
+classOfViewControllerAfterSegue:[ImageViewController class]];
 }
 
 - (void)setPlaceID:(NSString *)placeID {
     _placeID = placeID;
     [self fetchPhotos];
 }
+
+- (NSString *)placeName {
+    if (!_placeName) {
+        _placeName = @"Unknown";
+    }
+    return _placeName;
+}
+
+#pragma mark - CommonTVC Required
+
+- (NSString *)titleForCellAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *title = self.fetchedDataFromFlickr[indexPath.row][FLICKR_PHOTO_TITLE];
+    if (!title) {
+        NSString *description = [self subtitleForCellAtIndexPath:indexPath];
+        if (description && ![description isEqualToString:@""]) {
+            return description;
+        } else {
+            return @"Unknown";
+        }
+    }
+    return title;
+}
+
+- (NSString *)subtitleForCellAtIndexPath:(NSIndexPath *)indexPath {
+    return [self.fetchedDataFromFlickr valueForKeyPath:FLICKR_PHOTO_DESCRIPTION][indexPath.row];
+}
+
+- (void)prepareNextViewController:(UIViewController *)vc afterSelectingIndexPath:(NSIndexPath *)indexPath {
+    if ([vc isKindOfClass:[ImageViewController class]]) {
+        ImageViewController *ivc = (ImageViewController *)vc;
+        ivc.imageURL = [FlickrFetcher URLforPhoto:self.fetchedDataFromFlickr[indexPath.row] format:FlickrPhotoFormatLarge];
+        ivc.title = [[[self.tableView cellForRowAtIndexPath:indexPath] textLabel] text]; // maybe I SHOULD check if nav controller
+        [self addPhotoToHistory:indexPath];
+    }
+}
+
+- (IBAction)fetchFlickrData {
+    [self fetchPhotos];
+}
+
+#pragma mark - CommonTVC Optional
+
+
 
 #pragma mark - Private
 
@@ -45,78 +81,51 @@
                        keyPath:FLICKR_RESULTS_PHOTOS];
 }
 
-#pragma mark - Inherited
-
-- (void)prepareFetchedDataForTableReload {
-    // self.fetchedDataFromFlickr is available to manipulate
-    // take its data, curate, and store in ivar
-    //TODO: finish this.
-    for (NSDictionary *photoDict in self.fetchedDataFromFlickr) {
-        
+// TODO: refactor this out to DefaultsManager
+- (void)addPhotoToHistory:(NSIndexPath *)indexPath {
+    NSDictionary *photo = self.fetchedDataFromFlickr[indexPath.row];
+    NSMutableArray *history = [[[NSUserDefaults standardUserDefaults] objectForKey:kHistoryKey] mutableCopy];
+    history = history ? history : [[NSMutableArray alloc] init];
+    for (int i=0; i < history.count; i++) {
+        if (history[i][@"id"] == photo[@"id"]) {
+            [history removeObjectAtIndex:i];
+            break;
+        }
     }
-}
-
-#pragma mark - Private
-
-- (void)prepareImageViewController:(ImageViewController *)fptvc
-              toShowPhotoAtIndexPath:(NSIndexPath *)indexPath {
+    if (history.count == 20) {
+        [history removeObjectAtIndex:19];
+    }
+    [history insertObject:photo atIndex:0];
     
+    [[NSUserDefaults standardUserDefaults] setObject:history forKey:kHistoryKey];
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
+#pragma mark - TableView data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.countries[self.sortedCountryNames[section]] count];
+    return self.fetchedDataFromFlickr.count ? self.fetchedDataFromFlickr.count : 0;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark - UITableViewDelegate
+
+// when a row is selected and we are in a UISplitViewController,
+//   this updates the Detail ImageViewController (instead of segueing to it)
+// knows how to find an ImageViewController inside a UINavigationController in the Detail too
+// otherwise, this does nothing (because detail will be nil and not "isKindOfClass:" anything)
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Flickr Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    NSString *country = self.sortedCountryNames[indexPath.section];
-    NSArray *placeInfo = self.countries[country][indexPath.row];
-    NSString *city = placeInfo[0];
-    NSString *region = placeInfo[1];
-    
-    cell.textLabel.text = city;
-    cell.detailTextLabel.text = region;
-    
-    return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.sortedCountryNames[section];
-}
-
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    NSMutableArray *firstLetters = [NSMutableArray new];
-    for (NSString *country in self.sortedCountryNames) {
-        [firstLetters addObject:[country substringToIndex:1]];
+    // get the Detail view controller in our UISplitViewController (nil if not in one)
+    id detail = self.splitViewController.viewControllers[1]; // 0 is master, 1 is detail
+    // if Detail is a UINavigationController, look at its root view controller to find it
+    if ([detail isKindOfClass:[UINavigationController class]]) {
+        detail = [((UINavigationController *)detail).viewControllers firstObject];
     }
-    return firstLetters;
+    // is the Detail is an ImageViewController?
+    if ([detail isKindOfClass:[ImageViewController class]]) {
+        // yes ... we know how to update that!
+        [self prepareNextViewController:detail afterSelectingIndexPath:indexPath];
+    }
 }
-
-
-#pragma mark - Navigation
-
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//    if ([sender isKindOfClass:[UITableViewCell class]]) {
-//        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-//        if (indexPath && [segue.identifier isEqualToString:@"List Photos"] &&
-//            [segue.destinationViewController isKindOfClass: [FlickrPhotoTableViewController class]]) {
-//            
-//            [self preparePhotoTableViewController:segue.destinationViewController
-//                        toShowPhotosFromIndexPath:indexPath];
-//            
-//        }
-//    }
-//    
-//}
 
 @end

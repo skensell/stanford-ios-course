@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "CommonTableViewController.h"
 
-@interface FlickrPlacesTableViewController : CommonTableViewController
+@interface FlickrPlacesTableViewController : CommonTableViewController <CommonTableViewControllerProtocol>
 
 @end

@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <scenes>
-        <!--Flickr Places Table View Controller-->
+        <!--Flickr Places Table View Controller - Top Places-->
         <scene sceneID="zbi-13-a7y">
             <objects>
                 <tableViewController id="Lex-vn-xHM" customClass="FlickrPlacesTableViewController" sceneMemberID="viewController">
@@ -46,7 +46,13 @@
                             <outlet property="delegate" destination="Lex-vn-xHM" id="iBN-Jt-rH3"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="QQ0-Yl-nLW"/>
+                    <navigationItem key="navigationItem" title="Top Places" id="QQ0-Yl-nLW"/>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="T0i-RC-zsv">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="fetchFlickrData" destination="Lex-vn-xHM" eventType="valueChanged" id="1wN-Ua-OX8"/>
+                        </connections>
+                    </refreshControl>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ih0-Rj-or5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -85,7 +91,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="FwQ-qi-1vu" kind="push" identifier="Display Photo" id="C0g-n4-HMy"/>
+                                    <segue destination="FwQ-qi-1vu" kind="push" identifier="Show Photo" id="C0g-n4-HMy"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -95,12 +101,18 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="xVM-Iw-9ZB"/>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="ra3-oe-bfy">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="fetchFlickrData" destination="sd7-g1-aWf" eventType="valueChanged" id="GhT-LB-cWa"/>
+                        </connections>
+                    </refreshControl>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gt1-he-tau" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1389" y="200"/>
+            <point key="canvasLocation" x="1433" y="206"/>
         </scene>
-        <!--History Table View Controller-->
+        <!--History Table View Controller - History-->
         <scene sceneID="Fgd-r0-guS">
             <objects>
                 <tableViewController id="Yae-WT-pfE" customClass="HistoryTableViewController" sceneMemberID="viewController">
@@ -133,7 +145,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="FwQ-qi-1vu" kind="push" identifier="Display Photo" id="cZG-eq-AL7"/>
+                                    <segue destination="FwQ-qi-1vu" kind="push" identifier="Show Photo" id="cZG-eq-AL7"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -142,16 +154,16 @@
                             <outlet property="delegate" destination="Yae-WT-pfE" id="FXp-yU-XXt"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="9kM-sz-7Dd"/>
+                    <navigationItem key="navigationItem" title="History" id="9kM-sz-7Dd"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WKG-4z-Hz0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1389" y="897"/>
         </scene>
-        <!--Photo View Controller-->
+        <!--Image View Controller-->
         <scene sceneID="QAN-kX-2A3">
             <objects>
-                <viewController id="FwQ-qi-1vu" customClass="PhotoViewController" sceneMemberID="viewController">
+                <viewController id="FwQ-qi-1vu" customClass="ImageViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IfH-ge-X4H"/>
                         <viewControllerLayoutGuide type="bottom" id="x5h-tG-U3B"/>
@@ -159,13 +171,37 @@
                     <view key="view" contentMode="scaleToFill" id="FUk-Sb-r97">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="SYD-Wi-dag">
+                                <rect key="frame" x="142" y="266" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l1b-63-S1P">
+                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </scrollView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="l1b-63-S1P" firstAttribute="top" secondItem="FUk-Sb-r97" secondAttribute="top" constant="20" symbolic="YES" id="0Wl-4c-PTb"/>
+                            <constraint firstAttribute="trailing" secondItem="l1b-63-S1P" secondAttribute="trailing" id="7Le-JE-1xA"/>
+                            <constraint firstAttribute="centerY" secondItem="SYD-Wi-dag" secondAttribute="centerY" id="A2W-5J-bPK"/>
+                            <constraint firstItem="l1b-63-S1P" firstAttribute="leading" secondItem="FUk-Sb-r97" secondAttribute="leading" id="Aoq-s5-IRK"/>
+                            <constraint firstItem="x5h-tG-U3B" firstAttribute="top" secondItem="l1b-63-S1P" secondAttribute="bottom" id="DVE-yJ-Lrx"/>
+                            <constraint firstAttribute="centerX" secondItem="l1b-63-S1P" secondAttribute="centerX" id="s9G-ep-i1t"/>
+                            <constraint firstAttribute="centerX" secondItem="SYD-Wi-dag" secondAttribute="centerX" id="zyI-OX-A7Z"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="d3q-l9-q3v"/>
+                    <connections>
+                        <outlet property="scrollView" destination="l1b-63-S1P" id="xmj-IA-PZR"/>
+                        <outlet property="spinner" destination="SYD-Wi-dag" id="Qg4-1U-rcA"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gQa-xa-eN4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2055" y="581"/>
+            <point key="canvasLocation" x="2047" y="561"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Wlc-TO-rUL">
@@ -231,6 +267,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="C0g-n4-HMy"/>
+        <segue reference="cZG-eq-AL7"/>
     </inferredMetricsTieBreakers>
 </document>
