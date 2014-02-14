@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>CF494D3F-65FF-453E-B940-51DC20A11B38</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Photomania</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E170D154-4E1E-4BE5-B095-9251D1906446</key>
+		<string>ssh://github.com/skensell/stanford-ios-course.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Photomania/Photomania.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E170D154-4E1E-4BE5-B095-9251D1906446</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/skensell/stanford-ios-course.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E170D154-4E1E-4BE5-B095-9251D1906446</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E170D154-4E1E-4BE5-B095-9251D1906446</string>
+			<key>IDESourceControlWCCName</key>
+			<string>stanford-ios-course</string>
+		</dict>
+	</array>
+</dict>
+</plist>
