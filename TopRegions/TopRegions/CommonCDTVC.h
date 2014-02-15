@@ -15,7 +15,9 @@
 @protocol CommonCDTVC <NSObject>
 // methods to be IMPLEMENTED by subclasses
 // explain what needs to be done when seguing
-- (void)prepareNextViewController:(UIViewController *)vc afterSelectingIndexPath:(NSIndexPath *)indexPath;
+- (void)prepareNextViewController:(UIViewController *)vc
+          afterSelectingIndexPath:(NSIndexPath *)indexPath
+                  segueIdentifier:(NSString *)segueIdentifier;
 @end
 
 

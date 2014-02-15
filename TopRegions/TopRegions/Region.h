@@ -9,19 +9,20 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class Photo, Photographer;
 
 @interface Region : NSManagedObject
 
-@property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * numberOfPhotographers;
 @property (nonatomic, retain) NSSet *photos;
-@property (nonatomic, retain) NSManagedObject *photographers;
+@property (nonatomic, retain) Photographer *photographers;
 @end
 
 @interface Region (CoreDataGeneratedAccessors)
 
-- (void)addPhotosObject:(NSManagedObject *)value;
-- (void)removePhotosObject:(NSManagedObject *)value;
+- (void)addPhotosObject:(Photo *)value;
+- (void)removePhotosObject:(Photo *)value;
 - (void)addPhotos:(NSSet *)values;
 - (void)removePhotos:(NSSet *)values;
 

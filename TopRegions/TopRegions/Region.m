@@ -7,11 +7,13 @@
 //
 
 #import "Region.h"
+#import "Photo.h"
+#import "Photographer.h"
 
 
 @implementation Region
 
-@dynamic title;
+@dynamic name;
 @dynamic numberOfPhotographers;
 @dynamic photos;
 @dynamic photographers;

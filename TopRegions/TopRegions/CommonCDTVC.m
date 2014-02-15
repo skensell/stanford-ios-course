@@ -30,21 +30,34 @@ classOfViewControllerAfterSegue:(Class)classOfViewControllerAfterSegue {
     
 }
 
-- (void)prepareNextViewController:(UIViewController *)vc afterSelectingIndexPath:(NSIndexPath *)indexPath {
+- (void)prepareNextViewController:(UIViewController *)vc afterSelectingIndexPath:(NSIndexPath *)indexPath segueIdentifier:(NSString *)segueIdentifier {
     // abstract method
 }
 
 #pragma mark - Navigation
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+// in splitViewController
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    id detailvc = [self.splitViewController.viewControllers lastObject];
+    if ([detailvc isKindOfClass:[UINavigationController class]]) {
+        detailvc = [((UINavigationController *)detailvc).viewControllers firstObject];
+        [self prepareNextViewController:detailvc
+                afterSelectingIndexPath:indexPath
+                        segueIdentifier:nil];
+    }
+}
+
+// normal segue in navigationController
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([sender isKindOfClass:[UITableViewCell class]]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         if (indexPath && [segue.identifier isEqualToString:[self segueIdentifierToNextViewController]] &&
             [segue.destinationViewController isKindOfClass:[self classOfViewControllerAfterSegue]]) {
             
             [self prepareNextViewController:segue.destinationViewController
-                    afterSelectingIndexPath:indexPath];
+                    afterSelectingIndexPath:indexPath
+                            segueIdentifier:segue.identifier];
             
         }
     }

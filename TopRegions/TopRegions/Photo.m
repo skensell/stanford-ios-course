@@ -7,6 +7,7 @@
 //
 
 #import "Photo.h"
+#import "Photographer.h"
 #import "Region.h"
 
 
