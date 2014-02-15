@@ -7,7 +7,6 @@
         <!--Tab Bar Controller-->
         <scene sceneID="Yml-iz-CLQ">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9aE-EK-No5" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tabBarController definesPresentationContext="YES" id="0TX-zz-88j" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="PSz-FT-4Ny">
@@ -20,6 +19,7 @@
                         <segue destination="nlc-aA-jSl" kind="relationship" relationship="viewControllers" id="kC6-o6-1JL"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9aE-EK-No5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-202" y="2735"/>
         </scene>
@@ -56,7 +56,6 @@
         <!--Navigation Controller-->
         <scene sceneID="dYg-Gg-IXD">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XCM-bp-VXe" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="ALO-IM-bFq" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="1mo-lo-zqE">
                         <autoresizingMask key="autoresizingMask"/>
@@ -65,13 +64,13 @@
                         <segue destination="rLg-3c-kZO" kind="relationship" relationship="rootViewController" id="QSf-oZ-cOg"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XCM-bp-VXe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1937" y="5422"/>
         </scene>
         <!--Split View Controller - History-->
         <scene sceneID="nj2-32-3Zh">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="VIv-ew-kNo" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <splitViewController id="nlc-aA-jSl" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="History" id="dqp-go-RzH"/>
                     <toolbarItems/>
@@ -80,6 +79,7 @@
                         <segue destination="ALO-IM-bFq" kind="relationship" relationship="masterViewController" id="NbQ-TQ-zVF"/>
                     </connections>
                 </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VIv-ew-kNo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="793" y="3954"/>
         </scene>
