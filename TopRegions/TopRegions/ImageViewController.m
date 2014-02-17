@@ -7,7 +7,6 @@
 //
 
 #import "ImageViewController.h"
-#import "URLViewController.h"
 
 @interface ImageViewController () <UIScrollViewDelegate, UISplitViewControllerDelegate>
 @property (nonatomic, strong) UIImageView *imageView;
@@ -93,22 +92,6 @@
 }
 
 #pragma mark - Navigation
-
-// show our imageURL in a popover
-// stash the popover so that we can ensure that only one appears at a time
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.destinationViewController isKindOfClass:[URLViewController class]]) {
-        URLViewController *urlvc = (URLViewController *)segue.destinationViewController;
-        // if we are segueing to a popover, the segue itself will be a UIStoryboardPopoverSegue
-        if ([segue isKindOfClass:[UIStoryboardPopoverSegue class]]) {
-            UIStoryboardPopoverSegue *popoverSegue = (UIStoryboardPopoverSegue *)segue;
-            self.urlPopoverController = popoverSegue.popoverController;
-        }
-        urlvc.url = self.imageURL;
-    }
-}
 
 // don't show the URL if it's already showing or we don't have a URL to show
 

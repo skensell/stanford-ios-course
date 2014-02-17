@@ -2,13 +2,13 @@
 //  Photo.m
 //  TopRegions
 //
-//  Created by Scott Kensell on 2/14/14.
+//  Created by Scott Kensell on 2/15/14.
 //  Copyright (c) 2014 Scott Kensell. All rights reserved.
 //
 
 #import "Photo.h"
 #import "Photographer.h"
-#import "Region.h"
+#import "Place.h"
 
 
 @implementation Photo
@@ -18,9 +18,8 @@
 @dynamic thumbURL;
 @dynamic imageURL;
 @dynamic unique;
-@dynamic placeID;
 @dynamic lastViewed;
-@dynamic whereTaken;
 @dynamic whoTook;
+@dynamic place;
 
 @end

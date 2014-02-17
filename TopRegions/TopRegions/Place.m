@@ -1,18 +1,20 @@
 //
-//  Region.m
+//  Place.m
 //  TopRegions
 //
 //  Created by Scott Kensell on 2/15/14.
 //  Copyright (c) 2014 Scott Kensell. All rights reserved.
 //
 
+#import "Place.h"
+#import "Photo.h"
 #import "Region.h"
 
 
-@implementation Region
+@implementation Place
 
-@dynamic name;
-@dynamic numberOfPhotographers;
-@dynamic places;
+@dynamic unique;
+@dynamic photos;
+@dynamic region;
 
 @end

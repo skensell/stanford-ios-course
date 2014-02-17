@@ -100,10 +100,10 @@
             </objects>
             <point key="canvasLocation" x="1433" y="206"/>
         </scene>
-        <!--History Table View Controller - History-->
+        <!--HistoryCDTVC - History-->
         <scene sceneID="geR-tM-wXY">
             <objects>
-                <tableViewController id="Fue-XP-lXJ" customClass="HistoryTableViewController" sceneMemberID="viewController">
+                <tableViewController id="Fue-XP-lXJ" customClass="HistoryCDTVC" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Ich-JJ-r6z">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -255,6 +255,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="KMJ-Lb-AMT"/>
+        <segue reference="vVU-Mv-nLt"/>
     </inferredMetricsTieBreakers>
 </document>

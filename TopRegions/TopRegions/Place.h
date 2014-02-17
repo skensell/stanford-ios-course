@@ -1,5 +1,5 @@
 //
-//  Photographer.h
+//  Place.h
 //  TopRegions
 //
 //  Created by Scott Kensell on 2/15/14.
@@ -9,15 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Photo;
+@class Photo, Region;
 
-@interface Photographer : NSManagedObject
+@interface Place : NSManagedObject
 
-@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * unique;
 @property (nonatomic, retain) NSSet *photos;
+@property (nonatomic, retain) Region *region;
 @end
 
-@interface Photographer (CoreDataGeneratedAccessors)
+@interface Place (CoreDataGeneratedAccessors)
 
 - (void)addPhotosObject:(Photo *)value;
 - (void)removePhotosObject:(Photo *)value;

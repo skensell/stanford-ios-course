@@ -28,6 +28,19 @@
 #define FLICKR_LONGITUDE @"longitude"
 #define FLICKR_TAGS @"tags"
 
+// keys (paths) to values in a placeInfo dictionary
+#define FLICKR_PLACE_NEIGHBORHOOD_NAME @"place.neighbourhood._content"
+#define FLICKR_PLACE_NEIGHBORHOOD_PLACE_ID @"place.neighbourhood.place_id"
+#define FLICKR_PLACE_LOCALITY_NAME @"place.locality._content"
+#define FLICKR_PLACE_LOCALITY_PLACE_ID @"place.locality.place_id"
+#define FLICKR_PLACE_REGION_NAME @"place.region._content"
+#define FLICKR_PLACE_REGION_PLACE_ID @"place.region.place_id"
+#define FLICKR_PLACE_COUNTY_NAME @"place.county._content"
+#define FLICKR_PLACE_COUNTY_PLACE_ID @"place.county.place_id"
+#define FLICKR_PLACE_COUNTRY_NAME @"place.country._content"
+#define FLICKR_PLACE_COUNTRY_PLACE_ID @"place.country.place_id"
+#define FLICKR_PLACE_REGION @"place.region"
+
 typedef enum {
 	FlickrPhotoFormatSquare = 1,    // thumbnail
 	FlickrPhotoFormatLarge = 2,     // normal size
@@ -48,5 +61,6 @@ typedef enum {
 
 + (NSString *)extractNameOfPlace:(id)placeId fromPlaceInformation:(NSDictionary *)place;
 + (NSString *)extractRegionNameFromPlaceInformation:(NSDictionary *)placeInformation;
++ (NSArray *)allPlaceIDsFromPlaceInformation:(NSDictionary *)place;
 
 @end

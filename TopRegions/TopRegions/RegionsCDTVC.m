@@ -35,13 +35,15 @@ static NSString *tableViewCellIdentifier = @"Region Cell";
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Region"];
     request.predicate = nil;
     request.fetchLimit = 50; // TODO: refetch results later (with performFetch) to cut it down to 50 again.
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"numberOfPhotographers"
-                                                              ascending:NO
-                                                               selector:nil],
-                                [NSSortDescriptor sortDescriptorWithKey:@"name"
+//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"numberOfPhotographers"
+//                                                              ascending:NO
+//                                                               selector:nil],
+//                                [NSSortDescriptor sortDescriptorWithKey:@"name"
+//                                                              ascending:YES
+//                                                               selector:@selector(localizedStandardCompare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name"
                                                               ascending:YES
                                                                selector:@selector(localizedStandardCompare:)]];
-    
     
     
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request

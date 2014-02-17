@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Database.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, DatabaseDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
