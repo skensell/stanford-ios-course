@@ -33,7 +33,8 @@
         photo = [NSEntityDescription insertNewObjectForEntityForName:@"Photo"
                                               inManagedObjectContext:context];
         photo.unique = unique;
-        photo.title = [photoDictionary valueForKeyPath:FLICKR_PHOTO_TITLE];
+        NSString *title = [photoDictionary valueForKeyPath:FLICKR_PHOTO_TITLE];
+        photo.title = title.length ? title : @"Unknown";
         photo.subtitle = [photoDictionary valueForKeyPath:FLICKR_PHOTO_DESCRIPTION];
         photo.imageURL = [[FlickrFetcher URLforPhoto:photoDictionary format:FlickrPhotoFormatLarge] absoluteString];
         photo.thumbURL = [[FlickrFetcher URLforPhoto:photoDictionary format:FlickrPhotoFormatSquare] absoluteString];

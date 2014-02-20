@@ -4,6 +4,7 @@
         <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastViewed" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="subtitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="thumbURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unique" optional="YES" attributeType="String" syncable="YES"/>
@@ -25,9 +26,9 @@
         <relationship name="places" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Place" inverseName="region" inverseEntity="Place" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Photo" positionX="160" positionY="192" width="128" height="28"/>
-        <element name="Photographer" positionX="477" positionY="234" width="144" height="28"/>
-        <element name="Region" positionX="376" positionY="-24" width="128" height="28"/>
+        <element name="Photo" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Photographer" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Place" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Region" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

@@ -40,14 +40,23 @@
 + (void)loadPlacesFromFlickrArray:(NSArray *)placesOfPhotos
          intoManagedObjectContext:(NSManagedObjectContext *)context {
     
+    NSMutableSet *regionsAffected = [[NSMutableSet alloc] init];
     for (NSDictionary *placeInfo in placesOfPhotos) {
         for (NSString *placeID in [FlickrFetcher allPlaceIDsFromPlaceInformation:placeInfo]) {
             Place *place = [self placeFromPlaceID:placeID managedObjectContext:context];
             Region *region = [Region regionWithName:[FlickrFetcher extractRegionNameFromPlaceInformation:placeInfo]
                                managedObjectContext:context];
-            place.region = region;
+            if (region) {
+                place.region = region;
+                [regionsAffected addObject:region];
+            }
         }
     }
+    
+    for (Region *region in regionsAffected) {
+        [Region updateNumberOfPhotographersInRegion:region];
+    }
+    
 }
 
 @end

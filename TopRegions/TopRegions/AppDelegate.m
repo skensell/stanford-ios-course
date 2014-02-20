@@ -109,7 +109,9 @@
 }
 
 - (void)startFlickrPlaceInfoFetchGivenPhotos:(NSArray *)photos {
-    NSSet *placeIDs = [[NSSet alloc] initWithArray:[photos valueForKey:FLICKR_PHOTO_PLACE_ID]]; // this uniquefies it
+    NSMutableSet *placeIDs = [[NSMutableSet alloc] initWithArray:[photos valueForKey:FLICKR_PHOTO_PLACE_ID]]; // this uniquefies it
+    [placeIDs removeObject:[NSNull null]];
+    
     DEBUG(@"Array had size %d and Set has size %d", photos.count, placeIDs.count);
     
     [self.flickrDownloadSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
@@ -160,11 +162,11 @@ didFinishDownloadingToURL:(NSURL *)localFile {
     if ([downloadTask.taskDescription isEqualToString:FLICKR_FETCH]) {
         DEBUG(@"Download for RecentGeoreferencedPhotos finished");
         NSArray *photos = [FlickrManager flickrPhotosAtURL:localFile];
-        [FlickrManager loadFlickrPhotosFromLocalURL:localFile
-                                        intoContext:self.databaseContext
-                                andThenExecuteBlock:^{
-                                    [self startFlickrPlaceInfoFetchGivenPhotos:photos];
-                                }];
+        [FlickrManager loadFlickrPhotos:photos
+                            intoContext:self.databaseContext
+                    andThenExecuteBlock:^{
+                        [self startFlickrPlaceInfoFetchGivenPhotos:photos];
+                    }];
 
     } else if ([downloadTask.taskDescription isEqualToString:FLICKR_PLACE_FETCH]) {
         DEBUG(@"Download for PlaceInfo finished. %d left.", --self.numberOfPlaceInfoDownloads);

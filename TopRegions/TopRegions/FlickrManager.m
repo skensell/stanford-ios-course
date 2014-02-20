@@ -7,6 +7,7 @@
 //
 
 #import "FlickrManager.h"
+
 #import "FlickrFetcher.h"
 #import "Photo+Flickr.h"
 #import "Place+Flickr.h"
@@ -17,11 +18,10 @@
 
 #pragma mark - Public
 
-+ (void)loadFlickrPhotosFromLocalURL:(NSURL *)localFile
-                         intoContext:(NSManagedObjectContext *)context
-                 andThenExecuteBlock:(void(^)())whenDone {
++ (void)loadFlickrPhotos:(NSArray *)photos
+             intoContext:(NSManagedObjectContext *)context
+     andThenExecuteBlock:(void(^)())whenDone {
     
-    NSArray *photos = [self flickrPhotosAtURL:localFile];
     [self loadObjects:photos
               ofClass:[Photo class]
           intoContext:context

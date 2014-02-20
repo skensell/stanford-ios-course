@@ -7,6 +7,10 @@
 //
 
 #import "Region+Flickr.h"
+
+#import "Photo.h"
+#import "Photographer.h"
+#import "Place.h"
 #import "Common.h"
 
 @implementation Region (Flickr)
@@ -35,5 +39,18 @@
     }
     return region;
 }
+
++ (void)updateNumberOfPhotographersInRegion:(Region *)region {
+    NSMutableSet *photographers = [[NSMutableSet alloc] init];
+    NSSet *placesInRegion = [region.places copy];
+    for (Place *place in placesInRegion) {
+        NSSet *photosInPlace = [place.photos copy];
+        for (Photo *photo in photosInPlace) {
+            [photographers addObject:photo.whoTook];
+        }
+    }
+    region.numberOfPhotographers = @(photographers.count);
+}
+
 
 @end

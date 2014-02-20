@@ -2,13 +2,14 @@
 //  Region.h
 //  TopRegions
 //
-//  Created by Scott Kensell on 2/15/14.
+//  Created by Scott Kensell on 2/19/14.
 //  Copyright (c) 2014 Scott Kensell. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class Place;
 
 @interface Region : NSManagedObject
 
@@ -19,8 +20,8 @@
 
 @interface Region (CoreDataGeneratedAccessors)
 
-- (void)addPlacesObject:(NSManagedObject *)value;
-- (void)removePlacesObject:(NSManagedObject *)value;
+- (void)addPlacesObject:(Place *)value;
+- (void)removePlacesObject:(Place *)value;
 - (void)addPlaces:(NSSet *)values;
 - (void)removePlaces:(NSSet *)values;
 

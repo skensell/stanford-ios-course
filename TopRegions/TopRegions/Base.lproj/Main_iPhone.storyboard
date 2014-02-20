@@ -85,7 +85,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="jdp-bd-AMB" kind="push" identifier="Show Photo" id="KMJ-Lb-AMT"/>
+                                    <segue destination="udD-F4-CFy" kind="push" identifier="Show Photo" id="sJ2-GU-u2K"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -109,7 +109,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Flickr Photo Cell" textLabel="mlK-EH-gp7" detailTextLabel="coZ-qL-J5p" style="IBUITableViewCellStyleSubtitle" id="ewy-5K-JMo">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Photo Cell" textLabel="mlK-EH-gp7" detailTextLabel="coZ-qL-J5p" style="IBUITableViewCellStyleSubtitle" id="ewy-5K-JMo">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ewy-5K-JMo" id="CKT-xf-7xJ">
@@ -133,7 +133,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="jdp-bd-AMB" kind="push" identifier="Show Photo" id="vVU-Mv-nLt"/>
+                                    <segue destination="udD-F4-CFy" kind="push" identifier="Show Photo" id="k9G-M8-1JP"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -147,49 +147,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yuq-IW-af9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1389" y="897"/>
-        </scene>
-        <!--Image View Controller-->
-        <scene sceneID="oue-up-kT3">
-            <objects>
-                <viewController id="jdp-bd-AMB" customClass="ImageViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="xqn-PY-gN4"/>
-                        <viewControllerLayoutGuide type="bottom" id="0Yf-s4-T10"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="g6I-6o-E1m">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="M9H-D4-82L">
-                                <rect key="frame" x="142" y="266" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="color" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                            </activityIndicatorView>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ocx-jn-zlq">
-                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            </scrollView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="0Yf-s4-T10" firstAttribute="top" secondItem="Ocx-jn-zlq" secondAttribute="bottom" id="0De-Z5-RMV"/>
-                            <constraint firstAttribute="centerY" secondItem="M9H-D4-82L" secondAttribute="centerY" id="BpI-oT-12B"/>
-                            <constraint firstAttribute="centerX" secondItem="Ocx-jn-zlq" secondAttribute="centerX" id="OqV-ce-2Mv"/>
-                            <constraint firstAttribute="trailing" secondItem="Ocx-jn-zlq" secondAttribute="trailing" id="Ynn-x5-OYy"/>
-                            <constraint firstItem="Ocx-jn-zlq" firstAttribute="top" secondItem="g6I-6o-E1m" secondAttribute="top" constant="20" symbolic="YES" id="bRD-gL-jyD"/>
-                            <constraint firstItem="Ocx-jn-zlq" firstAttribute="leading" secondItem="g6I-6o-E1m" secondAttribute="leading" id="iD0-PK-7od"/>
-                            <constraint firstAttribute="centerX" secondItem="M9H-D4-82L" secondAttribute="centerX" id="rNI-8o-T4E"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="OKF-av-9Gf"/>
-                    <connections>
-                        <outlet property="scrollView" destination="Ocx-jn-zlq" id="rj5-Rj-Wpi"/>
-                        <outlet property="spinner" destination="M9H-D4-82L" id="iGB-UJ-XQe"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="F26-4w-8DS" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2047" y="561"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="q4o-M7-cgq">
@@ -248,6 +205,49 @@
             </objects>
             <point key="canvasLocation" x="398" y="897"/>
         </scene>
+        <!--Image View Controller-->
+        <scene sceneID="qvb-l2-wnz">
+            <objects>
+                <viewController id="udD-F4-CFy" customClass="ImageViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7Cz-hz-Do1"/>
+                        <viewControllerLayoutGuide type="bottom" id="9Sb-Jq-5aP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="qFf-cL-CXU">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="BgT-7y-FUG">
+                                <rect key="frame" x="142" y="266" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fnm-Qp-tYA">
+                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="9Sb-Jq-5aP" firstAttribute="top" secondItem="Fnm-Qp-tYA" secondAttribute="bottom" id="2P9-dw-j4t"/>
+                            <constraint firstAttribute="centerX" secondItem="BgT-7y-FUG" secondAttribute="centerX" id="BcF-Ih-5Cb"/>
+                            <constraint firstAttribute="centerY" secondItem="BgT-7y-FUG" secondAttribute="centerY" id="Bwv-bG-Qgl"/>
+                            <constraint firstItem="Fnm-Qp-tYA" firstAttribute="top" secondItem="qFf-cL-CXU" secondAttribute="top" constant="20" symbolic="YES" id="Km8-OS-riZ"/>
+                            <constraint firstItem="Fnm-Qp-tYA" firstAttribute="leading" secondItem="qFf-cL-CXU" secondAttribute="leading" id="LNY-VQ-TLT"/>
+                            <constraint firstAttribute="trailing" secondItem="Fnm-Qp-tYA" secondAttribute="trailing" id="cvl-hW-fbE"/>
+                            <constraint firstAttribute="centerX" secondItem="Fnm-Qp-tYA" secondAttribute="centerX" id="if1-0c-SIh"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="oiH-EC-ArV"/>
+                    <connections>
+                        <outlet property="scrollView" destination="Fnm-Qp-tYA" id="x1A-3w-V0f"/>
+                        <outlet property="spinner" destination="BgT-7y-FUG" id="FEg-30-kZs"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5wk-5J-gio" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2019" y="543"/>
+        </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
@@ -255,6 +255,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="vVU-Mv-nLt"/>
+        <segue reference="sJ2-GU-u2K"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -13,9 +13,6 @@
 @property (nonatomic, strong) UIImage *image;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
-// this is weak because we want it to go back to nil
-//   when no one else has strong pointer to the popover (i.e. it is dismissed)
-@property (weak, nonatomic) UIPopoverController *urlPopoverController;
 @end
 
 @implementation ImageViewController
@@ -59,12 +56,8 @@
     
     // self.scrollView could be nil on the next line if outlet-setting has not happened yet
     self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;
-
-    // in portrait orientation on an iPad in a split view,
-    //   unfortunately the master can be access while popover is up
-    //   (so dismiss the URL if someone changes our image from there)
-    [self.urlPopoverController dismissPopoverAnimated:YES];
-
+    
+    [self.scrollView zoomToRect:self.imageView.frame animated:YES];
     [self.spinner stopAnimating];
 }
 
@@ -89,19 +82,6 @@
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
     return self.imageView;
-}
-
-#pragma mark - Navigation
-
-// don't show the URL if it's already showing or we don't have a URL to show
-
-- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
-{
-    if ([identifier isEqualToString:@"Show URL"]) {
-        return self.urlPopoverController ? NO : (self.imageURL ? YES : NO);
-    } else {
-        return [super shouldPerformSegueWithIdentifier:identifier sender:sender];
-    }
 }
 
 #pragma mark - Setting the Image from the Image's URL
@@ -139,7 +119,9 @@
                         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localfile]];
                         // but calling "self.image =" is definitely not an exception to that!
                         // so we must dispatch this back to the main queue
-                        dispatch_async(dispatch_get_main_queue(), ^{ self.image = image; });
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            self.image = image;
+                        });
                     }
                 }
         }];
@@ -178,5 +160,17 @@
 {
     self.navigationItem.leftBarButtonItem = nil;
 }
+
+#pragma mark - AutoLayout
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    self.image = self.image; // resets things
+}
+//
+//- (void)viewDidLayoutSubviews {
+//    [super viewDidLayoutSubviews];
+//    self.image = self.image; // resets things
+//}
 
 @end

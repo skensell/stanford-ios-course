@@ -7,8 +7,13 @@
 //
 
 #import "PhotosCDTVC.h"
+
+#import "Photo.h"
 #import "FlickrFetcher.h"
 #import "ImageViewController.h"
+
+static NSString *tableViewCellIdentifier = @"Photo Cell";
+static NSString *backgroundSessionConfigurationID = @"Thumbnail Fetch Session Config";
 
 @interface PhotosCDTVC ()
 
@@ -16,67 +21,57 @@
 
 @implementation PhotosCDTVC
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    [self setupWithTitle:self.placeName
- tableViewCellIdentifier:@"Photo Cell"
+    [self setupWithTitle:nil
+ tableViewCellIdentifier:tableViewCellIdentifier
 segueIdentifierToNextViewController:@"Show Photo"
 classOfViewControllerAfterSegue:[ImageViewController class]];
 }
 
-- (NSString *)placeName {
-    if (!_placeName) {
-        _placeName = @"Unknown";
-    }
-    return _placeName;
-}
-
-#pragma mark - CommonTVC Required
-
-- (void)prepareNextViewController:(UIViewController *)vc afterSelectingIndexPath:(NSIndexPath *)indexPath {
-    if ([vc isKindOfClass:[ImageViewController class]]) {
-        ImageViewController *ivc = (ImageViewController *)vc;
-        //ivc.imageURL = [FlickrFetcher URLforPhoto:self.fetchedDataFromFlickr[indexPath.row] format:FlickrPhotoFormatLarge];
-        ivc.title = [[[self.tableView cellForRowAtIndexPath:indexPath] textLabel] text]; // maybe I SHOULD check if nav controller
-        [self addPhotoToHistory:indexPath];
-    }
-}
-
-
-#pragma mark - CommonTVC Optional
-
-
-
-#pragma mark - Private
-
-// TODO: refactor this out to DefaultsManager
-- (void)addPhotoToHistory:(NSIndexPath *)indexPath {
-
-}
 
 #pragma mark - TableView data source
 
-
-#pragma mark - UITableViewDelegate
-
-// when a row is selected and we are in a UISplitViewController,
-//   this updates the Detail ImageViewController (instead of segueing to it)
-// knows how to find an ImageViewController inside a UINavigationController in the Detail too
-// otherwise, this does nothing (because detail will be nil and not "isKindOfClass:" anything)
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // get the Detail view controller in our UISplitViewController (nil if not in one)
-    id detail = self.splitViewController.viewControllers[1]; // 0 is master, 1 is detail
-    // if Detail is a UINavigationController, look at its root view controller to find it
-    if ([detail isKindOfClass:[UINavigationController class]]) {
-        detail = [((UINavigationController *)detail).viewControllers firstObject];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:tableViewCellIdentifier];
+    Photo *photo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = photo.title;
+    cell.detailTextLabel.text = photo.subtitle;
+    if (photo.thumbnail) {
+        cell.imageView.image = [[UIImage alloc] initWithData:photo.thumbnail];
+    } else {
+        [self fetchThumbnailForPhoto:photo];
     }
-    // is the Detail is an ImageViewController?
-    if ([detail isKindOfClass:[ImageViewController class]]) {
-        // yes ... we know how to update that!
-        [self prepareNextViewController:detail afterSelectingIndexPath:indexPath];
+    return cell;
+}
+
+#pragma mark - Navigation
+
+- (void)prepareNextViewController:(UIViewController *)vc
+          afterSelectingIndexPath:(NSIndexPath *)indexPath
+                  segueIdentifier:(NSString *)segueIdentifier {
+    Photo *photoToShow = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    photoToShow.lastViewed = [NSDate date];
+    if ([vc isKindOfClass:[ImageViewController class]]) {
+        ImageViewController *ivc = (ImageViewController *)vc;
+        ivc.imageURL = [NSURL URLWithString:photoToShow.imageURL];
+        ivc.title = photoToShow.title;
+    }
+}
+
+#pragma mark - Thumbnail fetch
+
+- (void)fetchThumbnailForPhoto:(Photo *)photo {
+    if (photo.thumbURL && photo.thumbURL.length) {
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:photo.thumbURL]];
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+        NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request
+                                                        completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+                                                            NSData *thumbData = [NSData dataWithContentsOfFile:[location path]];
+                                                            photo.thumbnail = thumbData;
+                                                        }];
+        [task resume];
     }
 }
 

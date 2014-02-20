@@ -13,4 +13,6 @@
 + (Region *)regionWithName:(NSString *)name
       managedObjectContext:(NSManagedObjectContext *)context;
 
++ (void)updateNumberOfPhotographersInRegion:(Region *)region;
+
 @end

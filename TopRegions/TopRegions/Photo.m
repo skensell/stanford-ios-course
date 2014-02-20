@@ -2,7 +2,7 @@
 //  Photo.m
 //  TopRegions
 //
-//  Created by Scott Kensell on 2/15/14.
+//  Created by Scott Kensell on 2/19/14.
 //  Copyright (c) 2014 Scott Kensell. All rights reserved.
 //
 
@@ -13,13 +13,14 @@
 
 @implementation Photo
 
-@dynamic title;
+@dynamic imageURL;
+@dynamic lastViewed;
 @dynamic subtitle;
 @dynamic thumbURL;
-@dynamic imageURL;
+@dynamic title;
 @dynamic unique;
-@dynamic lastViewed;
-@dynamic whoTook;
+@dynamic thumbnail;
 @dynamic place;
+@dynamic whoTook;
 
 @end

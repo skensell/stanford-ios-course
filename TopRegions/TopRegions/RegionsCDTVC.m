@@ -19,6 +19,18 @@ static NSString *tableViewCellIdentifier = @"Region Cell";
 
 @implementation RegionsCDTVC
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+	[self setupWithTitle:@"Top Regions"
+ tableViewCellIdentifier:tableViewCellIdentifier
+segueIdentifierToNextViewController:@"List Photos"
+classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
+}
+
+#pragma mark - Database Context
+
+// Because this is the first responder it gets its table view from a notification
+
 - (void)awakeFromNib {
     // add self as observer for the DatabaseAvailabilityNotification
     [[NSNotificationCenter defaultCenter] addObserverForName:DatabaseAvailabilityNotification
@@ -35,13 +47,10 @@ static NSString *tableViewCellIdentifier = @"Region Cell";
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Region"];
     request.predicate = nil;
     request.fetchLimit = 50; // TODO: refetch results later (with performFetch) to cut it down to 50 again.
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"numberOfPhotographers"
-//                                                              ascending:NO
-//                                                               selector:nil],
-//                                [NSSortDescriptor sortDescriptorWithKey:@"name"
-//                                                              ascending:YES
-//                                                               selector:@selector(localizedStandardCompare:)]];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name"
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"numberOfPhotographers"
+                                                              ascending:NO
+                                                               selector:nil],
+                                [NSSortDescriptor sortDescriptorWithKey:@"name"
                                                               ascending:YES
                                                                selector:@selector(localizedStandardCompare:)]];
     
@@ -50,14 +59,6 @@ static NSString *tableViewCellIdentifier = @"Region Cell";
                                                                         managedObjectContext:managedObjectContext
                                                                           sectionNameKeyPath:nil
                                                                                    cacheName:nil];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-	[self setupWithTitle:@"Top Regions"
- tableViewCellIdentifier:tableViewCellIdentifier
-segueIdentifierToNextViewController:@"List Photos"
-classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
 }
 
 
@@ -80,7 +81,7 @@ classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
     Region *region = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([vc isKindOfClass:[PhotosByRegionCDTVC class]]) {
         PhotosByRegionCDTVC *pbrcdtvc = (PhotosByRegionCDTVC *)vc;
-        pbrcdtvc.regionName = region.name;
+        pbrcdtvc.region = region;
     }
     
     

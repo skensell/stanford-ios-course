@@ -7,9 +7,10 @@
 //
 
 #import "PhotosCDTVC.h"
+#import "Region.h"
 
 @interface PhotosByRegionCDTVC : PhotosCDTVC
 
-@property (nonatomic, strong) NSString *regionName;
+@property (nonatomic, strong) Region *region;
 
 @end

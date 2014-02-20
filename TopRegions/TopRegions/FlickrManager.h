@@ -11,9 +11,9 @@
 
 @interface FlickrManager : NSObject
 
-+ (void)loadFlickrPhotosFromLocalURL:(NSURL *)localFile
-                         intoContext:(NSManagedObjectContext *)context
-                 andThenExecuteBlock:(void(^)())whenDone;
++ (void)loadFlickrPhotos:(NSArray *)photos
+             intoContext:(NSManagedObjectContext *)context
+     andThenExecuteBlock:(void(^)())whenDone;
 
 + (void)loadFlickrPlaces:(NSArray *)placesOfPhotos
              intoContext:(NSManagedObjectContext *)context

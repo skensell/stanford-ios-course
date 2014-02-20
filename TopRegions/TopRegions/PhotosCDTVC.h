@@ -12,8 +12,4 @@
 
 @interface PhotosCDTVC : CommonCDTVC <CommonCDTVC>
 
-// Lists < 50 photos from the following place
-@property (nonatomic, strong) NSString *placeID;
-@property (nonatomic, strong) NSString *placeName; // title at top
-
 @end
