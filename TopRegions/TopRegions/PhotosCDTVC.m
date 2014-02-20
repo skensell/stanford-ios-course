@@ -11,6 +11,7 @@
 #import "Photo.h"
 #import "FlickrFetcher.h"
 #import "ImageViewController.h"
+#import "Common.h"
 
 static NSString *tableViewCellIdentifier = @"Photo Cell";
 static NSString *backgroundSessionConfigurationID = @"Thumbnail Fetch Session Config";
@@ -63,12 +64,14 @@ classOfViewControllerAfterSegue:[ImageViewController class]];
 
 - (void)fetchThumbnailForPhoto:(Photo *)photo {
     if (photo.thumbURL && photo.thumbURL.length) {
+        DEBUG(@"Thumbnail fetch started for %@", photo.title);
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:photo.thumbURL]];
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
         NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
         NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request
                                                         completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
                                                             NSData *thumbData = [NSData dataWithContentsOfFile:[location path]];
+                                                            DEBUG(@"Thumbnail fetch finished for %@", photo.title);
                                                             photo.thumbnail = thumbData;
                                                         }];
         [task resume];

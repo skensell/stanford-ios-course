@@ -73,6 +73,11 @@ classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
     return cell;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSUInteger numberOfRegions = [[self.fetchedResultsController fetchedObjects] count];
+    return [NSString stringWithFormat:@"%d regions", numberOfRegions];
+}
+
 #pragma mark - Navigation
 
 - (void)prepareNextViewController:(UIViewController *)vc

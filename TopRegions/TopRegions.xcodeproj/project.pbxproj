@@ -116,6 +116,7 @@
 		76B3493C18B5BF1A00CB2962 /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
 		76B3493E18B5BF1A00CB2962 /* Region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Region.h; sourceTree = "<group>"; };
 		76B3493F18B5BF1A00CB2962 /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Region.m; sourceTree = "<group>"; };
+		76B3494218B66A4D00CB2962 /* AppDelegatePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegatePrivate.h; path = ../AppDelegatePrivate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				760A5E7718AEE6C600C23947 /* AppDelegate.h */,
+				76B3494218B66A4D00CB2962 /* AppDelegatePrivate.h */,
 				760A5E7818AEE6C600C23947 /* AppDelegate.m */,
 				760A5EF218AF408B00C23947 /* AppDelegate+Database.h */,
 				760A5EF318AF408B00C23947 /* AppDelegate+Database.m */,
