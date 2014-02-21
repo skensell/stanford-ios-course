@@ -41,6 +41,7 @@
 		76B3493A18B5BF1A00CB2962 /* Photographer.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3493918B5BF1A00CB2962 /* Photographer.m */; };
 		76B3493D18B5BF1A00CB2962 /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3493C18B5BF1A00CB2962 /* Place.m */; };
 		76B3494018B5BF1A00CB2962 /* Region.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3493F18B5BF1A00CB2962 /* Region.m */; };
+		76B3494718B67C2D00CB2962 /* AppDelegate+FlickrFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B3494618B67C2D00CB2962 /* AppDelegate+FlickrFetch.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,7 +95,6 @@
 		760A5EF018AF112200C23947 /* PhotosByRegionCDTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosByRegionCDTVC.m; sourceTree = "<group>"; };
 		760A5EF218AF408B00C23947 /* AppDelegate+Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+Database.h"; sourceTree = "<group>"; };
 		760A5EF318AF408B00C23947 /* AppDelegate+Database.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+Database.m"; sourceTree = "<group>"; };
-		760A5EF518AFC9AE00C23947 /* Database.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		760A5EF618AFD7F500C23947 /* Photo+Flickr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Photo+Flickr.h"; sourceTree = "<group>"; };
 		760A5EF718AFD7F500C23947 /* Photo+Flickr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Photo+Flickr.m"; sourceTree = "<group>"; };
 		760A5EF918AFD80500C23947 /* Photographer+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Photographer+Create.h"; sourceTree = "<group>"; };
@@ -117,6 +117,9 @@
 		76B3493E18B5BF1A00CB2962 /* Region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Region.h; sourceTree = "<group>"; };
 		76B3493F18B5BF1A00CB2962 /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Region.m; sourceTree = "<group>"; };
 		76B3494218B66A4D00CB2962 /* AppDelegatePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegatePrivate.h; path = ../AppDelegatePrivate.h; sourceTree = "<group>"; };
+		76B3494518B67C2D00CB2962 /* AppDelegate+FlickrFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+FlickrFetch.h"; sourceTree = "<group>"; };
+		76B3494618B67C2D00CB2962 /* AppDelegate+FlickrFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+FlickrFetch.m"; sourceTree = "<group>"; };
+		76B3494818B69EB300CB2962 /* PlaceInfoDownloadsFinishedNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceInfoDownloadsFinishedNotification.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,10 +182,12 @@
 				760A5E7718AEE6C600C23947 /* AppDelegate.h */,
 				76B3494218B66A4D00CB2962 /* AppDelegatePrivate.h */,
 				760A5E7818AEE6C600C23947 /* AppDelegate.m */,
+				76B3494518B67C2D00CB2962 /* AppDelegate+FlickrFetch.h */,
+				76B3494618B67C2D00CB2962 /* AppDelegate+FlickrFetch.m */,
 				760A5EF218AF408B00C23947 /* AppDelegate+Database.h */,
 				760A5EF318AF408B00C23947 /* AppDelegate+Database.m */,
-				760A5EF518AFC9AE00C23947 /* Database.h */,
 				760A5EE518AF08F500C23947 /* DatabaseAvailabilityNotification.h */,
+				76B3494818B69EB300CB2962 /* PlaceInfoDownloadsFinishedNotification.h */,
 				760A5EC018AEEA5600C23947 /* Core Data Model */,
 				760A5EA018AEE6F600C23947 /* View */,
 				760A5EA218AEE75600C23947 /* Controller */,
@@ -411,6 +416,7 @@
 				760A5ECB18AEEB6000C23947 /* PhotosCDTVC.m in Sources */,
 				760A5E7918AEE6C600C23947 /* AppDelegate.m in Sources */,
 				760A5ED218AF010200C23947 /* TopRegions.xcdatamodeld in Sources */,
+				76B3494718B67C2D00CB2962 /* AppDelegate+FlickrFetch.m in Sources */,
 				760A5EB418AEE77500C23947 /* CoreDataTableViewController.m in Sources */,
 				760A5F0A18B05A9A00C23947 /* Place+Flickr.m in Sources */,
 				76B3493A18B5BF1A00CB2962 /* Photographer.m in Sources */,

@@ -8,34 +8,9 @@
 
 #import "AppDelegatePrivate.h"
 
-
 #import "DatabaseAvailabilityNotification.h"
-#import "FlickrFetcher.h"
-#import "Photo+Flickr.h"
-#import "Place+Flickr.h"
-#import "FlickrManager.h"
-
-//@interface AppDelegate() <NSURLSessionDownloadDelegate>
-//@property (copy, nonatomic) void (^flickrDownloadBackgroundURLSessionCompletionHandler)();
-//@property (strong, nonatomic) NSURLSession *flickrDownloadSession;
-//@property (strong, nonatomic) NSTimer *flickrForegroundFetchTimer;
-//@property (nonatomic) NSUInteger numberOfPlaceInfoDownloads;
-//@end
-//
-//// name of the Flickr fetching background download session
-//#define FLICKR_FETCH @"Flickr Just Uploaded Fetch"
-//#define FLICKR_PLACE_FETCH @"Flickr Place Info Fetch"
-//
-//// how often (in seconds) we fetch new photos if we are in the foreground
-//#define FOREGROUND_FLICKR_FETCH_INTERVAL (20*60)
-//
-//// how long we'll wait for a Flickr fetch to return when we're in the background
-//#define BACKGROUND_FLICKR_FETCH_TIMEOUT (10)
-
 
 @implementation AppDelegate
-
-@synthesize databaseContext = _databaseContext;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
@@ -55,7 +30,41 @@
     self.flickrDownloadBackgroundURLSessionCompletionHandler = completionHandler;
 }
 
-#pragma mark - DatabaseDelegate
+
+// this is called occasionally by the system WHEN WE ARE NOT THE FOREGROUND APPLICATION
+// in fact, it will LAUNCH US if necessary to call this method
+// the system has lots of smarts about when to do this, but it is entirely opaque to us
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    // in lecture, we relied on our background flickrDownloadSession to do the fetch by calling [self startFlickrFetch]
+    // that was easy to code up, but pretty weak in terms of how much it will actually fetch (maybe almost never)
+    // that's because there's no guarantee that we'll be allowed to start that discretionary fetcher when we're in the background
+    // so let's simply make a non-discretionary, non-background-session fetch here
+    // we don't want it to take too long because the system will start to lose faith in us as a background fetcher and stop calling this as much
+    // so we'll limit the fetch to BACKGROUND_FETCH_TIMEOUT seconds (also we won't use valuable cellular data)
+    
+    dispatch_queue_t notMainQ = dispatch_queue_create("launched from background", NULL);
+    dispatch_async(notMainQ, ^{
+        int waitTime = 10;
+        while (!self.databaseContext && waitTime) {
+            DEBUG(@"Waiting 1 second.");
+            [NSThread sleepForTimeInterval:1];
+            waitTime--;
+        }
+        
+        if (self.databaseContext) {
+            self.flickrDownloadEphemeralURLSessionCompletionHandler = completionHandler;
+            [self startFlickrFetchWhenAppIsInBackground];
+        } else {
+            completionHandler(UIBackgroundFetchResultNoData); // no app-switcher update if no database!
+        }
+    
+    });
+
+}
+
+#pragma mark - Database
 
 - (void)setDatabaseContext:(NSManagedObjectContext *)databaseContext {
     _databaseContext = databaseContext;
@@ -64,6 +73,7 @@
     self.flickrForegroundFetchTimer = nil;
     
     if (self.databaseContext) {
+        DEBUG(@"DatabaseContext set.");
         // this timer will fire only when we are in the foreground
         self.flickrForegroundFetchTimer = [NSTimer scheduledTimerWithTimeInterval:FOREGROUND_FLICKR_FETCH_INTERVAL
                                                                            target:self
@@ -82,58 +92,7 @@
     }
 }
 
-#pragma mark - Flickr Fetching
-
-// this will probably not work (task = nil) if we're in the background, but that's okay
-// (we do our background fetching in performFetchWithCompletionHandler:)
-// it will always work when we are the foreground (active) application
-
-- (void)startFlickrFetch {
-    [self.flickrDownloadSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // let's see if we're already working on a fetch ...
-        if (![downloadTasks count]) {
-            // ... not working on a fetch, let's start one up
-            NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:[FlickrFetcher URLforRecentGeoreferencedPhotos]];
-            task.taskDescription = FLICKR_FETCH;
-            [task resume];
-            DEBUG(@"Download for RecentGeoreferencedPhotos started");
-        } else {
-            // ... we are working on a fetch (let's make sure they are running while we're here)
-            for (NSURLSessionDownloadTask *task in downloadTasks) [task resume];
-        }
-    }];
-}
-
-- (void)startFlickrFetch:(NSTimer *)timer {
-    [self startFlickrFetch];
-}
-
-- (void)startFlickrPlaceInfoFetchGivenPhotos:(NSArray *)photos {
-    NSMutableSet *placeIDs = [[NSMutableSet alloc] initWithArray:[photos valueForKey:FLICKR_PHOTO_PLACE_ID]]; // this uniquefies it
-    [placeIDs removeObject:[NSNull null]];
-    
-    DEBUG(@"Array had size %d and Set has size %d", photos.count, placeIDs.count);
-    
-    [self.flickrDownloadSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        if (![downloadTasks count]) {
-            self.numberOfPlaceInfoDownloads = 0;
-            for (NSString *placeID in placeIDs) {
-                Place *place = [Place placeFromPlaceID:placeID managedObjectContext:self.databaseContext];
-                if (place.region == nil) {
-                    // only fetch information about a place if it's not in the db
-                    self.numberOfPlaceInfoDownloads++;
-                    NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:[FlickrFetcher URLforInformationAboutPlace:placeID]];
-                    task.taskDescription = FLICKR_PLACE_FETCH;
-                    [task resume];
-                }
-            }
-            DEBUG(@"%d downloadTasks for placeInfo.", self.numberOfPlaceInfoDownloads);
-        } else {
-            // ... we are working on a fetch (let's make sure they are running while we're here)
-            for (NSURLSessionDownloadTask *task in downloadTasks) [task resume];
-        }
-    }];
-}
+#pragma mark - FlickrFetch
 
 - (NSURLSession *)flickrDownloadSession {
     if (!_flickrDownloadSession) {
@@ -150,86 +109,6 @@
     }
     return _flickrDownloadSession;
 }
-
-#pragma mark - NSURLSessionDownloadDelegate
-
-// required by the protocol
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-didFinishDownloadingToURL:(NSURL *)localFile {
-    // first comes the fetch for top photos, then many requests for place information.
-    
-    if ([downloadTask.taskDescription isEqualToString:FLICKR_FETCH]) {
-        DEBUG(@"Download for RecentGeoreferencedPhotos finished");
-        NSArray *photos = [FlickrManager flickrPhotosAtURL:localFile];
-        [FlickrManager loadFlickrPhotos:photos
-                            intoContext:self.databaseContext
-                    andThenExecuteBlock:^{
-                        [self startFlickrPlaceInfoFetchGivenPhotos:photos];
-                    }];
-
-    } else if ([downloadTask.taskDescription isEqualToString:FLICKR_PLACE_FETCH]) {
-        DEBUG(@"Download for PlaceInfo finished. %d left.", --self.numberOfPlaceInfoDownloads);
-        NSDictionary *placeInfo = [FlickrManager placeInfoFromURL:localFile];
-        
-        [FlickrManager loadFlickrPlaces:@[placeInfo]
-                            intoContext:self.databaseContext
-                    andThenExecuteBlock:^{
-                        [self flickrDownloadTasksMightBeComplete];
-                    }];
-        
-    } else {
-        WARNING(@"Unidentified downloadTask.taskDescription : %@", downloadTask.taskDescription);
-    }
-}
-
-// required by the protocol
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
- didResumeAtOffset:(int64_t)fileOffset
-expectedTotalBytes:(int64_t)expectedTotalBytes {
-    // we don't support resuming an interrupted download task
-}
-
-// required by the protocol
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-      didWriteData:(int64_t)bytesWritten
- totalBytesWritten:(int64_t)totalBytesWritten
-totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    // we don't report the progress of a download in our UI, but this is a cool method to do that with
-}
-
-// not required by the protocol, but we should definitely catch errors here
-// so that we can avoid crashes
-// and also so that we can detect that download tasks are (might be) complete
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    if (error && (session == self.flickrDownloadSession)) {
-        ERROR(@"Flickr background download session failed: %@", error.localizedDescription);
-        [self flickrDownloadTasksMightBeComplete];
-    }
-}
-
-// this is "might" in case some day we have multiple downloads going on at once
-- (void)flickrDownloadTasksMightBeComplete {
-    if (self.flickrDownloadBackgroundURLSessionCompletionHandler) {
-        // our app was in the background when a download finished so we need to update UI in app switcher
-        [self.flickrDownloadSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-            //  note that getTasksWithCompletionHandler: is ASYNCHRONOUS
-            //  so we must check again when the block executes if the handler is still not nil
-            //  (another thread might have sent it already in a multiple-tasks-at-once implementation)
-            if (![downloadTasks count]) {  // any more Flickr downloads left?
-                // nope, then invoke flickrDownloadBackgroundURLSessionCompletionHandler (if it's still not nil)
-                void (^completionHandler)() = self.flickrDownloadBackgroundURLSessionCompletionHandler;
-                self.flickrDownloadBackgroundURLSessionCompletionHandler = nil;
-                if (completionHandler) {
-                    completionHandler();
-                }
-            } // else other downloads going, so let them call this method when they finish
-        }];
-    }
-}
-
 
 
 @end

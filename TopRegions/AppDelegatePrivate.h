@@ -5,19 +5,27 @@
 //  Created by Scott Kensell on 2/20/14.
 //  Copyright (c) 2014 Scott Kensell. All rights reserved.
 //
+//  Here we import all public header files for each category and we define one shared class extension.
+//  Instead, let's try 
 
 #ifndef TopRegions_AppDelegatePrivate_h
 #define TopRegions_AppDelegatePrivate_h
 
 #import "AppDelegate.h"
 #import "AppDelegate+Database.h"
+#import "AppDelegate+FlickrFetch.h"
 #import "Common.h"
 
-@interface AppDelegate() <NSURLSessionDownloadDelegate>
+@interface AppDelegate()
+//  FlickrFetch
 @property (copy, nonatomic) void (^flickrDownloadBackgroundURLSessionCompletionHandler)();
+@property (copy, nonatomic) void (^flickrDownloadEphemeralURLSessionCompletionHandler)(UIBackgroundFetchResult);
 @property (strong, nonatomic) NSURLSession *flickrDownloadSession;
 @property (strong, nonatomic) NSTimer *flickrForegroundFetchTimer;
 @property (nonatomic) NSUInteger numberOfPlaceInfoDownloads;
+
+//  Database
+@property (strong, nonatomic) NSManagedObjectContext *databaseContext;
 @end
 
 // name of the Flickr fetching background download session
@@ -29,5 +37,6 @@
 
 // how long we'll wait for a Flickr fetch to return when we're in the background
 #define BACKGROUND_FLICKR_FETCH_TIMEOUT (10)
+
 
 #endif

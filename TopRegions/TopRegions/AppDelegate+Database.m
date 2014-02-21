@@ -6,8 +6,7 @@
 //  Copyright (c) 2014 Scott Kensell. All rights reserved.
 //
 
-#import "AppDelegate+Database.h"
-#import "Common.h"
+#import "AppDelegatePrivate.h"
 
 static NSString *databaseName = @"database";
 

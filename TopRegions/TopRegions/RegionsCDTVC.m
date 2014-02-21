@@ -8,12 +8,16 @@
 
 #import "RegionsCDTVC.h"
 #import "DatabaseAvailabilityNotification.h"
+#import "PlaceInfoDownloadsFinishedNotification.h"
 #import "Region.h"
 #import "PhotosByRegionCDTVC.h"
+#import "Common.h"
 
+#define MaximumRegionsToShow 10
 static NSString *tableViewCellIdentifier = @"Region Cell";
 
 @interface RegionsCDTVC ()
+@property (nonatomic) BOOL placeInfoDownloadsFinished;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @end
 
@@ -38,7 +42,22 @@ classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
                                                        queue:nil
                                                   usingBlock:^(NSNotification *note) {
                                                       self.managedObjectContext = note.userInfo[DatabaseAvailabilityContext];
+                                                      [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                                                                      name:DatabaseAvailabilityNotification
+                                                                                                    object:nil];
                                                   }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:PlaceInfoDownloadsFinishedNotification
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      DEBUG(@"Received notification of PlaceInfoDownloadsFinished.");
+                                                      self.placeInfoDownloadsFinished = YES;
+                                                  }];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext {
@@ -46,7 +65,7 @@ classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Region"];
     request.predicate = nil;
-    request.fetchLimit = 50; // TODO: refetch results later (with performFetch) to cut it down to 50 again.
+    request.fetchLimit = MaximumRegionsToShow; // TODO: refetch results later (with performFetch) to cut it down to 50 again.
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"numberOfPhotographers"
                                                               ascending:NO
                                                                selector:nil],
@@ -78,6 +97,25 @@ classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
     return [NSString stringWithFormat:@"%d regions", numberOfRegions];
 }
 
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [super controllerDidChangeContent:controller];
+    if (self.placeInfoDownloadsFinished ||
+        [[self.fetchedResultsController fetchedObjects] count] > MaximumRegionsToShow + 5) {
+        [self reduceNumberOfRegions];
+        self.placeInfoDownloadsFinished = NO;
+    }
+}
+
+- (void)reduceNumberOfRegions {
+    if ([[self.fetchedResultsController fetchedObjects] count] > MaximumRegionsToShow) {
+        DEBUG(@"Reducing size to %d.", MaximumRegionsToShow);
+        [self performFetch];
+    } else {
+        DEBUG(@"%d or fewer regions. Not reducing size.", MaximumRegionsToShow);
+    }
+}
+
 #pragma mark - Navigation
 
 - (void)prepareNextViewController:(UIViewController *)vc
@@ -91,5 +129,7 @@ classOfViewControllerAfterSegue:[PhotosByRegionCDTVC class]];
     
     
 }
+
+
 
 @end
