@@ -13,6 +13,7 @@
 #import "Place+Flickr.h"
 #import "FlickrManager.h"
 #import "PlaceInfoDownloadsFinishedNotification.h"
+#import "Reachability.h"
 
 
 @implementation AppDelegate (FlickrFetch)
@@ -70,6 +71,10 @@
 // it will always work when we are the foreground (active) application
 
 - (void)startFlickrFetch {
+    if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == ReachableViaWiFi) {
+        DEBUG(@"Wifi detected, will delete old photos and start flickr fetch.");
+        [FlickrManager deleteOldPhotos:self.databaseContext];
+    }
     [self.flickrDownloadSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         // let's see if we're already working on a fetch ...
         if (![downloadTasks count]) {

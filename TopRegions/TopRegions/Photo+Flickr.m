@@ -35,6 +35,7 @@
         photo.unique = unique;
         NSString *title = [photoDictionary valueForKeyPath:FLICKR_PHOTO_TITLE];
         photo.title = title.length ? title : @"Unknown";
+        photo.created = [NSDate date];
         photo.subtitle = [photoDictionary valueForKeyPath:FLICKR_PHOTO_DESCRIPTION];
         photo.imageURL = [[FlickrFetcher URLforPhoto:photoDictionary format:FlickrPhotoFormatLarge] absoluteString];
         photo.thumbURL = [[FlickrFetcher URLforPhoto:photoDictionary format:FlickrPhotoFormatSquare] absoluteString];
@@ -55,6 +56,19 @@
          intoManagedObjectContext:(NSManagedObjectContext *)context {
     for (NSDictionary *photo in photos) {
         [self photoWithFlickrInfo:photo inManagedObjectContext:context];
+    }
+}
+
++ (void)deletePhotos:(NSArray *)thePhotos {
+    if (![thePhotos count]) {
+        return;
+    }
+    NSMutableArray *photos = [NSMutableArray arrayWithArray:thePhotos];
+    while (photos.count) {
+        Photo *photo = [photos lastObject];
+        [photos removeLastObject];
+        NSManagedObjectContext *context = photo.managedObjectContext;
+        [context deleteObject:photo];
     }
 }
 

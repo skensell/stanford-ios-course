@@ -16,4 +16,6 @@
 + (void)loadPhotosFromFlickrArray:(NSArray *)photos // of Flickr NSDictionary
          intoManagedObjectContext:(NSManagedObjectContext *)context;
 
++ (void)deletePhotos:(NSArray *)photos; // of Photo
+
 @end

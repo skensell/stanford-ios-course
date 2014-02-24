@@ -22,4 +22,6 @@
 + (NSArray *)flickrPhotosAtURL:(NSURL *)url;
 + (NSDictionary *)placeInfoFromURL:(NSURL *)url;
 
++ (void)deleteOldPhotos:(NSManagedObjectContext *)context;
+
 @end

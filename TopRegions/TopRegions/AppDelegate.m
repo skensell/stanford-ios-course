@@ -102,6 +102,7 @@
             // that means that we will (eventually) get the results even if we are not the foreground application
             // even if our application crashed, it would get relaunched (eventually) to handle this URL's results!
             NSURLSessionConfiguration *urlSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:FLICKR_FETCH];
+            urlSessionConfig.allowsCellularAccess = NO;
             _flickrDownloadSession = [NSURLSession sessionWithConfiguration:urlSessionConfig
                                                                    delegate:self    // required for backgroundSessions
                                                               delegateQueue:nil];   // nil means "a random, non-main-queue queue"
